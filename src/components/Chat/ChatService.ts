@@ -104,25 +104,35 @@ function detectIntent(q: string, data: RawItem[], summary: SummaryData, eettFile
     if (n.includes(normalize(p.name))) { proveedor = p.name; break; }
   }
 
-  // Detect familia filter
+  // Detect familia filter (use word boundaries to avoid "mesas" matching "mes")
   let familia: string | undefined;
-  const familiaMap: Record<string, string> = {
-    silla: "Silla", sillas: "Silla", mesa: "Mesa", mesas: "Mesa",
-    mobiliario: "Mobiliario", otro: "Otro", otros: "Otro",
-  };
-  for (const [kw, fam] of Object.entries(familiaMap)) {
-    if (n.includes(kw)) { familia = fam; break; }
+  const familiaPatterns: [RegExp, string][] = [
+    [/\bsillas?\b/, "Silla"],
+    [/\bmesas?\b/, "Mesa"],
+    [/\bmobiliario\b/, "Mobiliario"],
+    [/\botros?\b/, "Otro"],
+  ];
+  for (const [rx, fam] of familiaPatterns) {
+    if (rx.test(n)) { familia = fam; break; }
   }
 
-  // Detect servicio filter
+  // Detect servicio filter (exact then partial match)
   let servicio: string | undefined;
   for (const s of summary.byServicio) {
     if (n.includes(normalize(s.name))) { servicio = s.name; break; }
   }
+  if (!servicio) {
+    // Fuzzy: check if any servicio word appears in query
+    for (const s of summary.byServicio) {
+      const sWords = normalize(s.name).split(/\s+/).filter(w => w.length > 3);
+      if (sWords.some(w => n.includes(w))) { servicio = s.name; break; }
+    }
+  }
 
-  // Detect specific nombre
+  // Detect specific nombre (prefer longest match to avoid "Banca" matching before "Banca Madera")
   let nombre: string | undefined;
-  for (const item of summary.byNombre) {
+  const sortedNombres = [...summary.byNombre].sort((a, b) => b.name.length - a.name.length);
+  for (const item of sortedNombres) {
     if (n.includes(normalize(item.name))) { nombre = item.name; break; }
   }
 
@@ -145,8 +155,8 @@ function detectIntent(q: string, data: RawItem[], summary: SummaryData, eettFile
     return { type: "distribucion_pisos", filters };
   if (/distribu|reparto|repartid|desglos/.test(n) && servicio)
     return { type: "distribucion_servicios", filters };
-  if (/piso/.test(n) && !piso && /compar|todos|cada/.test(n))
-    return { type: "comparar_pisos", filters };
+  if (/piso/.test(n) && !piso && /compar|todos|cada|cuantos/.test(n))
+    return { type: "distribucion_pisos", filters };
   if (/proveedor/.test(n))
     return { type: "proveedores", filters };
   if (/servicio/.test(n) && /mas|mayor|principal|top/.test(n))
@@ -155,7 +165,7 @@ function detectIntent(q: string, data: RawItem[], summary: SummaryData, eettFile
     return { type: "servicios", filters };
   if (/familia/.test(n) || /tipo.*mueble/.test(n) || /categori/.test(n))
     return { type: "familias", filters };
-  if (/fecha|instalacion|cuando|calendario|cronograma|mes|semana/.test(n))
+  if (/fecha|instalacion|cuando|calendario|cronograma/.test(n) || (!familia && /\bmes\b|\bsemana\b/.test(n)))
     return { type: "fechas", filters };
   if (/zona/.test(n))
     return { type: "zonas", filters };
@@ -163,6 +173,9 @@ function detectIntent(q: string, data: RawItem[], summary: SummaryData, eettFile
     return { type: "recintos", filters };
   if (/nombre|producto|articulo|item/.test(n) && !nombre)
     return { type: "productos", filters };
+  // Combined filters: if multiple detected, use "contar" for flexible results
+  if (nombre && (piso !== undefined || servicio)) return { type: "contar", filters };
+  if (familia && (piso !== undefined || servicio)) return { type: "contar", filters };
   if (piso !== undefined) return { type: "piso_detalle", filters };
   if (proveedor) return { type: "proveedor_detalle", filters };
   if (servicio) return { type: "servicio_detalle", filters };
@@ -192,10 +205,15 @@ function processQuery(q: string, data: RawItem[], summary: SummaryData, eettFile
     return filtered;
   };
 
-  // Find matching EETT by product name
+  // Find matching EETT by product name (prefer longest/most specific match)
   const findEETT = (productName: string): EETTFile | undefined => {
     const np = normalize(productName);
-    return eettFiles.find((e) => normalize(e.name).includes(np) || np.includes(normalize(e.name)));
+    // Exact match first
+    const exact = eettFiles.find((e) => normalize(e.name) === np);
+    if (exact) return exact;
+    // Then sort by name length desc to prefer "Banca Madera" over "Banca"
+    const sorted = [...eettFiles].sort((a, b) => b.name.length - a.name.length);
+    return sorted.find((e) => np.includes(normalize(e.name)) || normalize(e.name).includes(np));
   };
 
   // Find EETT by query text
@@ -444,10 +462,20 @@ function processQuery(q: string, data: RawItem[], summary: SummaryData, eettFile
         if (spec) {
           eettSection += `**Descripción:** ${spec.desc}\n**Material:** ${spec.material}\n**Dimensiones:** ${spec.dimensiones}\n**Color:** ${spec.color}\n**Características:** ${spec.extras}\n`;
         }
-        eettSection += `📄 [Ver PDF](${BASE_PDF_PATH}${eett.file})`;
+
+      // If no inventory data but EETT exists, show EETT only
+      if (totalQty === 0 && eett) {
+        return `📋 **${f.nombre}**\n\nNo hay unidades en inventario actualmente.${eettSection}\n📄 [Ver PDF](${BASE_PDF_PATH}${eett.file})`;
+      }
+        eettSection += `\n📄 [Ver PDF](${BASE_PDF_PATH}${eett.file})`;
       }
 
-      return `📋 **Producto: ${f.nombre}**\n\n• **${fmt(totalQty)}** unidades en **${filtered.length}** artículos\n• **Proveedor:** ${filtered[0]?.proveedor || "—"}\n• **Familia:** ${filtered[0]?.familia || "—"}\n\n**Por Piso:**\n${table(["Piso", "Unidades"], pisoRows)}\n\n**Top Servicios:**\n${table(["Servicio", "Unidades"], servRows)}${eettSection}`;
+      // Build sections, skip empty tables
+      let result = `📋 **Producto: ${f.nombre}**\n\n• **${fmt(totalQty)}** unidades en **${filtered.length}** artículos\n• **Proveedor:** ${filtered[0]?.proveedor || "—"}\n• **Familia:** ${filtered[0]?.familia || "—"}`;
+      if (pisoRows.length > 0) result += `\n\n**Por Piso:**\n${table(["Piso", "Unidades"], pisoRows)}`;
+      if (servRows.length > 0) result += `\n\n**Top Servicios:**\n${table(["Servicio", "Unidades"], servRows)}`;
+      result += eettSection;
+      return result;
     }
 
     case "fechas": {
