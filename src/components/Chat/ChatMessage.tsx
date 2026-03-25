@@ -14,15 +14,39 @@ function renderMarkdown(text: string): React.ReactNode[] {
   let tableRows: string[][] = [];
   let inTable = false;
 
+  const BASE = import.meta.env.BASE_URL || "/";
+
   const parseInline = (line: string): React.ReactNode => {
     const parts: React.ReactNode[] = [];
-    const regex = /\*\*(.+?)\*\*/g;
+    // Match **bold** and [link text](url) in order of appearance
+    const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
     let lastIndex = 0;
     let match;
     let key = 0;
     while ((match = regex.exec(line)) !== null) {
       if (match.index > lastIndex) parts.push(line.slice(lastIndex, match.index));
-      parts.push(<strong key={key++} style={{ color: "#1a202c", fontWeight: 600 }}>{match[1]}</strong>);
+      if (match[1]) {
+        // Bold
+        parts.push(<strong key={key++} style={{ color: "#1a202c", fontWeight: 600 }}>{match[1]}</strong>);
+      } else if (match[2] && match[3]) {
+        // Link — resolve relative paths through BASE
+        let href = match[3];
+        if (!href.startsWith("http") && !href.startsWith("/")) {
+          href = `${BASE}${href}`;
+        }
+        parts.push(
+          <a key={key++} href={href} target="_blank" rel="noopener noreferrer" style={{
+            color: "#3182ce", textDecoration: "none", fontWeight: 500,
+            borderBottom: "1px solid #bee3f8",
+            transition: "all 0.15s",
+          }}
+            onMouseEnter={(e) => { e.currentTarget.style.color = "#2b6cb0"; e.currentTarget.style.borderBottomColor = "#3182ce"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.color = "#3182ce"; e.currentTarget.style.borderBottomColor = "#bee3f8"; }}
+          >
+            📄 {match[2]}
+          </a>
+        );
+      }
       lastIndex = regex.lastIndex;
     }
     if (lastIndex < line.length) parts.push(line.slice(lastIndex));
