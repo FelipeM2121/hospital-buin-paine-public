@@ -76,12 +76,16 @@ interface DataIndex {
   prodPiso: Record<string, Record<string, number>>;
   prodServ: Record<string, Record<string, number>>;
   provFam: Record<string, Record<string, number>>;
+  provProd: Record<string, Record<string, number>>;
+  pisoServ: Record<number, Record<string, number>>;
+  famProd: Record<string, Record<string, number>>;
 }
 
 function buildIndex(data: RawItem[]): DataIndex {
   const idx: DataIndex = {
     byFamilia: {}, byProveedor: {}, byPiso: {}, byServicio: {},
-    byNombre: {}, byZona: {}, servProd: {}, prodPiso: {}, prodServ: {}, provFam: {},
+    byNombre: {}, byZona: {}, servProd: {}, prodPiso: {}, prodServ: {},
+    provFam: {}, provProd: {}, pisoServ: {}, famProd: {},
   };
 
   data.forEach((i) => {
@@ -103,6 +107,18 @@ function buildIndex(data: RawItem[]): DataIndex {
 
     if (!idx.provFam[i.proveedor]) idx.provFam[i.proveedor] = {};
     idx.provFam[i.proveedor][i.familia] = (idx.provFam[i.proveedor][i.familia] || 0) + i.cantidad;
+
+    // Proveedor → Productos
+    if (!idx.provProd[i.proveedor]) idx.provProd[i.proveedor] = {};
+    idx.provProd[i.proveedor][i.nombre] = (idx.provProd[i.proveedor][i.nombre] || 0) + i.cantidad;
+
+    // Piso → Servicios
+    if (!idx.pisoServ[i.piso]) idx.pisoServ[i.piso] = {};
+    idx.pisoServ[i.piso][i.servicio] = (idx.pisoServ[i.piso][i.servicio] || 0) + i.cantidad;
+
+    // Familia → Productos
+    if (!idx.famProd[i.familia]) idx.famProd[i.familia] = {};
+    idx.famProd[i.familia][i.nombre] = (idx.famProd[i.familia][i.nombre] || 0) + i.cantidad;
   });
 
   return idx;
@@ -237,15 +253,16 @@ Top 10 servicios: ${sortDesc(idx.byServicio).slice(0, 10).map(([k, v]) => `${k}:
           for (const p of matches.pisos) {
             const key = `Piso ${p}`;
             const total = idx.byPiso[key] || 0;
-            // Get products on this floor
             const prodsOnFloor: [string, number][] = [];
             for (const [prod, pisos] of Object.entries(idx.prodPiso)) {
               const qty = pisos[`P${p}`];
               if (qty) prodsOnFloor.push([prod, qty]);
             }
             prodsOnFloor.sort(([, a], [, b]) => b - a);
+            const servsOnFloor = sortDesc(idx.pisoServ[p] || {});
             sections.push(`PISO ${p}: ${fmt(total)} unidades total
-Productos: ${prodsOnFloor.map(([k, v]) => `${k}:${v}`).join(", ")}`);
+Productos en Piso ${p}:\n${prodsOnFloor.map(([k, v]) => `  ${k}: ${v} uds`).join("\n")}
+Servicios en Piso ${p}:\n${servsOnFloor.map(([k, v]) => `  ${k}: ${v} uds`).join("\n")}`);
           }
         } else {
           sections.push(`DISTRIBUCIÓN POR PISO:
@@ -302,19 +319,11 @@ ${sortDesc(idx.byNombre).slice(0, 25).map(([k, v]) => `${k}: ${fmt(v)}`).join("\
         break;
 
       case "familia":
-        sections.push(`FAMILIAS:
+        sections.push(`FAMILIAS CON TODOS SUS PRODUCTOS:
 ${sortDesc(idx.byFamilia).map(([k, v]) => {
-  const prods = Object.entries(idx.byNombre)
-    .filter(([name]) => {
-      if (k === "Silla") return /silla|sillon|butaca|banca|taburete/i.test(name);
-      if (k === "Mesa") return /mesa|escritorio|estacion/i.test(name);
-      return true;
-    })
-    .sort(([, a], [, b]) => b - a)
-    .slice(0, 5)
-    .map(([n, q]) => `${n}:${q}`).join(", ");
-  return `${k}: ${fmt(v)} uds — ${prods}`;
-}).join("\n")}`);
+  const prods = sortDesc(idx.famProd[k] || {}).map(([n, q]) => `  ${n}: ${q} uds`).join("\n");
+  return `${k}: ${fmt(v)} uds total\n${prods}`;
+}).join("\n\n")}`);
         break;
 
       case "proveedor":
@@ -322,14 +331,18 @@ ${sortDesc(idx.byFamilia).map(([k, v]) => {
           for (const prov of matches.proveedores) {
             const total = idx.byProveedor[prov] || 0;
             const fams = idx.provFam[prov] || {};
-            sections.push(`PROVEEDOR "${prov}": ${fmt(total)} unidades
-Familias: ${Object.entries(fams).map(([k, v]) => `${k}:${v}`).join(", ")}`);
+            const prods = sortDesc(idx.provProd[prov] || {});
+            sections.push(`PROVEEDOR "${prov}": ${fmt(total)} unidades total
+Por familia: ${Object.entries(fams).map(([k, v]) => `${k}:${v}`).join(", ")}
+Todos los productos de ${prov}:
+${prods.map(([k, v]) => `  ${k}: ${v} uds`).join("\n")}`);
           }
         } else {
           sections.push(`PROVEEDORES:
 ${sortDesc(idx.byProveedor).map(([k, v]) => {
   const fams = Object.entries(idx.provFam[k] || {}).map(([f, q]) => `${f}:${q}`).join(", ");
-  return `${k}: ${fmt(v)} uds (${fams})`;
+  const topProds = sortDesc(idx.provProd[k] || {}).slice(0, 10).map(([p, q]) => `${p}:${q}`).join(", ");
+  return `${k}: ${fmt(v)} uds (${fams})\n  Top productos: ${topProds}`;
 }).join("\n")}`);
         }
         break;
