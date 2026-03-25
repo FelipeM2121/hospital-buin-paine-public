@@ -24,51 +24,159 @@ const MODEL = "qwen2:1.5b"; // Rápido en CPU (~5x más veloz que mistral 7B)
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 
-// ── Build COMPACT system prompt (optimized for CPU speed) ──
+// ── Build COMPLETE system prompt with ALL dashboard data ──
 function buildSystemPrompt(data: RawItem[], summary: SummaryData, eettFiles: EETTFile[]): string {
+  // Compute cross-tabulations from raw data
   const byFamilia: Record<string, number> = {};
   const byProveedor: Record<string, number> = {};
   const byPiso: Record<string, number> = {};
   const byServicio: Record<string, number> = {};
   const byNombre: Record<string, number> = {};
+  const byZona: Record<string, number> = {};
+  // Cross: producto por piso
+  const prodPiso: Record<string, Record<string, number>> = {};
+  // Cross: servicio por producto
+  const servProd: Record<string, Record<string, number>> = {};
+  // Cross: proveedor por familia
+  const provFam: Record<string, Record<string, number>> = {};
 
   data.forEach((i) => {
     byFamilia[i.familia] = (byFamilia[i.familia] || 0) + i.cantidad;
     byProveedor[i.proveedor] = (byProveedor[i.proveedor] || 0) + i.cantidad;
-    byPiso[`P${i.piso}`] = (byPiso[`P${i.piso}`] || 0) + i.cantidad;
+    byPiso[`Piso ${i.piso}`] = (byPiso[`Piso ${i.piso}`] || 0) + i.cantidad;
     byServicio[i.servicio] = (byServicio[i.servicio] || 0) + i.cantidad;
     byNombre[i.nombre] = (byNombre[i.nombre] || 0) + i.cantidad;
+    byZona[i.zona] = (byZona[i.zona] || 0) + i.cantidad;
+
+    // Producto por piso
+    if (!prodPiso[i.nombre]) prodPiso[i.nombre] = {};
+    prodPiso[i.nombre][`P${i.piso}`] = (prodPiso[i.nombre][`P${i.piso}`] || 0) + i.cantidad;
+
+    // Top servicios: qué productos tienen
+    if (!servProd[i.servicio]) servProd[i.servicio] = {};
+    servProd[i.servicio][i.nombre] = (servProd[i.servicio][i.nombre] || 0) + i.cantidad;
+
+    // Proveedor por familia
+    if (!provFam[i.proveedor]) provFam[i.proveedor] = {};
+    provFam[i.proveedor][i.familia] = (provFam[i.proveedor][i.familia] || 0) + i.cantidad;
   });
 
   const sortDesc = (obj: Record<string, number>) =>
     Object.entries(obj).sort(([, a], [, b]) => b - a);
 
-  const familiaStr = sortDesc(byFamilia).map(([k, v]) => `${k}:${fmt(v)}`).join(", ");
-  const provStr = sortDesc(byProveedor).map(([k, v]) => `${k}:${fmt(v)}`).join(", ");
-  const pisoStr = Object.entries(byPiso).sort().map(([k, v]) => `${k}:${fmt(v)}`).join(", ");
-  const servStr = sortDesc(byServicio).slice(0, 12).map(([k, v]) => `${k}:${fmt(v)}`).join(", ");
-  const prodStr = sortDesc(byNombre).slice(0, 15).map(([k, v]) => `${k}:${fmt(v)}`).join(", ");
+  // === SECCIÓN 1: Estadísticas generales ===
+  const stats = `ESTADÍSTICAS GENERALES:
+Total artículos: ${fmt(summary.totalItems)} | Total unidades: ${fmt(summary.totalQty)}
+Recintos: ${fmt(summary.uniqueRecintos)} | Tipos de mueble: ${summary.uniqueNombres} | Pisos: ${summary.pisos} (1-7)
+Servicios: ${summary.uniqueServicios} | Proveedores: ${summary.proveedores} | Familias: ${summary.familias}`;
 
-  // Compact EETT — only name + code + PDF
-  const eettStr = eettFiles.map((e) => {
-    const spec = EETT_KNOWLEDGE[e.code];
-    return spec
-      ? `${e.code} ${e.name}: ${spec.material}, ${spec.dimensiones}. PDF:${e.file}`
-      : `${e.code} ${e.name}. PDF:${e.file}`;
+  // === SECCIÓN 2: Familias ===
+  const familiaStr = sortDesc(byFamilia).map(([k, v]) => `  ${k}: ${fmt(v)} uds`).join("\n");
+
+  // === SECCIÓN 3: Proveedores con desglose ===
+  const provStr = sortDesc(byProveedor).map(([prov, total]) => {
+    const fams = Object.entries(provFam[prov] || {}).map(([f, q]) => `${f}:${q}`).join(", ");
+    return `  ${prov}: ${fmt(total)} uds (${fams})`;
   }).join("\n");
 
-  return `Eres el asistente IA del inventario Hospital Buin Paine. Responde SIEMPRE en español, con datos exactos. Usa markdown para tablas. PDFs en ruta "eett/ARCHIVO".
+  // === SECCIÓN 4: Pisos ===
+  const pisoStr = Object.entries(byPiso).sort().map(([k, v]) => `  ${k}: ${fmt(v)} uds`).join("\n");
 
-INVENTARIO: ${fmt(summary.totalItems)} items, ${fmt(summary.totalQty)} uds, ${summary.pisos} pisos, ${summary.uniqueServicios} servicios, ${summary.proveedores} proveedores
-Familias: ${familiaStr}
-Proveedores: ${provStr}
-Pisos: ${pisoStr}
-Top Servicios: ${servStr}
-Top Productos: ${prodStr}
-Instalación: ${summary.fechaStats?.fechaMin || "04/05/2026"} a ${summary.fechaStats?.fechaMax || "03/08/2026"}
+  // === SECCIÓN 5: TODOS los 39 servicios ===
+  const servStr = sortDesc(byServicio).map(([k, v]) => {
+    const topProds = Object.entries(servProd[k] || {}).sort(([,a],[,b]) => b - a).slice(0, 3).map(([p, q]) => `${p}:${q}`).join(", ");
+    return `  ${k}: ${fmt(v)} uds [${topProds}]`;
+  }).join("\n");
 
-EETT (${eettFiles.length} fichas):
-${eettStr}`;
+  // === SECCIÓN 6: TODOS los productos con distribución por piso ===
+  const prodStr = sortDesc(byNombre).map(([k, v]) => {
+    const pisos = Object.entries(prodPiso[k] || {}).sort().map(([p, q]) => `${p}:${q}`).join(",");
+    return `  ${k}: ${fmt(v)} uds (${pisos})`;
+  }).join("\n");
+
+  // === SECCIÓN 7: Zonas ===
+  const zonaStr = sortDesc(byZona).map(([k, v]) => `  ${k}: ${fmt(v)} uds`).join("\n");
+
+  // === SECCIÓN 8: Calendario instalación ===
+  const mesStr = summary.byMes?.map((m) => `  ${m.name}: ${fmt(m.qty)} uds`).join("\n") || "";
+  const semStr = summary.bySemana?.map((s) => `  ${s.name}: ${fmt(s.qty)} uds`).join("\n") || "";
+  const diaStr = summary.byDia?.map((d) => `  ${d.name}: ${fmt(d.qty)} uds`).join("\n") || "";
+
+  // === SECCIÓN 9: EETT completas con toda la info ===
+  const eettStr = eettFiles.map((e) => {
+    const spec = EETT_KNOWLEDGE[e.code];
+    if (spec) {
+      return `  EETT ${e.code} - ${e.name}
+    Descripción: ${spec.desc}
+    Material: ${spec.material}
+    Dimensiones: ${spec.dimensiones}
+    Color: ${spec.color}
+    PDF: [${e.name}](eett/${e.file})`;
+    }
+    return `  EETT ${e.code} - ${e.name} | PDF: [${e.name}](eett/${e.file})`;
+  }).join("\n");
+
+  return `Eres el asistente IA del Sistema de Gestión Documental (SGD) del Hospital Buin Paine.
+Tu función es responder preguntas sobre el inventario de mobiliario no clínico del hospital.
+
+REGLAS:
+- Responde SIEMPRE en español chileno profesional
+- Usa cifras EXACTAS de los datos proporcionados, nunca inventes números
+- Usa formato markdown para tablas cuando sea apropiado
+- Si preguntan por un producto, incluye su ficha técnica EETT si existe
+- Los enlaces a PDFs de EETT son: [nombre](eett/ARCHIVO.pdf)
+- Si preguntan algo fuera del inventario, indica amablemente que solo manejas datos del inventario
+- Sé conciso pero completo
+
+═══════════════════════════════════════
+${stats}
+
+FAMILIAS:
+${familiaStr}
+
+PROVEEDORES (con desglose por familia):
+${provStr}
+
+DISTRIBUCIÓN POR PISO:
+${pisoStr}
+
+TODOS LOS SERVICIOS (${summary.uniqueServicios}) con sus productos principales:
+${servStr}
+
+TODOS LOS PRODUCTOS (${summary.uniqueNombres} tipos) con distribución por piso:
+${prodStr}
+
+ZONAS:
+${zonaStr}
+
+CALENDARIO DE INSTALACIÓN:
+Período: ${summary.fechaStats?.fechaMin || "04/05/2026"} a ${summary.fechaStats?.fechaMax || "03/08/2026"} (${summary.fechaStats?.totalMeses} meses)
+Por mes:
+${mesStr}
+Por semana:
+${semStr}
+Por día:
+${diaStr}
+
+═══ FICHAS TÉCNICAS EETT (${eettFiles.length} especificaciones) ═══
+${eettStr}
+
+═══ CONTROL DOCUMENTAL ═══
+Sistema SharePoint con estructura por código de ítem MNC.
+Cada ítem tiene: ETAPA CONSTRUCCIÓN y ETAPA EXPLOTACIÓN.
+Cada etapa tiene: ADQUISICIÓN > Antecedentes Ofertas con carpetas A, B, C por proveedor.
+Carpeta A = ${summary.byProveedor?.[0]?.name || "MELMAN SPA"}
+Carpeta B = ${summary.byProveedor?.[1]?.name || "ALLMEDICA"}
+Carpeta C = ${summary.byProveedor?.[2]?.name || "COMERCIAL HAGELIN"}
+
+═══ SECCIONES DE LA PLATAFORMA ═══
+Resumen: KPIs generales | Por Piso: 7 pisos | Por Servicio: ${summary.uniqueServicios} servicios
+Por Producto: ${summary.uniqueNombres} tipos | Por Fecha: Calendario instalación
+Esp. Técnicas: ${eettFiles.length} fichas EETT con PDFs | Control Documento: Repositorio SharePoint
+Chat IA: Este asistente
+
+Fecha actual: ${new Date().toLocaleDateString("es-CL")}
+═══════════════════════════════════════`;
 }
 
 // ── EETT knowledge base ──
