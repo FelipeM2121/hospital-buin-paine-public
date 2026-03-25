@@ -20,7 +20,7 @@ export interface ChatError {
    ═══════════════════════════════════════════════════════════════ */
 
 const OLLAMA_URL = "http://localhost:11434";
-const MODEL = "mistral";
+const MODEL = "qwen2:1.5b"; // Rápido en CPU (~5x más veloz que mistral 7B)
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 

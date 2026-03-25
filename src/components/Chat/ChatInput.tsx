@@ -109,7 +109,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               display: "flex", alignItems: "center", gap: "4px",
             }}>
               <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#4caf50" }} />
-              mistral
+              qwen2
             </span>
 
             {/* Send button — Ollama style circle */}
