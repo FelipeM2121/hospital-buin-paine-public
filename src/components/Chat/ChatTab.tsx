@@ -93,7 +93,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      height: "calc(100vh - 100px)",
+      height: "100vh",
       background: "#FAFAF8",
       position: "relative",
       fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
