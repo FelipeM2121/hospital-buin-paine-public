@@ -15,12 +15,12 @@ export interface ChatError {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Chat Service — Ollama LLM con Smart Context Selection
+   Chat Service — Claude AI con Smart Context Selection
    Solo inyecta datos RELEVANTES a la pregunta → rápido y preciso
    ═══════════════════════════════════════════════════════════════ */
 
-const OLLAMA_URL = "http://localhost:11434";
-const MODEL = "qwen2:1.5b";
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
+const MODEL = "claude-haiku-4-5-20251001";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 
@@ -392,24 +392,34 @@ ${sortDesc(idx.byZona).map(([k, v]) => `${k}: ${fmt(v)} uds`).join("\n")}`);
   return sections.join("\n\n");
 }
 
-// ── Ollama API call with STREAMING ──
-async function callOllamaStream(
+// ── Claude API call with STREAMING ──
+async function callClaudeStream(
   messages: { role: string; content: string }[],
+  systemPrompt: string,
   onToken: (token: string) => void,
 ): Promise<string> {
-  const res = await fetch(`${OLLAMA_URL}/api/chat`, {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": ANTHROPIC_API_KEY || "",
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
+    },
     body: JSON.stringify({
       model: MODEL,
+      max_tokens: 1024,
+      system: systemPrompt,
       messages,
       stream: true,
-      options: { temperature: 0.3, num_ctx: 4096 },
     }),
     signal: AbortSignal.timeout(180000),
   });
 
-  if (!res.ok) throw new Error(`Ollama error: ${res.status}`);
+  if (!res.ok) {
+    const errBody = await res.json().catch(() => ({}));
+    throw new Error(`Claude error ${res.status}: ${(errBody as { error?: { message?: string } }).error?.message || res.statusText}`);
+  }
 
   const reader = res.body?.getReader();
   if (!reader) throw new Error("No response body");
@@ -422,13 +432,16 @@ async function callOllamaStream(
     if (done) break;
 
     const chunk = decoder.decode(value, { stream: true });
-    const lines = chunk.split("\n").filter((l) => l.trim());
+    const lines = chunk.split("\n").filter((l) => l.startsWith("data: "));
     for (const line of lines) {
+      const data = line.slice(6);
+      if (data === "[DONE]") continue;
       try {
-        const json = JSON.parse(line);
-        if (json.message?.content) {
-          fullText += json.message.content;
-          onToken(json.message.content);
+        const json = JSON.parse(data);
+        if (json.type === "content_block_delta" && json.delta?.type === "text_delta") {
+          const text: string = json.delta.text;
+          fullText += text;
+          onToken(text);
         }
       } catch {
         // skip malformed
@@ -468,12 +481,7 @@ class ChatServiceClass {
 
   async checkHealth(): Promise<boolean> {
     if (this.ollamaAvailable !== null) return this.ollamaAvailable;
-    try {
-      const res = await fetch(`${OLLAMA_URL}/api/tags`, { signal: AbortSignal.timeout(3000) });
-      this.ollamaAvailable = res.ok;
-    } catch {
-      this.ollamaAvailable = false;
-    }
+    this.ollamaAvailable = !!ANTHROPIC_API_KEY;
     return this.ollamaAvailable;
   }
 
@@ -494,15 +502,15 @@ class ChatServiceClass {
       return { response: null, error: { error: true, message: "Datos no cargados", code: "NO_DATA" } };
     }
 
-    const isOllamaUp = await this.checkHealth();
-    if (!isOllamaUp) {
+    const isReady = await this.checkHealth();
+    if (!isReady) {
       return {
         response: null,
         error: {
           error: true,
-          message: "Ollama no está disponible",
-          code: "OLLAMA_UNAVAILABLE",
-          suggestion: "Inicia Ollama: ejecuta 'ollama serve' y 'ollama pull qwen2:1.5b'. Requiere Ollama en localhost:11434.",
+          message: "Claude AI no está configurado",
+          code: "CLAUDE_UNAVAILABLE",
+          suggestion: "Configura VITE_ANTHROPIC_API_KEY en el archivo .env del proyecto.",
         },
       };
     }
@@ -523,19 +531,14 @@ class ChatServiceClass {
       // System = base instructions + targeted context
       const systemPrompt = `${BASE_SYSTEM}\nDATOS RELEVANTES:\n${context}`;
 
-      const ollamaMessages = [
-        { role: "system", content: systemPrompt },
-        ...this.conversationHistory,
-      ];
-
-      const answer = await callOllamaStream(ollamaMessages, onToken || (() => {}));
+      const answer = await callClaudeStream(this.conversationHistory, systemPrompt, onToken || (() => {}));
       this.conversationHistory.push({ role: "assistant", content: answer });
 
       return {
         response: {
           id: Math.random().toString(36).substr(2, 9),
           response: answer,
-          sessionId: "ollama-local",
+          sessionId: "claude-direct",
           tokensUsed: 0,
           model: MODEL,
           timestamp: new Date().toISOString(),
@@ -549,9 +552,9 @@ class ChatServiceClass {
         response: null,
         error: {
           error: true,
-          message: isTimeout ? "Ollama tardó demasiado en responder" : "Error al comunicarse con Ollama",
-          code: isTimeout ? "TIMEOUT" : "OLLAMA_ERROR",
-          suggestion: "Verifica que Ollama esté corriendo: 'ollama serve'",
+          message: isTimeout ? "Claude tardó demasiado en responder" : "Error al comunicarse con Claude",
+          code: isTimeout ? "TIMEOUT" : "CLAUDE_ERROR",
+          suggestion: "Verifica tu VITE_ANTHROPIC_API_KEY en el archivo .env",
         },
       };
     }
