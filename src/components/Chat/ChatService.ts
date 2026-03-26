@@ -626,7 +626,7 @@ class ChatServiceClass {
           error: true,
           message: isTimeout ? "Claude tardó demasiado en responder" : "Error al comunicarse con Claude",
           code: isTimeout ? "TIMEOUT" : "CLAUDE_ERROR",
-          suggestion: "Verifica tu VITE_ANTHROPIC_API_KEY en el archivo .env",
+          suggestion: "Si el problema persiste, contacta al administrador del sistema.",
         },
       };
     }

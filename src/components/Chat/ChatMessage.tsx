@@ -28,6 +28,13 @@ function renderMarkdown(text: string): React.ReactNode[] {
         parts.push(<strong key={key++} style={{ fontWeight: 600 }}>{match[1]}</strong>);
       } else if (match[2] && match[3]) {
         let href = match[3];
+        // Block javascript: and data: URLs (XSS prevention)
+        const lower = href.toLowerCase().trim();
+        if (lower.startsWith("javascript:") || lower.startsWith("data:") || lower.startsWith("vbscript:")) {
+          parts.push(match[2]);
+          lastIndex = regex.lastIndex;
+          continue;
+        }
         if (!href.startsWith("http") && !href.startsWith("/")) {
           const alreadyEncoded = href.includes("%20") || href.includes("%28");
           const encoded = alreadyEncoded ? href : href.split("/").map(encodeURIComponent).join("/");

@@ -1,10 +1,38 @@
 <!doctype html>
-<html lang="en">
+<html lang="es">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hospital-dashboard</title>
+    <title>Dashboard Mobiliario No Clínico — Hospital Buin Paine</title>
+
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), microphone=(), camera=()" />
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy" content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval';
+      style-src 'self' 'unsafe-inline';
+      connect-src 'self'
+        https://api.anthropic.com
+        https://login.microsoftonline.com
+        https://graph.microsoft.com
+        https://*.sharepoint.com
+        https://script.google.com;
+      img-src 'self' data: https:;
+      font-src 'self' data:;
+      frame-src 'self'
+        https://login.microsoftonline.com
+        blob:;
+      worker-src 'self' blob:;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self' https://login.microsoftonline.com;
+    " />
   </head>
   <body>
     <div id="root"></div>
