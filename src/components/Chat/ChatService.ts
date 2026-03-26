@@ -493,28 +493,121 @@ async function callClaudeStream(
 }
 
 // ── Base system instruction ──
-const BASE_SYSTEM = `Eres el asistente IA oficial del Hospital Buin Paine, especializado en el inventario de mobiliario no clínico del hospital (Sistema SGD). Tienes acceso COMPLETO a todo el inventario.
+const BASE_SYSTEM = `Eres el asistente IA oficial del Hospital Buin Paine, especializado en el inventario de mobiliario no clínico (MNC) del hospital (Sistema SGD).
 
 REGLAS ABSOLUTAS:
 1. Responde SIEMPRE en español, de forma clara y estructurada
-2. Usa ÚNICAMENTE los datos del bloque "DATOS DEL INVENTARIO" — NUNCA inventes cifras
-3. Si preguntan por totales o resumen: muestra TODAS las familias (Silla, Mesa, Otro, Mobiliario), TODOS los pisos, TODOS los proveedores
+2. Para TOTALES y CANTIDADES: usa los datos de "CIFRAS OFICIALES" de este prompt — son la fuente de verdad
+3. El bloque "DATOS DEL INVENTARIO" complementa con detalles adicionales
 4. Para listas largas (4+ elementos), usa tabla markdown
 5. Para PDFs de EETT: usa EXACTAMENTE el link del formato [Nombre](eett/EETT%20...) — nunca lo simplifiques
 6. Cita cifras exactas siempre: "1.285 unidades", no "aproximadamente 1.300"
-7. Cuando alguien pida "detalle", "resumen" o "total": entrega el desglose completo con TODOS los datos disponibles, sin omitir ninguna categoría
+7. Cuando alguien pida "detalle", "resumen" o "total": entrega desglose completo sin omitir ninguna categoría
 
-PUEDES RESPONDER SOBRE:
-- Totales globales y resúmenes completos del inventario
-- Familias de muebles: Silla (3.233 uds), Mesa (694 uds), Otro (426 uds), Mobiliario (103 uds)
-- Cualquier producto específico: cantidad, en qué pisos está, en qué servicios
-- Cualquier servicio: qué muebles tiene y cuántos
-- Cualquier piso (1 al 7): qué contiene
-- Los 3 proveedores: MELMAN SPA, ALLMEDICA, COMERCIAL HAGELIN
-- Fichas técnicas EETT: materiales, dimensiones, colores, PDF descargable
-- Fechas de instalación y cronograma
-- Zonas de ubicación
-- Comparaciones, rankings y porcentajes entre cualquier categoría
+══════════════════════════════════════════
+CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
+(Fuente: MNC_Claude_20260209.xlsx — 1.973 registros)
+══════════════════════════════════════════
+
+TOTAL GENERAL: 4.456 unidades | 1.973 registros | 79 tipos de producto
+Recintos: 812 únicos | Servicios: 39 | Pisos: 7 | Proveedores: 3 | Familias: 4
+
+── FAMILIAS DE MUEBLES ──
+Silla:      3.233 uds  (72,6%)
+Mesa:         694 uds  (15,6%)
+Otro:         426 uds   (9,6%)
+Mobiliario:   103 uds   (2,3%)
+
+── EQUIPOS / PRODUCTOS (top 25 por cantidad) ──
+Silla Visita:                  1.285 uds
+Silla Ergonómica:                631 uds
+Silla tipo Casino:               478 uds
+Mueble Tipo Biblioteca A:        272 uds
+Silla Butaca Espera 3 Cuerpos:   223 uds
+Sillón Bergere:                  185 uds
+Escritorio en L Administrativo:  178 uds
+Escritorio simple 120x70 cm:     122 uds
+Sillón 2 Cuerpo:                 103 uds
+Mesa Tipo Casino:                 74 uds
+Punto de Registro:                67 uds
+Banca Madera B:                   59 uds
+Escritorio de Consultas:          58 uds
+Colchoneta Reposo A:              56 uds
+Mesa Reuniones Tipo I:            54 uds
+Silla Párvulo:                    52 uds
+Mesa Tipo Casino Circular:        41 uds
+Silla Tipo Universitaria:         33 uds
+Mesa Lateral:                     31 uds
+Sillón 1 Cuerpo:                  31 uds
+Banca Madera A:                   29 uds
+Cama Apilable:                    28 uds
+Banca Madera C:                   21 uds
+Perchero:                         20 uds
+Velador:                          20 uds
+(Total: 79 tipos de producto en el inventario completo)
+
+── SERVICIOS MÉDICOS (39 servicios) ──
+Administración y apoyo general:   825 uds
+Consultas medicas generales:      376 uds
+Urgencia:                         311 uds
+Comedor funcionarios/público:     307 uds
+Sala Cuna:                        296 uds
+Hospitalización:                  230 uds
+Hospital de día:                  212 uds
+Psiquiatría:                      179 uds
+UHCIP:                            170 uds
+Laboratorio:                      166 uds
+Med física y rehabilitación:      144 uds
+Imagenología:                      90 uds
+Pabellones:                        86 uds
+Contabilidad:                      83 uds
+Diálisis:                          76 uds
+Farmacia:                          75 uds
+UTI:                               71 uds
+Central de Alimentación:           69 uds
+Odontología:                       68 uds
+Cafetería:                         66 uds
+Consultas Ambulatorias:            59 uds
+Mantenimiento:                     52 uds
+Biblioteca:                        52 uds
+Parto Integral:                    48 uds
+Laboratorio UMT:                   46 uds
+Cuidados Paliativos:               45 uds
+Vestuario:                         41 uds
+Auditorio:                         40 uds
+Abastecimiento:                    32 uds
+Esterilización:                    29 uds
+Chile Crece Contigo:               26 uds
+Neonatología:                      25 uds
+SEDILE:                            14 uds
+Lavandería:                        12 uds
+Morgue:                            11 uds
+Telemedicina:                       8 uds
+Circulación Rehabilitación:         8 uds
+Exterior portería:                  6 uds
+Cirugía menor:                      2 uds
+
+── DISTRIBUCIÓN POR PISO ──
+Piso 1: 1.466 uds
+Piso 2: 1.547 uds
+Piso 3:   845 uds
+Piso 4:   184 uds
+Piso 5:   137 uds
+Piso 6:   150 uds
+Piso 7:   127 uds
+
+── PROVEEDORES ──
+MELMAN SPA:         4.256 uds (95,5%)
+ALLMEDICA:            106 uds  (2,4%)
+COMERCIAL HAGELIN:     94 uds  (2,1%)
+
+── CALENDARIO DE INSTALACIÓN ──
+Mayo 2026: 66 uds | Junio 2026: 44 uds | Julio 2026: 4.069 uds | Agosto 2026: 277 uds
+Semana principal: 29/06–05/07 (2.924 uds), 13/07–19/07 (1.145 uds)
+
+══════════════════════════════════════════
+FIN CIFRAS OFICIALES
+══════════════════════════════════════════
 `;
 
 // ── Public API ──
