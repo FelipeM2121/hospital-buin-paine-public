@@ -94,13 +94,18 @@ function renderMarkdown(text: string): React.ReactNode[] {
   while (i < lines.length) {
     const line = lines[i];
 
-    if (line.includes(" | ")) {
+    // Table rows: must have | and not be a separator-only line
+    if (line.includes("|") && !/^[\|\s\-:]+$/.test(line.trim())) {
       if (!inTable) { inTable = true; tableRows = []; }
       tableRows.push(line.split("|").map((c) => c.trim()).filter(Boolean));
       i++; continue;
     } else if (inTable) {
       flushTable();
     }
+
+    // Skip table separator rows (|---|---| or |:--|:--|) and horizontal rules (--- or ***)
+    if (/^[\|\s\-:]+$/.test(line.trim()) && /\|/.test(line)) { i++; continue; }
+    if (/^[-*_]{3,}$/.test(line.trim())) { i++; continue; }
 
     if (line.trim() === "") {
       result.push(<div key={i} style={{ height: "8px" }} />);
