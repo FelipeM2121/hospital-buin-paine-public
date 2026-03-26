@@ -98,7 +98,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
         background: "#FAFAF8",
       }}>
         <div style={{ fontSize: "14px", fontWeight: 600, color: "#1C1B1A" }}>
-          Asistente IA — Inventario
+          Asistente IA — Mobiliario No Clínico
         </div>
         <button onClick={handleClearChat} title="Nuevo chat" style={{
           background: "none", border: "none", cursor: "pointer",
