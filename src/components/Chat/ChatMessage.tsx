@@ -29,7 +29,9 @@ function renderMarkdown(text: string): React.ReactNode[] {
       } else if (match[2] && match[3]) {
         let href = match[3];
         if (!href.startsWith("http") && !href.startsWith("/")) {
-          const encoded = href.split("/").map(encodeURIComponent).join("/");
+          // Only encode if not already encoded
+          const alreadyEncoded = href.includes("%20") || href.includes("%28");
+          const encoded = alreadyEncoded ? href : href.split("/").map(encodeURIComponent).join("/");
           href = `${BASE}${encoded}`;
         }
         parts.push(

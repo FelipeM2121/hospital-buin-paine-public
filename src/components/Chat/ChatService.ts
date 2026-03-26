@@ -374,7 +374,7 @@ ${sortDesc(idx.byServicio).map(([k, v]) => `${k}: ${fmt(v)} uds`).join("\n")}`);
             if (eettMatch) {
               const spec = EETT_KNOWLEDGE[eettMatch.code];
               if (spec) {
-                eettInfo = `\nFicha EETT ${eettMatch.code}:\n  Descripción: ${spec.desc}\n  Material: ${spec.material}\n  Dimensiones: ${spec.dimensiones}\n  Color: ${spec.color}\n  PDF: [${eettMatch.name}](eett/${eettMatch.file})`;
+                eettInfo = `\nFicha EETT ${eettMatch.code}:\n  Descripción: ${spec.desc}\n  Material: ${spec.material}\n  Dimensiones: ${spec.dimensiones}\n  Color: ${spec.color}\n  PDF: [${eettMatch.name}](eett/${encodeURIComponent(eettMatch.file)})`;
               }
             }
 
@@ -428,7 +428,7 @@ Descripción: ${spec.desc}
 Material: ${spec.material}
 Dimensiones: ${spec.dimensiones}
 Color: ${spec.color}
-PDF: [${ef.name}](eett/${ef.file})`);
+PDF: [${ef.name}](eett/${encodeURIComponent(ef.file)})`);
             }
           }
         } else if (matches.productos.length > 0) {
@@ -437,9 +437,10 @@ PDF: [${ef.name}](eett/${ef.file})`);
           sections.push(`FICHAS TÉCNICAS EETT (${eettFiles.length} especificaciones):
 ${eettFiles.map((e) => {
   const spec = EETT_KNOWLEDGE[e.code];
+  const link = `eett/${encodeURIComponent(e.file)}`;
   return spec
-    ? `${e.code} ${e.name}: ${spec.desc}. ${spec.material}. ${spec.dimensiones}. PDF:[${e.name}](eett/${e.file})`
-    : `${e.code} ${e.name}. PDF:[${e.name}](eett/${e.file})`;
+    ? `${e.code} ${e.name}: ${spec.desc}. ${spec.material}. ${spec.dimensiones}. PDF:[${e.name}](${link})`
+    : `${e.code} ${e.name}. PDF:[${e.name}](${link})`;
 }).join("\n")}`);
         }
         break;
@@ -537,7 +538,7 @@ CÓMO RESPONDER:
 - Cita números exactos: "hay 342 sillas", no "hay aproximadamente 300"
 - Si el usuario pregunta "cuántos/cuántas X", responde con el número exacto del inventario
 - Si pregunta por un servicio que no aparece en los datos, responde que no hay registros para ese servicio
-- Si mencionas un PDF de EETT, usa el formato: [nombre del producto](eett/archivo.pdf)
+- Para PDFs de EETT: copia EXACTAMENTE el link que aparece en los datos (formato `PDF:[nombre](eett/EETT%20...)`) — NUNCA modifiques ni simplifiques el nombre del archivo
 
 TIPOS DE PREGUNTAS QUE PUEDES RESPONDER:
 - Totales globales: "¿cuántos muebles hay en total?"
