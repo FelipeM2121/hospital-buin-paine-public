@@ -20,7 +20,7 @@ export interface ChatError {
    ═══════════════════════════════════════════════════════════════ */
 
 const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
-const MODEL = "claude-haiku-4-5-20251001";
+const MODEL = "claude-sonnet-4-6";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 
