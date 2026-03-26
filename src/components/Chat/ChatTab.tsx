@@ -123,7 +123,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
       </div>
 
       {/* ── Messages area ── */}
-      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+      <div className="chat-scroll" style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
 
         {/* Empty state */}
         {isEmpty && (
@@ -234,6 +234,30 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
         @keyframes spin {
           from { transform: rotate(0deg); }
           to { transform: rotate(360deg); }
+        }
+        .chat-scroll {
+          scrollbar-width: none;
+        }
+        .chat-scroll::-webkit-scrollbar {
+          width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-track {
+          background: transparent;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+          background: transparent;
+          border-radius: 10px;
+          transition: background 0.2s;
+        }
+        .chat-scroll:hover {
+          scrollbar-width: thin;
+          scrollbar-color: #D4CEC7 transparent;
+        }
+        .chat-scroll:hover::-webkit-scrollbar-thumb {
+          background: #D4CEC7;
+        }
+        .chat-scroll:hover::-webkit-scrollbar-thumb:hover {
+          background: #B8B2AB;
         }
       `}</style>
     </div>
