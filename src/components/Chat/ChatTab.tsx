@@ -11,21 +11,6 @@ interface ChatTabProps {
   eettFiles?: EETTFile[];
 }
 
-/* ── Claude-style animated "C" on empty state ── */
-const ClaudeLogo = () => (
-  <div style={{
-    width: 56, height: 56, borderRadius: "50%",
-    background: "linear-gradient(135deg, #C9623F 0%, #E8956D 50%, #F2A97A 100%)",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    color: "#fff", fontWeight: 700, fontSize: "26px",
-    fontFamily: "Georgia, 'Times New Roman', serif",
-    boxShadow: "0 4px 16px rgba(201,98,63,0.25)",
-    letterSpacing: "-1px",
-  }}>
-    C
-  </div>
-);
-
 export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) => {
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
@@ -117,21 +102,13 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
       {/* ── Top bar ── */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "10px 20px",
+        padding: "12px 20px",
         borderBottom: "1px solid #EDE9E3",
         background: "#FAFAF8",
       }}>
-        <div style={{ fontSize: "14px", fontWeight: 600, color: "#1C1B1A", display: "flex", alignItems: "center", gap: "8px" }}>
-          <span style={{
-            width: 20, height: 20, borderRadius: "50%",
-            background: "linear-gradient(135deg, #C9623F, #E8956D)",
-            display: "inline-flex", alignItems: "center", justifyContent: "center",
-            color: "#fff", fontSize: "10px", fontWeight: 700,
-            fontFamily: "Georgia, serif",
-          }}>C</span>
-          Chat IA — Inventario
+        <div style={{ fontSize: "14px", fontWeight: 600, color: "#1C1B1A" }}>
+          Asistente IA — Inventario
         </div>
-
         <button onClick={handleClearChat} title="Nuevo chat" style={{
           background: "none", border: "none", cursor: "pointer",
           padding: "6px", borderRadius: "8px", color: "#9B958E",
@@ -153,45 +130,42 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
           <div style={{
             flex: 1, display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
-            gap: "20px", padding: "40px 24px",
+            gap: "24px", padding: "60px 24px 40px",
           }}>
-            <ClaudeLogo />
-
             <div style={{
-              fontSize: "22px", fontWeight: 600,
+              fontSize: "28px", fontWeight: 600,
               color: "#1C1B1A", textAlign: "center",
-              letterSpacing: "-0.3px",
+              letterSpacing: "-0.5px", lineHeight: 1.2,
             }}>
               ¿En qué puedo ayudarte?
             </div>
 
             <div style={{
               display: "flex", flexWrap: "wrap", gap: "8px",
-              justifyContent: "center", maxWidth: "620px",
-              marginTop: "4px",
+              justifyContent: "center", maxWidth: "640px",
             }}>
               {suggestions.map((s) => (
                 <button key={s} onClick={() => handleSendMessage(s)} style={{
                   background: "#fff",
                   border: "1px solid #E8E3DC",
                   borderRadius: "20px",
-                  padding: "8px 16px",
-                  fontSize: "13px",
+                  padding: "9px 18px",
+                  fontSize: "13.5px",
                   color: "#3D3B38",
                   cursor: "pointer",
                   transition: "all 0.15s",
                   lineHeight: 1.3,
-                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.05)",
                 }}
                   onMouseEnter={(e) => {
                     e.currentTarget.style.background = "#F5F2EC";
-                    e.currentTarget.style.borderColor = "#D4C9BC";
-                    e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.08)";
+                    e.currentTarget.style.borderColor = "#C9623F";
+                    e.currentTarget.style.color = "#C9623F";
                   }}
                   onMouseLeave={(e) => {
                     e.currentTarget.style.background = "#fff";
                     e.currentTarget.style.borderColor = "#E8E3DC";
-                    e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
+                    e.currentTarget.style.color = "#3D3B38";
                   }}
                 >
                   {s}
@@ -221,7 +195,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
         )}
 
         {/* Messages */}
-        <div style={{ paddingTop: isEmpty ? 0 : "16px", paddingBottom: "8px" }}>
+        <div style={{ paddingTop: isEmpty ? 0 : "20px", paddingBottom: "8px" }}>
           {messages.map((msg) => (
             <ChatMessage key={msg.id} message={msg} />
           ))}
@@ -230,23 +204,15 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
         {/* Typing indicator */}
         {isLoading && messages[messages.length - 1]?.content === "" && (
           <div style={{
-            display: "flex", gap: "12px", padding: "6px 24px",
+            padding: "8px 24px 8px 28px",
             maxWidth: "820px", margin: "0 auto", width: "100%",
-            alignItems: "flex-start",
           }}>
-            <div style={{
-              width: 28, height: 28, borderRadius: "50%", flexShrink: 0, marginTop: 2,
-              background: "linear-gradient(135deg, #C9623F, #E8956D)",
-              display: "flex", alignItems: "center", justifyContent: "center",
-              color: "#fff", fontWeight: 700, fontSize: "13px",
-              fontFamily: "Georgia, serif",
-            }}>C</div>
-            <div style={{ display: "flex", gap: "5px", alignItems: "center", paddingTop: "10px" }}>
+            <div style={{ display: "flex", gap: "5px", alignItems: "center", paddingTop: "4px" }}>
               {[0, 1, 2].map((dot) => (
                 <div key={dot} style={{
-                  width: 6, height: 6, borderRadius: "50%",
+                  width: 7, height: 7, borderRadius: "50%",
                   background: "#C9623F",
-                  opacity: 0.6,
+                  opacity: 0.5,
                   animation: `chatBounce 1.2s ease-in-out ${dot * 0.18}s infinite`,
                 }} />
               ))}
@@ -262,8 +228,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
 
       <style>{`
         @keyframes chatBounce {
-          0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-          30% { transform: translateY(-5px); opacity: 1; }
+          0%, 60%, 100% { transform: translateY(0); opacity: 0.3; }
+          30% { transform: translateY(-5px); opacity: 0.9; }
         }
         @keyframes spin {
           from { transform: rotate(0deg); }

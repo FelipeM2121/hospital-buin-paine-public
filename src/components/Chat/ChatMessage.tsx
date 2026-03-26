@@ -29,7 +29,6 @@ function renderMarkdown(text: string): React.ReactNode[] {
       } else if (match[2] && match[3]) {
         let href = match[3];
         if (!href.startsWith("http") && !href.startsWith("/")) {
-          // Only encode if not already encoded
           const alreadyEncoded = href.includes("%20") || href.includes("%28");
           const encoded = alreadyEncoded ? href : href.split("/").map(encodeURIComponent).join("/");
           href = `${BASE}${encoded}`;
@@ -143,21 +142,6 @@ function renderMarkdown(text: string): React.ReactNode[] {
   return result;
 }
 
-/* ── Claude "C" avatar ── */
-const ClaudeAvatar = () => (
-  <div style={{
-    width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-    background: "linear-gradient(135deg, #C9623F 0%, #E8956D 100%)",
-    display: "flex", alignItems: "center", justifyContent: "center",
-    color: "#fff", fontWeight: 700, fontSize: "13px",
-    fontFamily: "Georgia, 'Times New Roman', serif",
-    letterSpacing: "-0.5px",
-    boxShadow: "0 1px 3px rgba(201,98,63,0.3)",
-  }}>
-    C
-  </div>
-);
-
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const [copied, setCopied] = React.useState(false);
   const [hovered, setHovered] = React.useState(false);
@@ -173,7 +157,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     return (
       <div style={{
         display: "flex", justifyContent: "flex-end",
-        padding: "6px 24px",
+        padding: "4px 24px",
         maxWidth: "820px", margin: "0 auto", width: "100%",
       }}>
         <div style={{
@@ -181,7 +165,7 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           color: "#F5F3EE",
           borderRadius: "18px 18px 4px 18px",
           padding: "10px 16px",
-          maxWidth: "75%",
+          maxWidth: "72%",
           fontSize: "14px", lineHeight: 1.65,
           whiteSpace: "pre-wrap", wordBreak: "break-word",
         }}>
@@ -191,46 +175,42 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     );
   }
 
+  // Assistant message — no avatar, full width text like Claude
   return (
     <div
-      style={{ padding: "6px 24px", maxWidth: "820px", margin: "0 auto", width: "100%" }}
+      style={{ padding: "4px 24px", maxWidth: "820px", margin: "0 auto", width: "100%" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
-      <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
-        <div style={{ paddingTop: "2px" }}>
-          <ClaudeAvatar />
-        </div>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ fontSize: "14px" }}>
-            {renderMarkdown(message.content)}
-          </div>
-
-          {/* Action buttons */}
-          <div style={{
-            display: "flex", gap: "2px", marginTop: "8px",
-            opacity: hovered ? 1 : 0, transition: "opacity 0.15s",
-          }}>
-            {[
-              { icon: copied ? <Check size={14}/> : <Copy size={14}/>, title: copied ? "Copiado" : "Copiar", onClick: handleCopy, active: copied },
-              { icon: <ThumbsUp size={14}/>, title: "Útil", onClick: () => {}, active: false },
-              { icon: <ThumbsDown size={14}/>, title: "No útil", onClick: () => {}, active: false },
-            ].map((btn, idx) => (
-              <button key={idx} onClick={btn.onClick} title={btn.title} style={{
-                background: "none", border: "none", cursor: "pointer",
-                padding: "5px 7px", borderRadius: "6px",
-                color: btn.active ? "#CF6E4A" : "#9B958E",
-                transition: "all 0.15s", display: "flex", alignItems: "center",
-              }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = "#F0EDE8"; e.currentTarget.style.color = "#1C1B1A"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = btn.active ? "#CF6E4A" : "#9B958E"; }}
-              >
-                {btn.icon}
-              </button>
-            ))}
-          </div>
-        </div>
+      <div style={{ fontSize: "14px", color: "#1C1B1A" }}>
+        {renderMarkdown(message.content)}
       </div>
+
+      {/* Action buttons */}
+      {message.content && (
+        <div style={{
+          display: "flex", gap: "2px", marginTop: "6px",
+          opacity: hovered ? 1 : 0, transition: "opacity 0.15s",
+        }}>
+          {[
+            { icon: copied ? <Check size={14}/> : <Copy size={14}/>, title: copied ? "Copiado" : "Copiar", onClick: handleCopy, active: copied },
+            { icon: <ThumbsUp size={14}/>, title: "Útil", onClick: () => {}, active: false },
+            { icon: <ThumbsDown size={14}/>, title: "No útil", onClick: () => {}, active: false },
+          ].map((btn, idx) => (
+            <button key={idx} onClick={btn.onClick} title={btn.title} style={{
+              background: "none", border: "none", cursor: "pointer",
+              padding: "5px 7px", borderRadius: "6px",
+              color: btn.active ? "#CF6E4A" : "#9B958E",
+              transition: "all 0.15s", display: "flex", alignItems: "center",
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = "#F0EDE8"; e.currentTarget.style.color = "#1C1B1A"; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = btn.active ? "#CF6E4A" : "#9B958E"; }}
+            >
+              {btn.icon}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
