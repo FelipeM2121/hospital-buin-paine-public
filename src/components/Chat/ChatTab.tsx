@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { SquarePen, PanelLeft, AlertCircle } from "lucide-react";
+import { SquarePen, AlertCircle } from "lucide-react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ChatService, Message, ChatError } from "./ChatService";
@@ -11,20 +11,19 @@ interface ChatTabProps {
   eettFiles?: EETTFile[];
 }
 
-/* ── Central icon (hospital/inventory bot) ── */
-const CenterIcon = () => (
-  <svg width="48" height="48" viewBox="0 0 64 64" fill="none">
-    {/* Bot head */}
-    <rect x="12" y="20" width="40" height="30" rx="8" stroke="#bbb" strokeWidth="2.5" fill="none"/>
-    {/* Eyes */}
-    <circle cx="26" cy="35" r="3.5" fill="#bbb"/>
-    <circle cx="38" cy="35" r="3.5" fill="#bbb"/>
-    {/* Antenna */}
-    <path d="M32 20V12" stroke="#bbb" strokeWidth="2.5" strokeLinecap="round"/>
-    <circle cx="32" cy="10" r="3" fill="#bbb"/>
-    {/* Mouth */}
-    <path d="M26 42h12" stroke="#bbb" strokeWidth="2" strokeLinecap="round"/>
-  </svg>
+/* ── Claude-style animated "C" on empty state ── */
+const ClaudeLogo = () => (
+  <div style={{
+    width: 56, height: 56, borderRadius: "50%",
+    background: "linear-gradient(135deg, #C9623F 0%, #E8956D 50%, #F2A97A 100%)",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    color: "#fff", fontWeight: 700, fontSize: "26px",
+    fontFamily: "Georgia, 'Times New Roman', serif",
+    boxShadow: "0 4px 16px rgba(201,98,63,0.25)",
+    letterSpacing: "-1px",
+  }}>
+    C
+  </div>
 );
 
 export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) => {
@@ -53,7 +52,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
     };
     const assistantId = Math.random().toString(36).substr(2, 9);
 
-    // Add user message + empty assistant placeholder for streaming
     setMessages((prev) => [...prev, userMsg, {
       id: assistantId,
       role: "assistant" as const,
@@ -66,13 +64,12 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
         userMessage,
         undefined,
         undefined,
-        // Streaming callback — update assistant message token by token
         (token: string) => {
           setMessages((prev) => {
             const updated = [...prev];
-            const lastIdx = updated.findIndex((m) => m.id === assistantId);
-            if (lastIdx !== -1) {
-              updated[lastIdx] = { ...updated[lastIdx], content: updated[lastIdx].content + token };
+            const idx = updated.findIndex((m) => m.id === assistantId);
+            if (idx !== -1) {
+              updated[idx] = { ...updated[idx], content: updated[idx].content + token };
             }
             return updated;
           });
@@ -80,11 +77,9 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
       );
 
       if (result.error) {
-        // Remove the empty placeholder if error
         setMessages((prev) => prev.filter((m) => m.id !== assistantId));
         setError(result.error);
       }
-      // If success, streaming already filled the message content
     } catch {
       setMessages((prev) => prev.filter((m) => m.id !== assistantId));
       setError({ error: true, message: "Error al procesar la solicitud", code: "UNKNOWN_ERROR" });
@@ -108,84 +103,96 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
     "Productos de MELMAN SPA",
   ];
 
+  const isEmpty = messages.length === 0 && !error;
+
   return (
     <div style={{
       display: "flex", flexDirection: "column",
       height: "calc(100vh - 100px)",
-      background: "#fff",
+      background: "#FAFAF8",
       position: "relative",
+      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
     }}>
-      {/* ── Top bar (Ollama style) ── */}
+
+      {/* ── Top bar ── */}
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "12px 20px",
-        borderBottom: "1px solid #f0f0f0",
+        padding: "10px 20px",
+        borderBottom: "1px solid #EDE9E3",
+        background: "#FAFAF8",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <button onClick={() => {}} style={{
-            background: "none", border: "none", cursor: "pointer",
-            padding: "6px", borderRadius: "8px", color: "#666",
-            display: "flex",
-          }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#f5f5f5"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "none"; }}
-          >
-            <PanelLeft size={20} />
-          </button>
-          <button onClick={handleClearChat} style={{
-            background: "none", border: "none", cursor: "pointer",
-            padding: "6px", borderRadius: "8px", color: "#666",
-            display: "flex",
-          }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#f5f5f5"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "none"; }}
-            title="Nuevo chat"
-          >
-            <SquarePen size={20} />
-          </button>
-        </div>
-
-        <div style={{ fontSize: "14px", fontWeight: 500, color: "#333" }}>
+        <div style={{ fontSize: "14px", fontWeight: 600, color: "#1C1B1A", display: "flex", alignItems: "center", gap: "8px" }}>
+          <span style={{
+            width: 20, height: 20, borderRadius: "50%",
+            background: "linear-gradient(135deg, #C9623F, #E8956D)",
+            display: "inline-flex", alignItems: "center", justifyContent: "center",
+            color: "#fff", fontSize: "10px", fontWeight: 700,
+            fontFamily: "Georgia, serif",
+          }}>C</span>
           Chat IA — Inventario
         </div>
 
-        <div style={{ width: 60 }} /> {/* spacer for centering */}
+        <button onClick={handleClearChat} title="Nuevo chat" style={{
+          background: "none", border: "none", cursor: "pointer",
+          padding: "6px", borderRadius: "8px", color: "#9B958E",
+          display: "flex", alignItems: "center",
+          transition: "background 0.15s, color 0.15s",
+        }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#EDE9E3"; e.currentTarget.style.color = "#1C1B1A"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#9B958E"; }}
+        >
+          <SquarePen size={18} />
+        </button>
       </div>
 
       {/* ── Messages area ── */}
-      <div style={{
-        flex: 1, overflowY: "auto",
-        display: "flex", flexDirection: "column",
-      }}>
-        {/* Empty state — Ollama style centered icon */}
-        {messages.length === 0 && !error && (
+      <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>
+
+        {/* Empty state */}
+        {isEmpty && (
           <div style={{
             flex: 1, display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
-            gap: "20px", padding: "40px 20px",
+            gap: "20px", padding: "40px 24px",
           }}>
-            <CenterIcon />
+            <ClaudeLogo />
 
-            {/* Suggestion chips */}
+            <div style={{
+              fontSize: "22px", fontWeight: 600,
+              color: "#1C1B1A", textAlign: "center",
+              letterSpacing: "-0.3px",
+            }}>
+              ¿En qué puedo ayudarte?
+            </div>
+
             <div style={{
               display: "flex", flexWrap: "wrap", gap: "8px",
-              justifyContent: "center", maxWidth: "600px",
-              marginTop: "12px",
+              justifyContent: "center", maxWidth: "620px",
+              marginTop: "4px",
             }}>
               {suggestions.map((s) => (
                 <button key={s} onClick={() => handleSendMessage(s)} style={{
                   background: "#fff",
-                  border: "1px solid #e0e0e0",
+                  border: "1px solid #E8E3DC",
                   borderRadius: "20px",
                   padding: "8px 16px",
                   fontSize: "13px",
-                  color: "#444",
+                  color: "#3D3B38",
                   cursor: "pointer",
                   transition: "all 0.15s",
                   lineHeight: 1.3,
+                  boxShadow: "0 1px 2px rgba(0,0,0,0.04)",
                 }}
-                  onMouseEnter={(e) => { e.currentTarget.style.background = "#f8f8f8"; e.currentTarget.style.borderColor = "#ccc"; }}
-                  onMouseLeave={(e) => { e.currentTarget.style.background = "#fff"; e.currentTarget.style.borderColor = "#e0e0e0"; }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = "#F5F2EC";
+                    e.currentTarget.style.borderColor = "#D4C9BC";
+                    e.currentTarget.style.boxShadow = "0 2px 6px rgba(0,0,0,0.08)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = "#fff";
+                    e.currentTarget.style.borderColor = "#E8E3DC";
+                    e.currentTarget.style.boxShadow = "0 1px 2px rgba(0,0,0,0.04)";
+                  }}
                 >
                   {s}
                 </button>
@@ -196,53 +203,51 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
 
         {/* Error */}
         {error && (
-          <div style={{
-            margin: "16px auto", maxWidth: "820px", width: "100%", padding: "0 24px",
-          }}>
+          <div style={{ margin: "16px auto", maxWidth: "720px", width: "100%", padding: "0 24px" }}>
             <div style={{
-              background: "#fef2f2", border: "1px solid #fecaca",
+              background: "#FEF5F2", border: "1px solid #F5C6B4",
               borderRadius: "12px", padding: "12px 16px",
               display: "flex", gap: "10px", alignItems: "start",
             }}>
-              <AlertCircle size={18} style={{ color: "#dc2626", flexShrink: 0, marginTop: 2 }} />
+              <AlertCircle size={18} style={{ color: "#C9623F", flexShrink: 0, marginTop: 2 }} />
               <div>
-                <div style={{ fontWeight: 600, color: "#991b1b", fontSize: "14px" }}>{error.message}</div>
+                <div style={{ fontWeight: 600, color: "#8B3A22", fontSize: "14px" }}>{error.message}</div>
                 {error.suggestion && (
-                  <div style={{ color: "#b91c1c", fontSize: "13px", marginTop: 4 }}>{error.suggestion}</div>
+                  <div style={{ color: "#A04A2A", fontSize: "13px", marginTop: 4 }}>{error.suggestion}</div>
                 )}
               </div>
             </div>
           </div>
         )}
 
-        {/* Message list */}
-        {messages.map((msg) => (
-          <ChatMessage key={msg.id} message={msg} />
-        ))}
+        {/* Messages */}
+        <div style={{ paddingTop: isEmpty ? 0 : "16px", paddingBottom: "8px" }}>
+          {messages.map((msg) => (
+            <ChatMessage key={msg.id} message={msg} />
+          ))}
+        </div>
 
         {/* Typing indicator */}
-        {isLoading && (
+        {isLoading && messages[messages.length - 1]?.content === "" && (
           <div style={{
-            display: "flex", gap: "12px", padding: "16px 24px",
+            display: "flex", gap: "12px", padding: "6px 24px",
             maxWidth: "820px", margin: "0 auto", width: "100%",
+            alignItems: "flex-start",
           }}>
             <div style={{
-              width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
-              background: "#f1f1f1", display: "flex", alignItems: "center", justifyContent: "center",
-            }}>
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <rect x="4" y="8" width="16" height="12" rx="3" stroke="#555" strokeWidth="1.8" fill="none"/>
-                <circle cx="9" cy="14" r="1.5" fill="#555"/>
-                <circle cx="15" cy="14" r="1.5" fill="#555"/>
-                <path d="M8 8V5a4 4 0 0 1 8 0v3" stroke="#555" strokeWidth="1.8" fill="none"/>
-              </svg>
-            </div>
-            <div style={{ display: "flex", gap: "6px", alignItems: "center", paddingTop: "10px" }}>
+              width: 28, height: 28, borderRadius: "50%", flexShrink: 0, marginTop: 2,
+              background: "linear-gradient(135deg, #C9623F, #E8956D)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "#fff", fontWeight: 700, fontSize: "13px",
+              fontFamily: "Georgia, serif",
+            }}>C</div>
+            <div style={{ display: "flex", gap: "5px", alignItems: "center", paddingTop: "10px" }}>
               {[0, 1, 2].map((dot) => (
                 <div key={dot} style={{
-                  width: 7, height: 7, borderRadius: "50%",
-                  background: "#bbb",
-                  animation: `chatBounce 1.2s ease-in-out ${dot * 0.15}s infinite`,
+                  width: 6, height: 6, borderRadius: "50%",
+                  background: "#C9623F",
+                  opacity: 0.6,
+                  animation: `chatBounce 1.2s ease-in-out ${dot * 0.18}s infinite`,
                 }} />
               ))}
             </div>
@@ -252,14 +257,13 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
         <div ref={messagesEndRef} />
       </div>
 
-      {/* ── Input (Ollama style) ── */}
+      {/* ── Input ── */}
       <ChatInput onSendMessage={handleSendMessage} isLoading={isLoading} />
 
-      {/* Keyframe animation */}
       <style>{`
         @keyframes chatBounce {
           0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-          30% { transform: translateY(-6px); opacity: 1; }
+          30% { transform: translateY(-5px); opacity: 1; }
         }
         @keyframes spin {
           from { transform: rotate(0deg); }

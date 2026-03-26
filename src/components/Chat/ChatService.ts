@@ -216,8 +216,13 @@ function detectTopics(msg: string): { topics: Topic[]; matches: { pisos: number[
   // Detect familia
   if (/familia|categoria|tipo de mueble/i.test(q)) topics.push("familia");
 
+  // Comparaciones, rankings, más/menos
+  if (/mas muebles|menos muebles|mayor cantidad|menor cantidad|ranking|top|cuanto tiene|cuantos tienen|comparar|diferencia|porcentaje/i.test(q)) {
+    if (topics.length === 0) topics.push("resumen");
+  }
+
   // Default: resumen
-  if (topics.length === 0 || /resumen|general|total|cuantos|inventario completo|todo/i.test(q)) topics.push("resumen");
+  if (topics.length === 0 || /resumen|general|total|cuantos|inventario completo|todo|lista|listado/i.test(q)) topics.push("resumen");
 
   return { topics: [...new Set(topics)], matches };
 }
@@ -241,11 +246,23 @@ Familias: ${sortDesc(idx.byFamilia).map(([k, v]) => `${k}:${fmt(v)}`).join(", ")
     switch (topic) {
       case "resumen":
         sections.push(`RESUMEN COMPLETO:
-Recintos: ${fmt(summary.uniqueRecintos)} | Tipos mueble: ${summary.uniqueNombres}
-Proveedores: ${sortDesc(idx.byProveedor).map(([k, v]) => `${k}:${fmt(v)}`).join(", ")}
-Pisos: ${Object.entries(idx.byPiso).sort().map(([k, v]) => `${k}:${fmt(v)}`).join(", ")}
-Top 10 productos: ${sortDesc(idx.byNombre).slice(0, 10).map(([k, v]) => `${k}:${fmt(v)}`).join(", ")}
-Top 10 servicios: ${sortDesc(idx.byServicio).slice(0, 10).map(([k, v]) => `${k}:${fmt(v)}`).join(", ")}`);
+Recintos únicos: ${fmt(summary.uniqueRecintos)} | Tipos de mueble distintos: ${summary.uniqueNombres}
+Zonas: ${sortDesc(idx.byZona).map(([k, v]) => `${k}:${fmt(v)}`).join(", ")}
+
+TODOS LOS PROVEEDORES:
+${sortDesc(idx.byProveedor).map(([k, v]) => `${k}: ${fmt(v)} uds`).join("\n")}
+
+DISTRIBUCIÓN COMPLETA POR PISO:
+${Object.entries(idx.byPiso).sort().map(([k, v]) => `${k}: ${fmt(v)} uds`).join("\n")}
+
+TODOS LOS PRODUCTOS (${Object.keys(idx.byNombre).length} tipos):
+${sortDesc(idx.byNombre).map(([k, v]) => `${k}: ${fmt(v)}`).join(", ")}
+
+TODOS LOS SERVICIOS (${Object.keys(idx.byServicio).length}):
+${sortDesc(idx.byServicio).map(([k, v]) => `${k}: ${fmt(v)} uds`).join("\n")}
+
+FAMILIAS DE MUEBLES:
+${sortDesc(idx.byFamilia).map(([k, v]) => `${k}: ${fmt(v)} uds`).join("\n")}`);
         break;
 
       case "piso":
@@ -275,12 +292,13 @@ ${Object.entries(idx.byPiso).sort().map(([k, v]) => `${k}: ${fmt(v)} uds`).join(
           for (const svc of matches.servicios) {
             const total = idx.byServicio[svc] || 0;
             const prods = sortDesc(idx.servProd[svc] || {});
-            sections.push(`SERVICIO "${svc}": ${fmt(total)} unidades
-Productos: ${prods.map(([k, v]) => `${k}:${v}`).join(", ")}`);
+            sections.push(`SERVICIO "${svc}": ${fmt(total)} unidades totales
+Desglose por producto:
+${prods.map(([k, v]) => `  ${k}: ${fmt(v)} uds`).join("\n")}`);
           }
         } else {
-          sections.push(`TODOS LOS SERVICIOS (${summary.uniqueServicios}):
-${sortDesc(idx.byServicio).map(([k, v]) => `${k}: ${fmt(v)}`).join("\n")}`);
+          sections.push(`TODOS LOS SERVICIOS (${Object.keys(idx.byServicio).length} servicios):
+${sortDesc(idx.byServicio).map(([k, v]) => `${k}: ${fmt(v)} uds`).join("\n")}`);
         }
         break;
 
@@ -452,15 +470,27 @@ async function callClaudeStream(
   return fullText || "Sin respuesta del modelo.";
 }
 
-// ── Base system instruction (short and fixed) ──
-const BASE_SYSTEM = `Eres el asistente IA del Hospital Buin Paine. Respondes sobre el inventario de mobiliario no clínico.
-REGLAS ESTRICTAS:
+// ── Base system instruction ──
+const BASE_SYSTEM = `Eres el asistente IA del Hospital Buin Paine, experto en el inventario de mobiliario no clínico del hospital.
+
+CONTEXTO DEL SISTEMA:
+El Dashboard SGD (Sistema de Gestión de Documentos) registra todo el mobiliario no clínico instalado en el Hospital Buin Paine. Los datos incluyen: artículos, zonas, servicios, familias de muebles, nombres de productos, proveedores, cantidades, pisos, recintos y fechas de instalación.
+
+CAPACIDADES:
+- Puedes responder sobre TODOS los datos del inventario: totales, distribuciones, comparaciones, rankings, búsquedas específicas
+- Puedes comparar servicios, pisos, productos y proveedores entre sí
+- Puedes calcular porcentajes y proporciones basándote en los datos
+- Puedes describir fichas técnicas (EETT) de productos cuando tengas el código
+- Puedes responder preguntas sobre qué hay en cada piso, servicio o zona
+
+REGLAS:
 - Responde SIEMPRE en español
-- Usa SOLO los datos proporcionados, NO inventes cifras
-- Sé conciso y directo
-- Para tablas usa markdown
-- Si mencionas un PDF, usa formato: [nombre](eett/archivo.pdf)
-- Si no tienes el dato, di "no tengo esa información específica"
+- Usa SOLO los datos proporcionados, NUNCA inventes cifras
+- Usa tablas markdown cuando compares más de 3 elementos
+- Sé preciso y cita números exactos
+- Si mencionas un PDF de EETT, usa: [nombre](eett/archivo.pdf)
+- Si la pregunta es sobre algo que claramente está en los datos, respóndela completa
+- Solo di "no tengo esa información" si realmente no está en los datos recibidos
 `;
 
 // ── Public API ──
