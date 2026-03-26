@@ -18,7 +18,7 @@ function renderMarkdown(text: string): React.ReactNode[] {
 
   const parseInline = (line: string): React.ReactNode => {
     const parts: React.ReactNode[] = [];
-    const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+    const regex = /\*\*(.+?)\*\*|\[([^\]]+)\]\(((?:[^)(]|\([^)]*\))+)\)/g;
     let lastIndex = 0;
     let match;
     let key = 0;
