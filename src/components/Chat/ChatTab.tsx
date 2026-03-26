@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { SquarePen, AlertCircle } from "lucide-react";
+import { useMsal } from "@azure/msal-react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ChatService, Message, ChatError } from "./ChatService";
@@ -16,6 +17,8 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<ChatError | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const { accounts } = useMsal();
+  const firstName = accounts[0]?.name?.split(" ")[0] ?? "";
 
   useEffect(() => {
     ChatService.setData(data, summary, eettFiles || []);
@@ -121,14 +124,19 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
           <div style={{
             flex: 1, display: "flex", flexDirection: "column",
             alignItems: "center", justifyContent: "center",
-            padding: "60px 24px 40px",
+            gap: "20px", padding: "60px 24px 40px",
           }}>
+            <img
+              src={`${import.meta.env.BASE_URL}logo-buin-paine.png`}
+              alt="Hospital Buin Paine"
+              style={{ height: 64, width: "auto", objectFit: "contain" }}
+            />
             <div style={{
-              fontSize: "28px", fontWeight: 600,
+              fontSize: "34px", fontWeight: 700,
               color: "#1C1B1A", textAlign: "center",
-              letterSpacing: "-0.5px", lineHeight: 1.2,
+              letterSpacing: "-0.8px", lineHeight: 1.2,
             }}>
-              ¿En qué puedo ayudarte?
+              ¿En qué puedo ayudarte{firstName ? `, ${firstName}` : ""}?
             </div>
           </div>
         )}
