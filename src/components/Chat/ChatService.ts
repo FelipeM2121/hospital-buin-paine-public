@@ -326,53 +326,34 @@ Pisos: ${summary.pisos} | Servicios: ${summary.uniqueServicios} | Recintos: ${fm
 Proveedores: ${summary.proveedores} | Familias de muebles: ${summary.familias}`);
 
   // ═══ 2. FAMILIAS CON TODOS SUS PRODUCTOS ═══
-  sections.push(`══ FAMILIAS DE MUEBLES (${sortDesc(idx.byFamilia).length} familias, ${fmt(summary.totalQty)} uds total) ══
-${sortDesc(idx.byFamilia).map(([fam, total]) => {
+  sections.push(`══ FAMILIAS DE MUEBLES (${summary.byFamilia.length} familias, ${fmt(summary.totalQty)} uds total) ══
+${summary.byFamilia.slice().sort((a, b) => b.qty - a.qty).map(({ name: fam, qty: total }) => {
   const pct = ((total / summary.totalQty) * 100).toFixed(1);
-  const prods = sortDesc(idx.famProd[fam] || {}).map(([n, q]) => `    ${n}: ${fmt(q)} uds`).join("\n");
-  return `  ${fam}: ${fmt(total)} uds (${pct}% del total)\n${prods}`;
-}).join("\n\n")}`);
-
-  // ═══ 3. TODOS LOS PRODUCTOS ORDENADOS ═══
-  sections.push(`══ TODOS LOS PRODUCTOS (${Object.keys(idx.byNombre).length} tipos) ══
-${sortDesc(idx.byNombre).map(([k, v]) => {
-  const pisoStr = Object.entries(idx.prodPiso[k] || {}).sort().map(([p, q]) => `${p}:${q}`).join(", ");
-  return `  ${k}: ${fmt(v)} uds | Pisos: ${pisoStr || "—"}`;
+  return `  ${fam}: ${fmt(total)} uds (${pct}% del total)`;
 }).join("\n")}`);
 
-  // ═══ 4. TODOS LOS SERVICIOS CON SUS PRODUCTOS ═══
-  sections.push(`══ SERVICIOS (${Object.keys(idx.byServicio).length} servicios) ══
-${sortDesc(idx.byServicio).map(([svc, total]) => {
-  const prods = sortDesc(idx.servProd[svc] || {}).map(([n, q]) => `    ${n}: ${fmt(q)}`).join("\n");
-  return `  ${svc}: ${fmt(total)} uds\n${prods}`;
-}).join("\n\n")}`);
+  // ═══ 3. TODOS LOS PRODUCTOS ORDENADOS ═══
+  sections.push(`══ TODOS LOS PRODUCTOS (${summary.uniqueNombres} tipos) ══
+${summary.byNombre.slice().sort((a, b) => b.qty - a.qty).map(({ name: k, qty: v }) => `  ${k}: ${fmt(v)} uds`).join("\n")}`);
 
-  // ═══ 5. DISTRIBUCIÓN POR PISO CON PRODUCTOS ═══
+  // ═══ 4. TODOS LOS SERVICIOS ═══
+  sections.push(`══ SERVICIOS (${summary.uniqueServicios} servicios) ══
+${summary.byServicio.slice().sort((a, b) => b.qty - a.qty).map(({ name: svc, qty: total }) => `  ${svc}: ${fmt(total)} uds`).join("\n")}`);
+
+  // ═══ 5. DISTRIBUCIÓN POR PISO ═══
   sections.push(`══ DISTRIBUCIÓN POR PISO ══
-${Object.entries(idx.byPiso).sort().map(([piso, total]) => {
-  const num = parseInt(piso.replace("Piso ", ""));
-  const prods: [string, number][] = [];
-  for (const [prod, pisoMap] of Object.entries(idx.prodPiso)) {
-    const q = pisoMap[`P${num}`];
-    if (q) prods.push([prod, q]);
-  }
-  prods.sort(([, a], [, b]) => b - a);
-  const servs = sortDesc(idx.pisoServ[num] || {}).map(([s, q]) => `${s}:${fmt(q)}`).join(", ");
-  return `  ${piso}: ${fmt(total)} uds\n    Servicios: ${servs}\n    Productos:\n${prods.map(([n, q]) => `      ${n}: ${fmt(q)}`).join("\n")}`;
-}).join("\n\n")}`);
+${summary.byPiso.slice().sort((a, b) => a.piso - b.piso).map(({ name: piso, qty: total }) => `  ${piso}: ${fmt(total)} uds`).join("\n")}`);
 
-  // ═══ 6. PROVEEDORES CON PRODUCTOS ═══
+  // ═══ 6. PROVEEDORES ═══
   sections.push(`══ PROVEEDORES ══
-${sortDesc(idx.byProveedor).map(([prov, total]) => {
+${summary.byProveedor.slice().sort((a, b) => b.qty - a.qty).map(({ name: prov, qty: total }) => {
   const pct = ((total / summary.totalQty) * 100).toFixed(1);
-  const fams = Object.entries(idx.provFam[prov] || {}).map(([f, q]) => `${f}:${fmt(q)}`).join(", ");
-  const prods = sortDesc(idx.provProd[prov] || {}).map(([n, q]) => `    ${n}: ${fmt(q)} uds`).join("\n");
-  return `  ${prov}: ${fmt(total)} uds (${pct}%)\n  Familias: ${fams}\n  Productos:\n${prods}`;
-}).join("\n\n")}`);
+  return `  ${prov}: ${fmt(total)} uds (${pct}%)`;
+}).join("\n")}`);
 
   // ═══ 7. ZONAS ═══
   sections.push(`══ ZONAS (${summary.uniqueZonas} zonas) ══
-${sortDesc(idx.byZona).map(([k, v]) => `  ${k}: ${fmt(v)} uds`).join("\n")}`);
+${summary.byZona.slice().sort((a, b) => b.qty - a.qty).map(({ name: k, qty: v }) => `  ${k}: ${fmt(v)} uds`).join("\n")}`);
 
   // ═══ 8. CALENDARIO INSTALACIÓN ═══
   sections.push(`══ CALENDARIO DE INSTALACIÓN ══
@@ -395,17 +376,18 @@ ${eettFiles.map((e) => {
 }).join("\n\n")}`);
 
   // ═══ 10. RECINTOS COMPLETOS POR SERVICIO ═══
-  const totalRecintos = Object.keys(idx.recintoDetail).length;
-  sections.push(`══ RECINTOS (${totalRecintos} recintos únicos) ══
-${sortDesc(idx.byServicio).map(([svc]) => {
+  const totalRecintos = summary.uniqueRecintos;
+  sections.push(`══ RECINTOS (${totalRecintos} recintos únicos en el inventario completo; muestra de recintos cargada localmente) ══
+${summary.byServicio.slice().sort((a, b) => b.qty - a.qty).map(({ name: svc }) => {
   const recintos = idx.servRecintos[svc] || [];
+  if (recintos.length === 0) return `  ${svc}: (recintos en inventario completo)`;
   const recintoLines = recintos.map((r) => {
     const info = idx.recintoDetail[r];
     if (!info) return `    ${r}`;
     const prodStr = Object.entries(info.prods).sort(([,a],[,b]) => b-a).map(([n, q]) => `${n}: ${fmt(q)}`).join(", ");
     return `    ${r} (Piso ${info.piso}, ${fmt(info.qty)} uds): ${prodStr}`;
   }).join("\n");
-  return `  ${svc} (${recintos.length} recintos):\n${recintoLines}`;
+  return `  ${svc} (${recintos.length} recintos en muestra):\n${recintoLines}`;
 }).join("\n\n")}`);
 
   // ═══ 11. DETALLE EXTRA para productos/servicios/pisos mencionados explícitamente ═══
