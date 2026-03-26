@@ -20,6 +20,11 @@ function normalize(str: string): string {
   return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 }
 
+// Normalize a code query: "201001" → "201.001", "204006b" → "204.006b"
+function normalizeCode(q: string): string {
+  return q.replace(/^(\d{3})\.?(\d{3}[a-z]?)$/i, "$1.$2").toLowerCase();
+}
+
 export function EspecificacionesTecnicasTab({ eettFiles: EETT_FILES, pdfViewer: PdfViewer }: EspecificacionesTecnicasTabProps) {
   const [eettSearch, setEettSearch] = useState("");
   const [selectedEETT, setSelectedEETT] = useState<string | null>(null);
@@ -72,9 +77,10 @@ export function EspecificacionesTecnicasTab({ eettFiles: EETT_FILES, pdfViewer: 
           scrollbarWidth: "none",
         }}>
           {(() => {
+            const q = normalizeCode(eettSearch.trim());
             const filtered = EETT_FILES.filter(f =>
               normalize(f.name).includes(normalize(eettSearch)) ||
-              normalize(f.code).includes(normalize(eettSearch))
+              normalize(f.code).includes(q)
             );
             if (filtered.length === 0)
               return <span style={{ fontSize: 12, color: COLORS.textMuted, whiteSpace: "nowrap" }}>Sin resultados para "{eettSearch}"</span>;
