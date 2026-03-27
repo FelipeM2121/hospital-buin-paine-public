@@ -3,6 +3,13 @@ import { COLORS, PIE_FAMILIA_COLORS } from "../../constants/theme";
 import { SectionTitle } from "./SectionTitle";
 import { Icons } from "../../constants/icons";
 
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function fmtDate(d: string | null): string {
+  if (!d) return '—';
+  const [y, m, day] = d.split('-');
+  return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]} ${y}`;
+}
+
 interface InventoryItem {
   item: string;
   zona: string;
@@ -13,7 +20,8 @@ interface InventoryItem {
   cantidad: number;
   piso: number;
   recinto: string;
-  fechaInstalacion: string;
+  inicioInstalacion: string | null;
+  terminoInstalacion: string | null;
 }
 
 interface InventoryDataTableProps {
@@ -36,10 +44,9 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
         proveedor: item.proveedor,
         cantidad: item.cantidad,
         piso: item.piso,
-        recinto: item.recinto,
-        fechaInstalacion: item.inicioInstalacion
-          ? item.inicioInstalacion.split('-').reverse().join('/')
-          : '',
+        recinto: item.codigoRecinto || item.recinto || '',
+        inicioInstalacion: item.inicioInstalacion || null,
+        terminoInstalacion: item.terminoInstalacion || null,
       }))))
       .catch(() => {/* mantener initialData si falla */});
   }, []);
@@ -64,17 +71,8 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
   const uniquePisos = useMemo(() => [...new Set(data.map(d => d.piso))].filter(Boolean).sort((a,b) => (a as unknown as number)-(b as unknown as number)), [data]);
   const uniqueServicios = useMemo(() => [...new Set(data.map(d => d.servicio))].filter(Boolean).sort(), [data]);
 
-  // Convertir fecha DD/MM/YYYY a Date para comparar
-  const parseDate = (str: string) => {
-    if (!str) return null;
-    const [d, m, y] = str.split("/");
-    return new Date(Number(y), Number(m) - 1, Number(d));
-  };
-
   // Filtrar datos
   const filteredData = useMemo(() => {
-    const desde = filters.fechaDesde ? new Date(filters.fechaDesde) : null;
-    const hasta = filters.fechaHasta ? new Date(filters.fechaHasta) : null;
     return data.filter(item => {
       const matchZona = !filters.zona || item.zona === filters.zona;
       const matchFamilia = !filters.familia || item.familia === filters.familia;
@@ -85,9 +83,8 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
         item.nombre?.toLowerCase().includes(filters.search.toLowerCase()) ||
         item.recinto?.toLowerCase().includes(filters.search.toLowerCase()) ||
         item.item?.toLowerCase().includes(filters.search.toLowerCase());
-      const itemDate = parseDate(item.fechaInstalacion);
-      const matchDesde = !desde || !itemDate || itemDate >= desde;
-      const matchHasta = !hasta || !itemDate || itemDate <= hasta;
+      const matchDesde = !filters.fechaDesde || !item.inicioInstalacion || item.inicioInstalacion >= filters.fechaDesde;
+      const matchHasta = !filters.fechaHasta || !item.inicioInstalacion || item.inicioInstalacion <= filters.fechaHasta;
       return matchZona && matchFamilia && matchProveedor && matchPiso && matchServicio && matchSearch && matchDesde && matchHasta;
     });
   }, [data, filters]);
@@ -342,7 +339,6 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
               <tr style={{ background: COLORS.bg, borderBottom: `2px solid ${COLORS.border}` }}>
-                <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Ítem</th>
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Nombre</th>
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Familia</th>
                 <th style={{ padding: "12px 16px", textAlign: "center", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Cant.</th>
@@ -350,7 +346,8 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Recinto</th>
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Proveedor</th>
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Zona</th>
-                <th style={{ padding: "12px 16px", textAlign: "center", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Fecha Inst.</th>
+                <th style={{ padding: "12px 16px", textAlign: "center", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Inicio Inst.</th>
+                <th style={{ padding: "12px 16px", textAlign: "center", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Término Inst.</th>
               </tr>
             </thead>
             <tbody>
@@ -361,7 +358,6 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
                 }}
                 onMouseEnter={(e) => e.currentTarget.style.background = COLORS.bg}
                 onMouseLeave={(e) => e.currentTarget.style.background = COLORS.white}>
-                  <td style={{ padding: "12px 16px", fontSize: 13, color: COLORS.textMuted, fontFamily: "'SF Mono', monospace" }}>{row.item}</td>
                   <td style={{ padding: "12px 16px", fontSize: 13, color: COLORS.text, fontWeight: 600 }}>{row.nombre}</td>
                   <td style={{ padding: "12px 16px", fontSize: 13, color: COLORS.text }}>
                     <span style={{
@@ -380,7 +376,8 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
                   <td style={{ padding: "12px 16px", fontSize: 12, color: COLORS.textMuted, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{row.recinto}</td>
                   <td style={{ padding: "12px 16px", fontSize: 12, color: COLORS.text }}>{row.proveedor}</td>
                   <td style={{ padding: "12px 16px", fontSize: 11, color: COLORS.textMuted, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{row.zona}</td>
-                  <td style={{ padding: "12px 16px", fontSize: 12, color: COLORS.primary, textAlign: "center", fontWeight: 600, whiteSpace: "nowrap" }}>{row.fechaInstalacion}</td>
+                  <td style={{ padding: "12px 16px", fontSize: 12, color: COLORS.primary, textAlign: "center", fontWeight: 600, whiteSpace: "nowrap" }}>{fmtDate(row.inicioInstalacion)}</td>
+                  <td style={{ padding: "12px 16px", fontSize: 12, color: COLORS.primary, textAlign: "center", fontWeight: 600, whiteSpace: "nowrap" }}>{fmtDate(row.terminoInstalacion)}</td>
                 </tr>
               )) : (
                 <tr>
