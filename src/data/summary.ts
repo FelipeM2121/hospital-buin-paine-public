@@ -4,7 +4,7 @@ import type { SummaryData } from "../types";
 export const SUMMARY: SummaryData = {
   "totalItems": 1978,
   "totalQty": 4471,
-  "uniqueRecintos": 28,
+  "uniqueRecintos": 815,
   "uniqueNombres": 80,
   "uniqueServicios": 40,
   "uniqueZonas": 28,

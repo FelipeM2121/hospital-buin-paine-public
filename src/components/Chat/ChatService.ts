@@ -538,7 +538,7 @@ CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
 ══════════════════════════════════════════
 
 TOTAL GENERAL: 4.471 unidades | 1.978 registros | 80 tipos de producto
-Servicios: 40 | Pisos: 7 | Proveedores: 4 | Familias: 4
+Servicios: 40 | Pisos: 7 | Recintos: 815 | Proveedores: 4 | Familias: 4
 
 ── FAMILIAS DE MUEBLES (4 familias) ──
 1. Silla:      3.248 uds  (72,6%) — incluye sillas, butacas, bancas, taburetes, sillones
@@ -619,85 +619,56 @@ Circulación Rehabilitación:         8 uds
 Exterior portería:                  6 uds
 Cirugía menor:                      2 uds
 
-── RECINTOS POR SERVICIO (28 recintos únicos en total) ──
-Consultas medicas generales:      8 recintos | 376 uds
-Administración y apoyo general:   7 recintos | 819 uds
-Urgencia:                         5 recintos | 313 uds
-Hospital de día:                  5 recintos | 212 uds
-Central de Alimentación:          4 recintos |  69 uds
-Neonatología:                     4 recintos |  25 uds
-Mantenimiento:                    4 recintos |  52 uds
-Hospitalización:                  4 recintos | 230 uds
-Cuidados Paliativos:              4 recintos |  45 uds
-Laboratorio:                      4 recintos | 161 uds
-Pabellones:                       3 recintos |  85 uds
-Esterilización:                   3 recintos |  29 uds
-Farmacia:                         3 recintos |  75 uds
-Psiquiatría:                      3 recintos | 179 uds
-Consultas Ambulatorias:           3 recintos |  59 uds
-Odontología:                      3 recintos |  69 uds
-Contabilidad:                     3 recintos |  83 uds
-UTI:                              3 recintos |  73 uds
-Imagenología:                     2 recintos |  90 uds
-Sala Cuna:                        2 recintos | 298 uds
-Med física y rehabilitación:      2 recintos | 144 uds
-Abastecimiento:                   2 recintos |  44 uds
-Parto Integral:                   2 recintos |  48 uds
-Comedor para funcionarios y público: 2 recintos | 307 uds
-Diálisis:                         2 recintos |  76 uds
-Lavandería:                       2 recintos |  12 uds
-UHCIP:                            2 recintos | 170 uds
-Laboratorio UMT:                  2 recintos |  46 uds
-Biblioteca:                       2 recintos |  52 uds
-Cafetería:                        1 recinto  |  66 uds
-Vestuario:                        1 recinto  |  41 uds
-SEDILE:                           1 recinto  |  14 uds
-Auditorio:                        1 recinto  |  46 uds
-Cirugía menor:                    1 recinto  |   2 uds
-Morgue:                           1 recinto  |  11 uds
-Chile Crece Contigo:              1 recinto  |  26 uds
-Telemedicina:                     1 recinto  |   8 uds
-Exterior portería:                1 recinto  |   6 uds
-Circulación Rehabilitación:       1 recinto  |   8 uds
+── RECINTOS POR SERVICIO (815 recintos únicos en total) ──
+Administración y apoyo general:      114 recintos | 819 uds
+Urgencia:                             79 recintos | 313 uds
+Hospitalización:                      79 recintos | 230 uds
+Consultas medicas generales:          78 recintos | 376 uds
+Laboratorio:                          37 recintos | 161 uds
+Pabellones:                           30 recintos |  85 uds
+Hospital de día:                      28 recintos | 212 uds
+UTI:                                  28 recintos |  73 uds
+Med física y rehabilitación:          26 recintos | 144 uds
+UHCIP:                                26 recintos | 170 uds
+Psiquiatría:                          25 recintos | 179 uds
+Diálisis:                             21 recintos |  76 uds
+Farmacia:                             20 recintos |  75 uds
+Central de Alimentación:              19 recintos |  69 uds
+Odontología:                          19 recintos |  69 uds
+Imagenología:                         17 recintos |  90 uds
+Parto Integral:                       16 recintos |  48 uds
+Sala Cuna:                            13 recintos | 298 uds
+Abastecimiento:                       13 recintos |  44 uds
+Esterilización:                       12 recintos |  29 uds
+Contabilidad:                         11 recintos |  83 uds
+Mantenimiento:                        10 recintos |  52 uds
+Cuidados Paliativos:                  10 recintos |  45 uds
+Consultas Ambulatorias:               10 recintos |  59 uds
+Comedor para funcionarios y público:   8 recintos | 307 uds
+Neonatología:                          7 recintos |  25 uds
+Auditorio:                             7 recintos |  46 uds
+Lavandería:                            7 recintos |  12 uds
+Vestuario:                             6 recintos |  41 uds
+SEDILE:                                6 recintos |  14 uds
+Laboratorio UMT:                       6 recintos |  46 uds
+Biblioteca:                            6 recintos |  52 uds
+Exterior portería:                     6 recintos |   6 uds
+Cafetería:                             5 recintos |  66 uds
+Morgue:                                3 recintos |  11 uds
+Cirugía menor:                         2 recintos |   2 uds
+Telemedicina:                          2 recintos |   8 uds
+Chile Crece Contigo:                   1 recinto  |  26 uds
+Circulación Rehabilitación:            1 recinto  |   8 uds
 
 ── DISTRIBUCIÓN POR PISO (recintos y unidades) ──
-Piso 1: 17 recintos | 1.470 uds
-Piso 2: 16 recintos | 1.547 uds
-Piso 3: 10 recintos |   855 uds
-Piso 4:  4 recintos |   184 uds
-Piso 5:  3 recintos |   137 uds
-Piso 6:  4 recintos |   150 uds
-Piso 7:  3 recintos |   127 uds
+Piso 1: 264 recintos | 1.470 uds
+Piso 2: 237 recintos | 1.547 uds
+Piso 3: 173 recintos |   855 uds
+Piso 4:  40 recintos |   184 uds
+Piso 5:  40 recintos |   137 uds
+Piso 6:  33 recintos |   150 uds
+Piso 7:  27 recintos |   127 uds
 
-── LISTADO COMPLETO DE RECINTOS (28) ──
-Piso 2 | NC-Áreas Administrativas en General     | Comedor para funcionarios y público | 559 uds
-Piso 2 | NC-Otros Servicios Adyacentes           | Cafetería                            | 546 uds
-Piso 6 | CN-Otros Servicios Adyacentes           | Administración y apoyo general       | 539 uds
-Piso 2 | CM-Consultas Ambulatorias               | Consultas medicas generales          | 387 uds
-Piso 1 | CM-Otros Servicios Adyacentes           | Sala Cuna                            | 366 uds
-Piso 1 | CN-Salas y Habitaciones de Hospitalización | UHCIP                             | 312 uds
-Piso 2 | NC-Casino                               | Comedor para funcionarios y público  | 300 uds
-Piso 1 | CM-Sala Cuna y Jardín Infantil          | Sala Cuna                            | 267 uds
-Piso 3 | CA-Otros Servicios Adyacentes           | Pabellones                           | 251 uds
-Piso 1 | NC-Áreas de Servicios Generales         | Abastecimiento                       | 207 uds
-Piso 1 | CN-Urgencia                             | Urgencia                             | 163 uds
-Piso 1 | CM-Áreas de Rehabilitación              | Med física y rehabilitación          |  94 uds
-Piso 2 | CN-Laboratorios                         | Laboratorio                          |  78 uds
-Piso 2 | CM-Salas de Procedimientos no Invasivos | Consultas medicas generales          |  59 uds
-Piso 2 | CM-Farmacia General                     | Farmacia                             |  56 uds
-Piso 1 | CN-Imagenología                         | Imagenología                         |  55 uds
-Piso 1 | NC-SAMU                                 | Urgencia                             |  49 uds
-Piso 3 | CA-Áreas de Tratamiento Especial        | Esterilización                       |  45 uds
-Piso 5 | CN-Pensionado                           | Administración y apoyo general       |  35 uds
-Piso 2 | CM-Servicio Dental                      | Odontología                          |  21 uds
-Piso 2 | CM-Central de Alimentación              | Central de Alimentación              |  16 uds
-Piso 3 | CA-Unidad de Paciente Crítico           | UTI                                  |  14 uds
-Piso 1 | CM-Sala Mortuoria                       | Morgue                               |  11 uds
-Piso 3 | CA-Central de Esterilización            | Esterilización                       |  11 uds
-Piso 2 | CN-Salas de Procedimientos Invasivos    | Consultas medicas generales          |   9 uds
-Piso 3 | CA-Sala Parto o Pabellón de Parto       | Parto Integral                       |   9 uds
-Piso 6 | CM-Residencias Médicas                  | Hospitalización                      |   6 uds
-Piso 1 | NC-Locales Externos                     | Exterior portería                    |   6 uds
 
 ── PROVEEDORES ──
 MELMAN SPA:          4.205 uds (94,1%)
