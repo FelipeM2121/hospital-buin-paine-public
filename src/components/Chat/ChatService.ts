@@ -171,7 +171,7 @@ function detectTopics(msg: string): { topics: Topic[]; matches: { pisos: number[
     "urgencia": "Urgencia",
     "administracion": "Administración y apoyo general", "admin": "Administración y apoyo general", "apoyo general": "Administración y apoyo general",
     "consulta": "Consultas medicas generales", "consultas medicas": "Consultas medicas generales", "medicas generales": "Consultas medicas generales",
-    "comedor": "Comedor funcionarios/público", "casino": "Comedor funcionarios/público",
+    "comedor": "Comedor para funcionarios y público", "casino": "Comedor para funcionarios y público", "comedor funcionarios": "Comedor para funcionarios y público",
     "sala cuna": "Sala Cuna", "sala-cuna": "Sala Cuna",
     "hospitalizacion": "Hospitalización", "hospitalizados": "Hospitalización",
     "hospital de dia": "Hospital de día", "hosp dia": "Hospital de día",
@@ -203,16 +203,11 @@ function detectTopics(msg: string): { topics: Topic[]; matches: { pisos: number[
     "telemedicina": "Telemedicina",
     "cirugia menor": "Cirugía menor", "cirugia": "Cirugía menor",
     "chile crece": "Chile Crece Contigo",
-    "rrhh": "Recursos Humanos", "recursos humanos": "Recursos Humanos",
-    "informatica": "Informática", "sistemas": "Informática",
-    "direccion": "Dirección", "gerencia": "Dirección",
-    "oncologia": "Oncología",
-    "cardiologia": "Cardiología",
-    "pediatria": "Pediatría",
-    "ginecologia": "Ginecología",
-    "traumatologia": "Traumatología",
-    "neurologia": "Neurología",
-    "dermatologia": "Dermatología",
+    "consultas ambulatorias": "Consultas Ambulatorias", "ambulatorio": "Consultas Ambulatorias",
+    "laboratorio umt": "Laboratorio UMT", "umt": "Laboratorio UMT",
+    "circulacion rehabilitacion": "Circulación Rehabilitación", "circulacion rehab": "Circulación Rehabilitación",
+    "exterior porteria": "Exterior portería", "porteria": "Exterior portería",
+    "administracion apoyo": "Administración y Apoyo General",
   };
   for (const [kw, svc] of Object.entries(servicioKeywords)) {
     if (q.includes(kw)) { topics.push("servicio"); if (!matches.servicios.includes(svc)) matches.servicios.push(svc); }
@@ -233,7 +228,7 @@ function detectTopics(msg: string): { topics: Topic[]; matches: { pisos: number[
     "sillon 1 cuerpo": "Sillón 1 Cuerpo", "sofa 1": "Sillón 1 Cuerpo",
     "mesa casino": "Mesa Tipo Casino", "mesa comedor": "Mesa Tipo Casino",
     "mesa reunion": "Mesa Reuniones Tipo I", "mesa de reuniones": "Mesa Reuniones Tipo I", "mesa conferencia": "Mesa Reuniones Tipo I",
-    "mueble biblioteca": "Mueble Tipo Biblioteca A", "estanteria": "Mueble Tipo Biblioteca A",
+    "mueble biblioteca": "Mueble Tipo Biblioteca M45_A", "estanteria": "Mueble Tipo Biblioteca M45_A", "biblioteca m45": "Mueble Tipo Biblioteca M45_A",
     "banca madera": "Banca Madera B", "banca de madera": "Banca Madera B", "banca": "Banca Madera B",
     "escritorio consulta": "Escritorio de Consultas", "escritorio clinico": "Escritorio de Consultas",
     "punto de registro": "Punto de Registro",
@@ -406,7 +401,21 @@ ${summary.byServicio.slice().sort((a, b) => b.qty - a.qty).map(({ name: svc }) =
   return `  ${svc} (${recintos.length} recintos en muestra):\n${recintoLines}`;
 }).join("\n\n")}`);
 
-  // ═══ 11. DETALLE EXTRA para productos/servicios/pisos mencionados explícitamente ═══
+  // ═══ 11. DETALLE EXTRA por SERVICIO mencionado explícitamente ═══
+  if (matches.servicios.length > 0) {
+    const svcExtras: string[] = [];
+    for (const svc of matches.servicios) {
+      const exactSvc = Object.keys(idx.byServicio).find((k) => k.toLowerCase().includes(svc.toLowerCase()) || svc.toLowerCase().includes(k.toLowerCase())) || svc;
+      const total = idx.byServicio[exactSvc] || 0;
+      const prods = idx.servProd[exactSvc] || {};
+      const prodStr = sortDesc(prods).map(([n, q]) => `    • ${n}: ${fmt(q)} uds`).join("\n");
+      const recintos = idx.servRecintos[exactSvc] || [];
+      svcExtras.push(`  SERVICIO "${exactSvc}": ${fmt(total)} unidades\n  Productos:\n${prodStr || "    (sin datos)"}\n  Recintos (${recintos.length}): ${recintos.slice(0, 10).join(", ")}${recintos.length > 10 ? "..." : ""}`);
+    }
+    if (svcExtras.length > 0) sections.unshift(`══ DETALLE DE SERVICIOS CONSULTADOS ══\n${svcExtras.join("\n\n")}`);
+  }
+
+  // ═══ 12. DETALLE EXTRA para productos/servicios/pisos mencionados explícitamente ═══
   if (matches.productos.length > 0) {
     const extras: string[] = [];
     for (const prod of matches.productos) {
@@ -464,7 +473,7 @@ async function callClaudeStream(
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 1024,
+      max_tokens: 2048,
       system: systemPrompt,
       messages,
       stream: true,
@@ -570,7 +579,7 @@ Banca Madera_C:                     22 uds
 Administración y apoyo general:   819 uds
 Consultas medicas generales:      376 uds
 Urgencia:                         313 uds
-Comedor para funcionarios/público:307 uds
+Comedor para funcionarios y público: 307 uds
 Sala Cuna:                        298 uds
 Hospitalización:                  230 uds
 Hospital de día:                  212 uds
