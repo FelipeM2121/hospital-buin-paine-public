@@ -14,10 +14,15 @@ interface PorFechaTabProps {
 }
 
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+const MESES_FULL = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 function formatDate(d: string | null | undefined): string {
   if (!d) return '—';
   const [y, m, day] = d.split('-');
   return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]} ${y}`;
+}
+function formatMonth(ym: string): string {
+  const [y, m] = ym.split('-');
+  return `${MESES_FULL[parseInt(m, 10) - 1]} ${y}`;
 }
 
 export function PorFechaTab({ summary: S }: PorFechaTabProps) {
@@ -77,7 +82,7 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
         marginBottom: 24,
       }}>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={S.byMes}>
+          <BarChart data={S.byMes.map(m => ({ ...m, name: formatMonth(m.name) }))}>
             <XAxis 
               dataKey="name" 
               tick={{ fill: COLORS.textMuted, fontSize: 12 }}
@@ -101,6 +106,7 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
       <DataTable
         data={S.byMes.map((m, i) => ({
           ...m,
+          name: formatMonth(m.name),
           rank: i + 1,
           pctQty: ((m.qty / S.totalQty) * 100).toFixed(1) + "%",
         }))}
