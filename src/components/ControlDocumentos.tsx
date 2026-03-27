@@ -41,8 +41,6 @@ function buildTree(flat: [string, number, string][]): FolderNode[] {
 const TREE = buildTree(controlDocData.folders as [string, number, string][]);
 
 const CATEGORY_COLORS: Record<string, string> = {
-  EMMC: "#0ea5e9",
-  INSTRUMENTAL: "#f59e0b",
   MNC: "#8b5cf6",
 };
 
@@ -164,18 +162,15 @@ export function ControlDocumentos() {
           <div className="cd-kpi-value">{TOTAL_FOLDERS.toLocaleString("es-CL")}</div>
           <div className="cd-kpi-label">Total Carpetas</div>
         </div>
-        {TREE.map((cat) => {
-          const color = CATEGORY_COLORS[cat.name] || "#00b4d8";
-          return (
-            <div key={cat.name} className="cd-kpi-card" style={{ borderTop: `4px solid ${color}` }}>
-              <div className="cd-kpi-value" style={{ color }}>{(cat.childCount + 1).toLocaleString("es-CL")}</div>
-              <div className="cd-kpi-label">{cat.name}</div>
-            </div>
-          );
-        })}
-        <div className="cd-kpi-card" style={{ borderTop: "4px solid #64748b" }}>
-          <div className="cd-kpi-value" style={{ color: "#64748b" }}>{MAX_LEVEL}</div>
-          <div className="cd-kpi-label">Niveles</div>
+        <div className="cd-kpi-card" style={{ borderTop: "4px solid #8b5cf6" }}>
+          <div className="cd-kpi-value" style={{ color: "#8b5cf6" }}>
+            {TREE[0]?.children?.length || 0}
+          </div>
+          <div className="cd-kpi-label">Subcarpetas Nivel 2</div>
+        </div>
+        <div className="cd-kpi-card" style={{ borderTop: "4px solid #00b4d8" }}>
+          <div className="cd-kpi-value" style={{ color: "#00b4d8" }}>{MAX_LEVEL}</div>
+          <div className="cd-kpi-label">Niveles de Profundidad</div>
         </div>
       </div>
 
@@ -217,7 +212,7 @@ export function ControlDocumentos() {
 
       {/* Breadcrumb */}
       <div className="cd-breadcrumb">
-        Documentos &gt; Operaciones &gt; CHI HBP &gt; 03 ADQ-REP &gt; 3.- 360 - SGD SC &gt; {CATEGORIES.join(" | ")}
+        Documentos &gt; Operaciones &gt; CHI HBP &gt; 03 ADQ-REP &gt; 3.- 360 - SGD SC &gt; MNC
       </div>
 
       {/* Tree */}
@@ -239,7 +234,7 @@ export function ControlDocumentos() {
 
       {/* Footer stats */}
       <div className="cd-footer">
-        <span>{TOTAL_FOLDERS.toLocaleString("es-CL")} carpetas | {MAX_LEVEL} niveles | {CATEGORIES.join(", ")}</span>
+        <span>{TOTAL_FOLDERS.toLocaleString("es-CL")} carpetas | {MAX_LEVEL} niveles | MNC</span>
         <span>Generado: {GENERATED_DATE}</span>
       </div>
     </div>
