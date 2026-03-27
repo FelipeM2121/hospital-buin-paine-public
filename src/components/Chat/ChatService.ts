@@ -332,6 +332,22 @@ ${summary.byFamilia.slice().sort((a, b) => b.qty - a.qty).map(({ name: fam, qty:
   return `  ${fam}: ${fmt(total)} uds (${pct}% del total)`;
 }).join("\n")}`);
 
+  // ═══ 2b. PRODUCTOS AGRUPADOS POR FAMILIA ═══
+  {
+    const famProdEntries = Object.entries(idx.famProd)
+      .sort(([, a], [, b]) => {
+        const ta = Object.values(a).reduce((x, y) => x + y, 0);
+        const tb = Object.values(b).reduce((x, y) => x + y, 0);
+        return tb - ta;
+      });
+    sections.push(`══ DESGLOSE DE PRODUCTOS POR FAMILIA ══
+${famProdEntries.map(([fam, prods]) => {
+  const total = Object.values(prods).reduce((a, b) => a + b, 0);
+  const prodList = Object.entries(prods).sort(([, a], [, b]) => b - a).map(([n, q]) => `    • ${n}: ${fmt(q)} uds`).join("\n");
+  return `  FAMILIA ${fam.toUpperCase()} — ${fmt(total)} uds:\n${prodList}`;
+}).join("\n\n")}`);
+  }
+
   // ═══ 3. TODOS LOS PRODUCTOS ORDENADOS ═══
   sections.push(`══ TODOS LOS PRODUCTOS (${summary.uniqueNombres} tipos) ══
 ${summary.byNombre.slice().sort((a, b) => b.qty - a.qty).map(({ name: k, qty: v }) => `  ${k}: ${fmt(v)} uds`).join("\n")}`);
@@ -512,11 +528,15 @@ CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
 TOTAL GENERAL: 4.471 unidades | 1.978 registros | 80 tipos de producto
 Servicios: 40 | Pisos: 7 | Proveedores: 4 | Familias: 4
 
-── FAMILIAS DE MUEBLES ──
-Silla:      3.248 uds  (72,6%)
-Mesa:         693 uds  (15,5%)
-Otro:         427 uds   (9,6%)
-Mobiliario:   103 uds   (2,3%)
+── FAMILIAS DE MUEBLES (4 familias) ──
+1. Silla:      3.248 uds  (72,6%) — incluye sillas, butacas, bancas, taburetes, sillones
+2. Mesa:         693 uds  (15,5%) — incluye mesas de casino, reuniones, laterales, escritorios
+3. Otro:         427 uds   (9,6%) — incluye bibliotecas, colchonetas, percheros, contenedores, libreros
+4. Mobiliario:   103 uds   (2,3%) — incluye sillones 2 y 1 cuerpo, muebles arrimo, lockers
+
+NOTA: La familia "Silla" es la más grande con 3.248 unidades (72,6% del total).
+Los productos Silla Visita (1.265 uds), Silla Ergonómica (548 uds) y Silla tipo Casino (498 uds)
+pertenecen a la familia Silla y representan los 3 ítems más numerosos del inventario.
 
 ── EQUIPOS / PRODUCTOS (top 25 por cantidad) ──
 Silla Visita:                    1.265 uds
