@@ -13,6 +13,13 @@ interface PorFechaTabProps {
   summary: SummaryData;
 }
 
+const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+function formatDate(d: string | null | undefined): string {
+  if (!d) return '—';
+  const [y, m, day] = d.split('-');
+  return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]} ${y}`;
+}
+
 export function PorFechaTab({ summary: S }: PorFechaTabProps) {
   return (
     <>
@@ -27,7 +34,7 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
       }}>
         <KPICard
           label="Fecha Inicio"
-          value={S.fechaStats.fechaMin}
+          value={formatDate(S.fechaStats.fechaMin)}
           sub="primera instalación"
           icon={Icons.calendar}
           color={COLORS.green}
@@ -35,7 +42,7 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
         />
         <KPICard
           label="Fecha Término"
-          value={S.fechaStats.fechaMax}
+          value={formatDate(S.fechaStats.fechaMax)}
           sub="última instalación"
           icon={Icons.calendar}
           color={COLORS.orange}
@@ -201,7 +208,7 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
             color: COLORS.textMuted,
             lineHeight: 1.5,
           }}>
-            El 01/07/2026 concentra <strong style={{color: COLORS.text}}>2,924 unidades</strong> ({((2924/S.totalQty)*100).toFixed(1)}% del total). 
+            El 1 Jul 2026 concentra <strong style={{color: COLORS.text}}>2,924 unidades</strong> ({((2924/S.totalQty)*100).toFixed(1)}% del total). 
             Se recomienda coordinar recursos adicionales de instalación para esta fecha.
           </div>
         </div>
