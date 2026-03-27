@@ -506,76 +506,76 @@ REGLAS ABSOLUTAS:
 
 ══════════════════════════════════════════
 CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
-(Fuente: MNC_Claude_20260209.xlsx — 1.973 registros)
+(Fuente: Cronograma de Instalacion de MNC_20260327.xlsx — actualizado 27/03/2026)
 ══════════════════════════════════════════
 
-TOTAL GENERAL: 4.456 unidades | 1.973 registros | 79 tipos de producto
-Recintos: 812 únicos | Servicios: 39 | Pisos: 7 | Proveedores: 3 | Familias: 4
+TOTAL GENERAL: 4.471 unidades | 1.978 registros | 80 tipos de producto
+Servicios: 40 | Pisos: 7 | Proveedores: 4 | Familias: 4
 
 ── FAMILIAS DE MUEBLES ──
-Silla:      3.233 uds  (72,6%)
-Mesa:         694 uds  (15,6%)
-Otro:         426 uds   (9,6%)
+Silla:      3.248 uds  (72,6%)
+Mesa:         693 uds  (15,5%)
+Otro:         427 uds   (9,6%)
 Mobiliario:   103 uds   (2,3%)
 
 ── EQUIPOS / PRODUCTOS (top 25 por cantidad) ──
-Silla Visita:                  1.285 uds
-Silla Ergonómica:                631 uds
-Silla tipo Casino:               478 uds
-Mueble Tipo Biblioteca A:        272 uds
-Silla Butaca Espera 3 Cuerpos:   223 uds
-Sillón Bergere:                  185 uds
-Escritorio en L Administrativo:  178 uds
-Escritorio simple 120x70 cm:     122 uds
-Sillón 2 Cuerpo:                 103 uds
-Mesa Tipo Casino:                 74 uds
-Punto de Registro:                67 uds
-Banca Madera B:                   59 uds
-Escritorio de Consultas:          58 uds
-Colchoneta Reposo A:              56 uds
-Mesa Reuniones Tipo I:            54 uds
-Silla Párvulo:                    52 uds
-Mesa Tipo Casino Circular:        41 uds
-Silla Tipo Universitaria:         33 uds
-Mesa Lateral:                     31 uds
-Sillón 1 Cuerpo:                  31 uds
-Banca Madera A:                   29 uds
-Cama Apilable:                    28 uds
-Banca Madera C:                   21 uds
-Perchero:                         20 uds
-Velador:                          20 uds
-(Total: 79 tipos de producto en el inventario completo)
+Silla Visita:                    1.265 uds
+Silla Ergonómica:                  548 uds
+Silla tipo Casino:                 498 uds
+Mueble Tipo Biblioteca M45_A:      273 uds
+Silla Butaca Espera 3 Cuerpos:     238 uds
+Sillón Bergere:                    185 uds
+Escritorio en L administrativo:    177 uds
+Escritorio simple 120x70 cm:       122 uds
+Sillón 2 Cuerpo:                   103 uds
+Mesa Tipo Casino Circular:          73 uds
+Punto de registro clínico:          67 uds
+Silla Ergonómica Reforzada:         60 uds
+Banca Madera_B:                     59 uds
+Escritorio de Consultas:            58 uds
+Colchoneta Reposo A:                56 uds
+Mesa Reuniones Tipo I:              53 uds
+Silla Párvulo:                      52 uds
+Mesa Tipo Casino Redonda 90 cm:     42 uds
+Silla Tipo Universitaria:           33 uds
+Mesa Lateral:                       31 uds
+Sillón 1 Cuerpo:                    31 uds
+Banca Madera_A:                     30 uds
+Cama Apilable:                      28 uds
+Taburete con Ruedas sin Respaldo:   24 uds
+Banca Madera_C:                     22 uds
+(Total: 80 tipos de producto en el inventario completo)
 
-── SERVICIOS MÉDICOS (39 servicios) ──
-Administración y apoyo general:   825 uds
+── SERVICIOS MÉDICOS (40 servicios) ──
+Administración y apoyo general:   819 uds
 Consultas medicas generales:      376 uds
-Urgencia:                         311 uds
-Comedor funcionarios/público:     307 uds
-Sala Cuna:                        296 uds
+Urgencia:                         313 uds
+Comedor para funcionarios/público:307 uds
+Sala Cuna:                        298 uds
 Hospitalización:                  230 uds
 Hospital de día:                  212 uds
 Psiquiatría:                      179 uds
 UHCIP:                            170 uds
-Laboratorio:                      166 uds
+Laboratorio:                      161 uds
 Med física y rehabilitación:      144 uds
 Imagenología:                      90 uds
-Pabellones:                        86 uds
+Pabellones:                        85 uds
 Contabilidad:                      83 uds
 Diálisis:                          76 uds
 Farmacia:                          75 uds
-UTI:                               71 uds
+UTI:                               73 uds
 Central de Alimentación:           69 uds
-Odontología:                       68 uds
+Odontología:                       69 uds
 Cafetería:                         66 uds
 Consultas Ambulatorias:            59 uds
 Mantenimiento:                     52 uds
 Biblioteca:                        52 uds
 Parto Integral:                    48 uds
+Auditorio:                         46 uds
 Laboratorio UMT:                   46 uds
 Cuidados Paliativos:               45 uds
+Abastecimiento:                    44 uds
 Vestuario:                         41 uds
-Auditorio:                         40 uds
-Abastecimiento:                    32 uds
 Esterilización:                    29 uds
 Chile Crece Contigo:               26 uds
 Neonatología:                      25 uds
@@ -588,22 +588,26 @@ Exterior portería:                  6 uds
 Cirugía menor:                      2 uds
 
 ── DISTRIBUCIÓN POR PISO ──
-Piso 1: 1.466 uds
+Piso 1: 1.470 uds
 Piso 2: 1.547 uds
-Piso 3:   845 uds
+Piso 3:   855 uds
 Piso 4:   184 uds
 Piso 5:   137 uds
 Piso 6:   150 uds
 Piso 7:   127 uds
 
 ── PROVEEDORES ──
-MELMAN SPA:         4.256 uds (95,5%)
-ALLMEDICA:            106 uds  (2,4%)
-COMERCIAL HAGELIN:     94 uds  (2,1%)
+MELMAN SPA:          4.205 uds (94,1%)
+ALLMEDICA:             106 uds  (2,4%)
+COMERCIAL HAGELIN:      94 uds  (2,1%)
+SIN ADJUDICAR:          66 uds  (1,5%)
 
-── CALENDARIO DE INSTALACIÓN ──
-Mayo 2026: 66 uds | Junio 2026: 44 uds | Julio 2026: 4.069 uds | Agosto 2026: 277 uds
-Semana principal: 29/06–05/07 (2.924 uds), 13/07–19/07 (1.145 uds)
+── CRONOGRAMA DE INSTALACIÓN ──
+Período: Mayo 2026 – Agosto 2026
+Mayo 2026:   66 uds
+Junio 2026:  44 uds
+Julio 2026: 4.084 uds  ← mes principal
+Agosto 2026: 277 uds
 
 ══════════════════════════════════════════
 FIN CIFRAS OFICIALES
