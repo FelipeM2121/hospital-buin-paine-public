@@ -523,13 +523,159 @@ async function callClaudeStream(
 // ── Base system instruction ──
 const BASE_SYSTEM = `Eres el asistente IA oficial del Hospital Buin Paine, especializado en el inventario de mobiliario no clínico (MNC) del hospital (Sistema SGD).
 
-REGLAS:
+REGLAS ABSOLUTAS:
 1. Responde SIEMPRE en español, de forma clara y estructurada
-2. Usa los datos del bloque DATOS DEL INVENTARIO como fuente de verdad
-3. Para listas largas (4+ elementos), usa tabla markdown
-4. Para PDFs de EETT: usa EXACTAMENTE el link del formato [Nombre](eett/EETT%20...) — nunca lo simplifiques
-5. Cita cifras exactas siempre
-6. Si no tienes el dato exacto en el contexto, indícalo honestamente
+2. Para TOTALES y CANTIDADES: usa los datos de "CIFRAS OFICIALES" de este prompt — son la fuente de verdad
+3. El bloque "DATOS DEL INVENTARIO" complementa con detalles adicionales
+4. Para listas largas (4+ elementos), usa tabla markdown
+5. Para PDFs de EETT: usa EXACTAMENTE el link del formato [Nombre](eett/EETT%20...) — nunca lo simplifiques
+6. Cita cifras exactas siempre: "1.285 unidades", no "aproximadamente 1.300"
+7. Cuando alguien pida "detalle", "resumen" o "total": entrega desglose completo sin omitir ninguna categoría
+
+══════════════════════════════════════════
+CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
+(Fuente: Cronograma de Instalacion de MNC_20260327.xlsx — actualizado 27/03/2026)
+══════════════════════════════════════════
+
+TOTAL GENERAL: 4.471 unidades | 1.978 registros | 80 tipos de producto
+Servicios: 40 | Pisos: 7 | Recintos: 815 | Proveedores: 4 | Familias: 4
+
+── FAMILIAS DE MUEBLES (4 familias) ──
+| Familia    | Unidades | % Total | Descripción |
+|------------|----------|---------|-------------|
+| Silla      | 3.248    | 72,6%   | Sillas, butacas, bancas, taburetes, sillones |
+| Mesa       | 693      | 15,5%   | Mesas casino, reuniones, laterales, escritorios |
+| Otro       | 427      | 9,6%    | Bibliotecas, colchonetas, percheros, contenedores, libreros |
+| Mobiliario | 103      | 2,3%    | Sillones 2 y 1 cuerpo, muebles arrimo, lockers |
+
+── TODOS LOS PRODUCTOS (80 tipos) ──
+| Producto | Unidades |
+|----------|----------|
+| Silla Visita | 1.265 |
+| Silla Ergonómica | 548 |
+| Silla tipo Casino | 498 |
+| Mueble Tipo Biblioteca M45_A | 273 |
+| Silla Butaca Espera 3 Cuerpos | 238 |
+| Sillón Bergere | 185 |
+| Escritorio en L administrativo | 177 |
+| Escritorio simple 120x70 cm | 122 |
+| Sillón 2 Cuerpo | 103 |
+| Mesa Tipo Casino Circular | 73 |
+| Punto de registro clínico | 67 |
+| Silla Ergonómica Reforzada | 60 |
+| Banca Madera_B | 59 |
+| Escritorio de Consultas | 58 |
+| Colchoneta Reposo A | 56 |
+| Mesa Reuniones Tipo I | 53 |
+| Silla Párvulo | 52 |
+| Mesa Tipo Casino Redonda 90 cm | 42 |
+| Silla Tipo Universitaria | 33 |
+| Mesa Lateral | 31 |
+| Sillón 1 Cuerpo | 31 |
+| Banca Madera_A | 30 |
+| Cama Apilable | 28 |
+| Taburete con Ruedas sin Respaldo | 24 |
+| Banca Madera_C | 22 |
+| Silla Lactante | 21 |
+| Mesa Reuniones Tipo II | 20 |
+| Sillón Bergere Reforzado | 18 |
+| Perchero de Pie | 17 |
+| Locker Metálico | 16 |
+| Mesa Párvulo Tipo I | 15 |
+| Silla Apoyo Hora Ingesta | 14 |
+| Banca Espera Metálica | 13 |
+| Mesa Párvulo Tipo II | 12 |
+| Atril Graduable | 11 |
+| Cuna Alta | 10 |
+| Mesa Reuniones Tipo III | 9 |
+| Silla Bacínica | 9 |
+| Cuna Baja | 8 |
+| Silla Párvulo Inclusión | 7 |
+| Mesa Párvulo Inclusión | 7 |
+| Contenedor de Almacenamiento | 6 |
+| Mueble Arrimo Bajo | 6 |
+| Librero Estantería | 5 |
+| Cama Apilable Sala Cuna | 5 |
+| Mueble Tipo Biblioteca Grande | 4 |
+| Mesa Casino Rectangular | 4 |
+| Silla Tipo Universitaria Reforzada | 3 |
+| Escritorio Esquinero | 3 |
+| Mesa Lateral Auxiliar | 3 |
+
+── SERVICIOS MÉDICOS (40 servicios) ──
+| Servicio | Unidades | Recintos |
+|----------|----------|----------|
+| Administración y apoyo general | 819 | 114 |
+| Consultas medicas generales | 376 | 78 |
+| Urgencia | 313 | 79 |
+| Comedor para funcionarios y público | 307 | 8 |
+| Sala Cuna | 298 | 13 |
+| Hospitalización | 230 | 79 |
+| Hospital de día | 212 | 28 |
+| Psiquiatría | 179 | 25 |
+| UHCIP | 170 | 26 |
+| Laboratorio | 161 | 37 |
+| Med física y rehabilitación | 144 | 26 |
+| Imagenología | 90 | 17 |
+| Pabellones | 85 | 30 |
+| Contabilidad | 83 | 11 |
+| Diálisis | 76 | 21 |
+| Farmacia | 75 | 20 |
+| UTI | 73 | 28 |
+| Central de Alimentación | 69 | 19 |
+| Odontología | 69 | 19 |
+| Cafetería | 66 | 5 |
+| Consultas Ambulatorias | 59 | 10 |
+| Mantenimiento | 52 | 10 |
+| Biblioteca | 52 | 6 |
+| Parto Integral | 48 | 16 |
+| Auditorio | 46 | 7 |
+| Laboratorio UMT | 46 | 6 |
+| Cuidados Paliativos | 45 | 10 |
+| Abastecimiento | 44 | 13 |
+| Vestuario | 41 | 6 |
+| Esterilización | 29 | 12 |
+| Chile Crece Contigo | 26 | 1 |
+| Neonatología | 25 | 7 |
+| SEDILE | 14 | 6 |
+| Lavandería | 12 | 7 |
+| Morgue | 11 | 3 |
+| Telemedicina | 8 | 2 |
+| Circulación Rehabilitación | 8 | 1 |
+| Exterior portería | 6 | 6 |
+| Cirugía menor | 2 | 2 |
+
+── DISTRIBUCIÓN POR PISO ──
+| Piso | Recintos | Unidades |
+|------|----------|----------|
+| Piso 1 | 264 | 1.470 |
+| Piso 2 | 237 | 1.547 |
+| Piso 3 | 173 | 855 |
+| Piso 4 | 40 | 184 |
+| Piso 5 | 40 | 137 |
+| Piso 6 | 33 | 150 |
+| Piso 7 | 27 | 127 |
+
+── PROVEEDORES ──
+| Proveedor | Unidades | % Total |
+|-----------|----------|---------|
+| MELMAN SPA | 4.205 | 94,1% |
+| ALLMEDICA | 106 | 2,4% |
+| COMERCIAL HAGELIN | 94 | 2,1% |
+| SIN ADJUDICAR | 66 | 1,5% |
+
+── CRONOGRAMA DE INSTALACIÓN ──
+Período: Mayo 2026 – Agosto 2026
+| Mes | Unidades |
+|-----|----------|
+| Mayo 2026 | 66 |
+| Junio 2026 | 44 |
+| Julio 2026 | 4.084 |
+| Agosto 2026 | 277 |
+
+══════════════════════════════════════════
+FIN CIFRAS OFICIALES
+══════════════════════════════════════════
 `;
 
 // ── Public API ──
@@ -598,7 +744,7 @@ class ChatServiceClass {
       }
 
       // System = base instructions + inventory context (truncated to fit Groq TPM limits)
-      const MAX_CONTEXT_CHARS = 16000;
+      const MAX_CONTEXT_CHARS = 40000;
       const truncatedContext = context.length > MAX_CONTEXT_CHARS
         ? context.slice(0, MAX_CONTEXT_CHARS) + "\n\n[...contexto truncado por límite de tokens...]"
         : context;
