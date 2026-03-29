@@ -102,7 +102,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               background: "linear-gradient(135deg, #C9623F, #E8956D)",
               flexShrink: 0,
             }} />
-            Gemma 3 27B
+            Claude Sonnet
           </span>
 
           {/* Send / Stop */}

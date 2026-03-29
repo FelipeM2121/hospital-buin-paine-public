@@ -19,8 +19,8 @@ export interface ChatError {
    Solo inyecta datos RELEVANTES a la pregunta → rápido y preciso
    ═══════════════════════════════════════════════════════════════ */
 
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY as string | undefined;
-const MODEL = "google/gemma-3-27b-it:free";
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
+const MODEL = "claude-sonnet-4-6";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 
@@ -460,35 +460,33 @@ ${summary.byServicio.slice().sort((a, b) => b.qty - a.qty).map(({ name: svc }) =
   return sections.join("\n\n");
 }
 
-// ── OpenRouter API call with STREAMING (OpenAI-compatible) ──
+// ── Claude API call with STREAMING ──
 async function callClaudeStream(
   messages: { role: string; content: string }[],
   systemPrompt: string,
   onToken: (token: string) => void,
 ): Promise<string> {
-  const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Authorization": `Bearer ${OPENROUTER_API_KEY || ""}`,
-      "HTTP-Referer": "https://felipem2121.github.io/hospital-buin-paine-dashboard-sgd/",
-      "X-Title": "Hospital Buin Paine SGD",
+      "x-api-key": ANTHROPIC_API_KEY || "",
+      "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 1024,
+      max_tokens: 2048,
+      system: systemPrompt,
+      messages,
       stream: true,
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...messages,
-      ],
     }),
     signal: AbortSignal.timeout(180000),
   });
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
-    throw new Error(`OpenRouter error ${res.status}: ${(errBody as { error?: { message?: string } }).error?.message || res.statusText}`);
+    throw new Error(`Claude error ${res.status}: ${(errBody as { error?: { message?: string } }).error?.message || res.statusText}`);
   }
 
   const reader = res.body?.getReader();
@@ -508,8 +506,8 @@ async function callClaudeStream(
       if (data === "[DONE]") continue;
       try {
         const json = JSON.parse(data);
-        const text: string | undefined = json?.choices?.[0]?.delta?.content;
-        if (text) {
+        if (json.type === "content_block_delta" && json.delta?.type === "text_delta") {
+          const text: string = json.delta.text;
           fullText += text;
           onToken(text);
         }
@@ -552,7 +550,7 @@ class ChatServiceClass {
 
   async checkHealth(): Promise<boolean> {
     if (this.ollamaAvailable !== null) return this.ollamaAvailable;
-    this.ollamaAvailable = !!OPENROUTER_API_KEY;
+    this.ollamaAvailable = !!ANTHROPIC_API_KEY;
     return this.ollamaAvailable;
   }
 
@@ -579,9 +577,9 @@ class ChatServiceClass {
         response: null,
         error: {
           error: true,
-          message: "OpenRouter no está configurado",
-          code: "OPENROUTER_UNAVAILABLE",
-          suggestion: "Configura VITE_OPENROUTER_API_KEY en el archivo .env del proyecto.",
+          message: "Claude AI no está configurado",
+          code: "CLAUDE_UNAVAILABLE",
+          suggestion: "Configura VITE_ANTHROPIC_API_KEY en el archivo .env del proyecto.",
         },
       };
     }
@@ -613,7 +611,7 @@ class ChatServiceClass {
         response: {
           id: Math.random().toString(36).substr(2, 9),
           response: answer,
-          sessionId: "openrouter-direct",
+          sessionId: "claude-direct",
           tokensUsed: 0,
           model: MODEL,
           timestamp: new Date().toISOString(),
@@ -624,13 +622,13 @@ class ChatServiceClass {
       this.ollamaAvailable = null;
       const isTimeout = err instanceof DOMException && err.name === "TimeoutError";
       const errMsg = err instanceof Error ? err.message : String(err);
-      console.error("[ChatService] OpenRouter error:", errMsg);
+      console.error("[ChatService] Claude error:", errMsg);
       return {
         response: null,
         error: {
           error: true,
-          message: isTimeout ? "OpenRouter tardó demasiado en responder" : `Error: ${errMsg}`,
-          code: isTimeout ? "TIMEOUT" : "OPENROUTER_ERROR",
+          message: isTimeout ? "Claude tardó demasiado en responder" : `Error: ${errMsg}`,
+          code: isTimeout ? "TIMEOUT" : "CLAUDE_ERROR",
           suggestion: "Revisa la consola del navegador (F12) para más detalles.",
         },
       };
