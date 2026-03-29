@@ -15,12 +15,12 @@ export interface ChatError {
 }
 
 /* ═══════════════════════════════════════════════════════════════
-   Chat Service — Gemini AI con Smart Context Selection
+   Chat Service — Groq LLaMA AI con Smart Context Selection
    Solo inyecta datos RELEVANTES a la pregunta → rápido y preciso
    ═══════════════════════════════════════════════════════════════ */
 
-const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
-const MODEL = "gemini-2.0-flash";
+const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
+const MODEL = "llama-3.3-70b-versatile";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 
@@ -460,35 +460,33 @@ ${summary.byServicio.slice().sort((a, b) => b.qty - a.qty).map(({ name: svc }) =
   return sections.join("\n\n");
 }
 
-// ── Gemini API call with STREAMING ──
+// ── Groq API call with STREAMING (OpenAI-compatible) ──
 async function callClaudeStream(
   messages: { role: string; content: string }[],
   systemPrompt: string,
   onToken: (token: string) => void,
 ): Promise<string> {
-  // Convert messages: Anthropic uses "assistant", Gemini uses "model"
-  const geminiContents = messages.map((m) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: [{ text: m.content }],
-  }));
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:streamGenerateContent?alt=sse&key=${GEMINI_API_KEY || ""}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: systemPrompt }] },
-        contents: geminiContents,
-        generationConfig: { maxOutputTokens: 2048 },
-      }),
-      signal: AbortSignal.timeout(180000),
-    }
-  );
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${GROQ_API_KEY || ""}`,
+    },
+    body: JSON.stringify({
+      model: MODEL,
+      max_tokens: 2048,
+      stream: true,
+      messages: [
+        { role: "system", content: systemPrompt },
+        ...messages,
+      ],
+    }),
+    signal: AbortSignal.timeout(180000),
+  });
 
   if (!res.ok) {
     const errBody = await res.json().catch(() => ({}));
-    throw new Error(`Gemini error ${res.status}: ${(errBody as { error?: { message?: string } }).error?.message || res.statusText}`);
+    throw new Error(`Groq error ${res.status}: ${(errBody as { error?: { message?: string } }).error?.message || res.statusText}`);
   }
 
   const reader = res.body?.getReader();
@@ -505,10 +503,10 @@ async function callClaudeStream(
     const lines = chunk.split("\n").filter((l) => l.startsWith("data: "));
     for (const line of lines) {
       const data = line.slice(6).trim();
-      if (!data) continue;
+      if (data === "[DONE]") continue;
       try {
         const json = JSON.parse(data);
-        const text: string | undefined = json?.candidates?.[0]?.content?.parts?.[0]?.text;
+        const text: string | undefined = json?.choices?.[0]?.delta?.content;
         if (text) {
           fullText += text;
           onToken(text);
@@ -708,7 +706,7 @@ class ChatServiceClass {
 
   async checkHealth(): Promise<boolean> {
     if (this.ollamaAvailable !== null) return this.ollamaAvailable;
-    this.ollamaAvailable = !!GEMINI_API_KEY;
+    this.ollamaAvailable = !!GROQ_API_KEY;
     return this.ollamaAvailable;
   }
 
@@ -735,9 +733,9 @@ class ChatServiceClass {
         response: null,
         error: {
           error: true,
-          message: "Gemini AI no está configurado",
-          code: "GEMINI_UNAVAILABLE",
-          suggestion: "Configura VITE_GEMINI_API_KEY en el archivo .env del proyecto.",
+          message: "Groq AI no está configurado",
+          code: "GROQ_UNAVAILABLE",
+          suggestion: "Configura VITE_GROQ_API_KEY en el archivo .env del proyecto.",
         },
       };
     }
@@ -765,7 +763,7 @@ class ChatServiceClass {
         response: {
           id: Math.random().toString(36).substr(2, 9),
           response: answer,
-          sessionId: "gemini-direct",
+          sessionId: "groq-direct",
           tokensUsed: 0,
           model: MODEL,
           timestamp: new Date().toISOString(),
@@ -776,13 +774,13 @@ class ChatServiceClass {
       this.ollamaAvailable = null;
       const isTimeout = err instanceof DOMException && err.name === "TimeoutError";
       const errMsg = err instanceof Error ? err.message : String(err);
-      console.error("[ChatService] Gemini error:", errMsg);
+      console.error("[ChatService] Groq error:", errMsg);
       return {
         response: null,
         error: {
           error: true,
-          message: isTimeout ? "Gemini tardó demasiado en responder" : `Error: ${errMsg}`,
-          code: isTimeout ? "TIMEOUT" : "GEMINI_ERROR",
+          message: isTimeout ? "Groq tardó demasiado en responder" : `Error: ${errMsg}`,
+          code: isTimeout ? "TIMEOUT" : "GROQ_ERROR",
           suggestion: "Revisa la consola del navegador (F12) para más detalles.",
         },
       };
