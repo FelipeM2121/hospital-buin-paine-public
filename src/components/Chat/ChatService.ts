@@ -20,7 +20,7 @@ export interface ChatError {
    ═══════════════════════════════════════════════════════════════ */
 
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY as string | undefined;
-const MODEL = "qwen/qwen3-30b-a3b:free";
+const MODEL = "google/gemma-3-27b-it:free";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 
