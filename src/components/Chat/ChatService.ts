@@ -749,12 +749,16 @@ class ChatServiceClass {
 
       // Add user message to conversation
       this.conversationHistory.push({ role: "user", content: message });
-      if (this.conversationHistory.length > 6) {
-        this.conversationHistory = this.conversationHistory.slice(-6);
+      if (this.conversationHistory.length > 4) {
+        this.conversationHistory = this.conversationHistory.slice(-4);
       }
 
-      // System = base instructions + full inventory context
-      const systemPrompt = `${BASE_SYSTEM}\nDATOS DEL INVENTARIO (COMPLETOS):\n${context}`;
+      // System = base instructions + inventory context (truncated to fit Groq TPM limits)
+      const MAX_CONTEXT_CHARS = 18000;
+      const truncatedContext = context.length > MAX_CONTEXT_CHARS
+        ? context.slice(0, MAX_CONTEXT_CHARS) + "\n\n[...contexto truncado por límite de tokens...]"
+        : context;
+      const systemPrompt = `${BASE_SYSTEM}\nDATOS DEL INVENTARIO:\n${truncatedContext}`;
 
       const answer = await callClaudeStream(this.conversationHistory, systemPrompt, onToken || (() => {}));
       this.conversationHistory.push({ role: "assistant", content: answer });
