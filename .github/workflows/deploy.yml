@@ -33,7 +33,7 @@ jobs:
       - name: Build
         run: npm run build
         env:
-          VITE_ANTHROPIC_API_KEY: ${{ vars.VITE_ANTHROPIC_API_KEY }}
+          VITE_GEMINI_API_KEY: ${{ vars.VITE_GEMINI_API_KEY }}
           VITE_AZURE_CLIENT_ID: fb0f6bec-ada6-40c8-9c97-f72ba58ac3f4
           VITE_AZURE_TENANT_ID: e4e1bc33-e283-4312-bb37-89010224b7fe
 
