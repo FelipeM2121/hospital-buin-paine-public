@@ -19,7 +19,7 @@ export interface ChatError {
    Solo inyecta datos RELEVANTES a la pregunta → rápido y preciso
    ═══════════════════════════════════════════════════════════════ */
 
-const GEMINI_API_KEY = (import.meta.env.VITE_GEMINI_API_KEY as string | undefined) || "AIzaSyAOWeyuCVS6-a0fm6AtLr_Vb28B6bzJkYc";
+const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY as string | undefined;
 const MODEL = "gemini-2.0-flash";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
