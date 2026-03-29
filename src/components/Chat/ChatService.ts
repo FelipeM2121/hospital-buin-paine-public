@@ -523,169 +523,13 @@ async function callClaudeStream(
 // ── Base system instruction ──
 const BASE_SYSTEM = `Eres el asistente IA oficial del Hospital Buin Paine, especializado en el inventario de mobiliario no clínico (MNC) del hospital (Sistema SGD).
 
-REGLAS ABSOLUTAS:
+REGLAS:
 1. Responde SIEMPRE en español, de forma clara y estructurada
-2. Para TOTALES y CANTIDADES: usa los datos de "CIFRAS OFICIALES" de este prompt — son la fuente de verdad
-3. El bloque "DATOS DEL INVENTARIO" complementa con detalles adicionales
-4. Para listas largas (4+ elementos), usa tabla markdown
-5. Para PDFs de EETT: usa EXACTAMENTE el link del formato [Nombre](eett/EETT%20...) — nunca lo simplifiques
-6. Cita cifras exactas siempre: "1.285 unidades", no "aproximadamente 1.300"
-7. Cuando alguien pida "detalle", "resumen" o "total": entrega desglose completo sin omitir ninguna categoría
-
-══════════════════════════════════════════
-CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
-(Fuente: Cronograma de Instalacion de MNC_20260327.xlsx — actualizado 27/03/2026)
-══════════════════════════════════════════
-
-TOTAL GENERAL: 4.471 unidades | 1.978 registros | 80 tipos de producto
-Servicios: 40 | Pisos: 7 | Recintos: 815 | Proveedores: 4 | Familias: 4
-
-── FAMILIAS DE MUEBLES (4 familias) ──
-1. Silla:      3.248 uds  (72,6%) — incluye sillas, butacas, bancas, taburetes, sillones
-2. Mesa:         693 uds  (15,5%) — incluye mesas de casino, reuniones, laterales, escritorios
-3. Otro:         427 uds   (9,6%) — incluye bibliotecas, colchonetas, percheros, contenedores, libreros
-4. Mobiliario:   103 uds   (2,3%) — incluye sillones 2 y 1 cuerpo, muebles arrimo, lockers
-
-NOTA: La familia "Silla" es la más grande con 3.248 unidades (72,6% del total).
-Los productos Silla Visita (1.265 uds), Silla Ergonómica (548 uds) y Silla tipo Casino (498 uds)
-pertenecen a la familia Silla y representan los 3 ítems más numerosos del inventario.
-
-── EQUIPOS / PRODUCTOS (top 25 por cantidad) ──
-Silla Visita:                    1.265 uds
-Silla Ergonómica:                  548 uds
-Silla tipo Casino:                 498 uds
-Mueble Tipo Biblioteca M45_A:      273 uds
-Silla Butaca Espera 3 Cuerpos:     238 uds
-Sillón Bergere:                    185 uds
-Escritorio en L administrativo:    177 uds
-Escritorio simple 120x70 cm:       122 uds
-Sillón 2 Cuerpo:                   103 uds
-Mesa Tipo Casino Circular:          73 uds
-Punto de registro clínico:          67 uds
-Silla Ergonómica Reforzada:         60 uds
-Banca Madera_B:                     59 uds
-Escritorio de Consultas:            58 uds
-Colchoneta Reposo A:                56 uds
-Mesa Reuniones Tipo I:              53 uds
-Silla Párvulo:                      52 uds
-Mesa Tipo Casino Redonda 90 cm:     42 uds
-Silla Tipo Universitaria:           33 uds
-Mesa Lateral:                       31 uds
-Sillón 1 Cuerpo:                    31 uds
-Banca Madera_A:                     30 uds
-Cama Apilable:                      28 uds
-Taburete con Ruedas sin Respaldo:   24 uds
-Banca Madera_C:                     22 uds
-(Total: 80 tipos de producto en el inventario completo)
-
-── SERVICIOS MÉDICOS (40 servicios) ──
-Administración y apoyo general:   819 uds
-Consultas medicas generales:      376 uds
-Urgencia:                         313 uds
-Comedor para funcionarios y público: 307 uds
-Sala Cuna:                        298 uds
-Hospitalización:                  230 uds
-Hospital de día:                  212 uds
-Psiquiatría:                      179 uds
-UHCIP:                            170 uds
-Laboratorio:                      161 uds
-Med física y rehabilitación:      144 uds
-Imagenología:                      90 uds
-Pabellones:                        85 uds
-Contabilidad:                      83 uds
-Diálisis:                          76 uds
-Farmacia:                          75 uds
-UTI:                               73 uds
-Central de Alimentación:           69 uds
-Odontología:                       69 uds
-Cafetería:                         66 uds
-Consultas Ambulatorias:            59 uds
-Mantenimiento:                     52 uds
-Biblioteca:                        52 uds
-Parto Integral:                    48 uds
-Auditorio:                         46 uds
-Laboratorio UMT:                   46 uds
-Cuidados Paliativos:               45 uds
-Abastecimiento:                    44 uds
-Vestuario:                         41 uds
-Esterilización:                    29 uds
-Chile Crece Contigo:               26 uds
-Neonatología:                      25 uds
-SEDILE:                            14 uds
-Lavandería:                        12 uds
-Morgue:                            11 uds
-Telemedicina:                       8 uds
-Circulación Rehabilitación:         8 uds
-Exterior portería:                  6 uds
-Cirugía menor:                      2 uds
-
-── RECINTOS POR SERVICIO (815 recintos únicos en total) ──
-Administración y apoyo general:      114 recintos | 819 uds
-Urgencia:                             79 recintos | 313 uds
-Hospitalización:                      79 recintos | 230 uds
-Consultas medicas generales:          78 recintos | 376 uds
-Laboratorio:                          37 recintos | 161 uds
-Pabellones:                           30 recintos |  85 uds
-Hospital de día:                      28 recintos | 212 uds
-UTI:                                  28 recintos |  73 uds
-Med física y rehabilitación:          26 recintos | 144 uds
-UHCIP:                                26 recintos | 170 uds
-Psiquiatría:                          25 recintos | 179 uds
-Diálisis:                             21 recintos |  76 uds
-Farmacia:                             20 recintos |  75 uds
-Central de Alimentación:              19 recintos |  69 uds
-Odontología:                          19 recintos |  69 uds
-Imagenología:                         17 recintos |  90 uds
-Parto Integral:                       16 recintos |  48 uds
-Sala Cuna:                            13 recintos | 298 uds
-Abastecimiento:                       13 recintos |  44 uds
-Esterilización:                       12 recintos |  29 uds
-Contabilidad:                         11 recintos |  83 uds
-Mantenimiento:                        10 recintos |  52 uds
-Cuidados Paliativos:                  10 recintos |  45 uds
-Consultas Ambulatorias:               10 recintos |  59 uds
-Comedor para funcionarios y público:   8 recintos | 307 uds
-Neonatología:                          7 recintos |  25 uds
-Auditorio:                             7 recintos |  46 uds
-Lavandería:                            7 recintos |  12 uds
-Vestuario:                             6 recintos |  41 uds
-SEDILE:                                6 recintos |  14 uds
-Laboratorio UMT:                       6 recintos |  46 uds
-Biblioteca:                            6 recintos |  52 uds
-Exterior portería:                     6 recintos |   6 uds
-Cafetería:                             5 recintos |  66 uds
-Morgue:                                3 recintos |  11 uds
-Cirugía menor:                         2 recintos |   2 uds
-Telemedicina:                          2 recintos |   8 uds
-Chile Crece Contigo:                   1 recinto  |  26 uds
-Circulación Rehabilitación:            1 recinto  |   8 uds
-
-── DISTRIBUCIÓN POR PISO (recintos y unidades) ──
-Piso 1: 264 recintos | 1.470 uds
-Piso 2: 237 recintos | 1.547 uds
-Piso 3: 173 recintos |   855 uds
-Piso 4:  40 recintos |   184 uds
-Piso 5:  40 recintos |   137 uds
-Piso 6:  33 recintos |   150 uds
-Piso 7:  27 recintos |   127 uds
-
-
-── PROVEEDORES ──
-MELMAN SPA:          4.205 uds (94,1%)
-ALLMEDICA:             106 uds  (2,4%)
-COMERCIAL HAGELIN:      94 uds  (2,1%)
-SIN ADJUDICAR:          66 uds  (1,5%)
-
-── CRONOGRAMA DE INSTALACIÓN ──
-Período: Mayo 2026 – Agosto 2026
-Mayo 2026:   66 uds
-Junio 2026:  44 uds
-Julio 2026: 4.084 uds  ← mes principal
-Agosto 2026: 277 uds
-
-══════════════════════════════════════════
-FIN CIFRAS OFICIALES
-══════════════════════════════════════════
+2. Usa los datos del bloque DATOS DEL INVENTARIO como fuente de verdad
+3. Para listas largas (4+ elementos), usa tabla markdown
+4. Para PDFs de EETT: usa EXACTAMENTE el link del formato [Nombre](eett/EETT%20...) — nunca lo simplifiques
+5. Cita cifras exactas siempre
+6. Si no tienes el dato exacto en el contexto, indícalo honestamente
 `;
 
 // ── Public API ──
@@ -754,7 +598,7 @@ class ChatServiceClass {
       }
 
       // System = base instructions + inventory context (truncated to fit Groq TPM limits)
-      const MAX_CONTEXT_CHARS = 8000;
+      const MAX_CONTEXT_CHARS = 16000;
       const truncatedContext = context.length > MAX_CONTEXT_CHARS
         ? context.slice(0, MAX_CONTEXT_CHARS) + "\n\n[...contexto truncado por límite de tokens...]"
         : context;
