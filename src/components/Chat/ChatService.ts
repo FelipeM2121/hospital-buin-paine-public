@@ -775,13 +775,15 @@ class ChatServiceClass {
     } catch (err) {
       this.ollamaAvailable = null;
       const isTimeout = err instanceof DOMException && err.name === "TimeoutError";
+      const errMsg = err instanceof Error ? err.message : String(err);
+      console.error("[ChatService] Gemini error:", errMsg);
       return {
         response: null,
         error: {
           error: true,
-          message: isTimeout ? "Gemini tardó demasiado en responder" : "Error al comunicarse con Gemini",
+          message: isTimeout ? "Gemini tardó demasiado en responder" : `Error: ${errMsg}`,
           code: isTimeout ? "TIMEOUT" : "GEMINI_ERROR",
-          suggestion: "Si el problema persiste, contacta al administrador del sistema.",
+          suggestion: "Revisa la consola del navegador (F12) para más detalles.",
         },
       };
     }
