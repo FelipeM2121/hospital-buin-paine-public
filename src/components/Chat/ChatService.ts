@@ -20,7 +20,7 @@ export interface ChatError {
    ═══════════════════════════════════════════════════════════════ */
 
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY as string | undefined;
-const MODEL = "llama-3.3-70b-versatile";
+const MODEL = "llama3-8b-8192";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
 
