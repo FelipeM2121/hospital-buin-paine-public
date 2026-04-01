@@ -1,11 +1,6 @@
-// AUTO-GENERADO desde: Cronograma de Instalacion de MNC_20260327_CLAUDE.xlsx
-// Hospital Salvador - Mobiliario No Clínico | 1978 ítems | 4471 unidades
+import type { SummaryData } from '../types';
 
-export const SUMMARY = {
-  "hospital": "Hospital Salvador - Licitación PMJH",
-  "proyecto": "Mobiliario No Clínico (MNC)",
-  "psp": "NOVIEMBRE 2026",
-  "fuente": "Cronograma de Instalacion de MNC_20260327_CLAUDE.xlsx",
+export const SUMMARY: SummaryData = {
   "totalItems": 1978,
   "totalQty": 4471,
   "uniqueRecintos": 28,
@@ -577,235 +572,33 @@ export const SUMMARY = {
       "qty": 1
     }
   ],
-  "byZona": [
-    {
-      "name": "E.3.5",
-      "qty": 296
-    },
-    {
-      "name": "H.2.8.1",
-      "qty": 61
-    },
-    {
-      "name": "H.2.11.1",
-      "qty": 60
-    },
-    {
-      "name": "H.2.11.2",
-      "qty": 60
-    },
-    {
-      "name": "H.2.8.2",
-      "qty": 60
-    },
-    {
-      "name": "A.1.7.2",
-      "qty": 40
-    },
-    {
-      "name": "C.2.2.2.1",
-      "qty": 35
-    },
-    {
-      "name": "D.4.5.4",
-      "qty": 27
-    },
-    {
-      "name": "C.3.6.1.10",
-      "qty": 26
-    },
-    {
-      "name": "D.4.2.3",
-      "qty": 25
-    },
-    {
-      "name": "C.2.5.3.18",
-      "qty": 23
-    },
-    {
-      "name": "C.5.10.1",
-      "qty": 22
-    },
-    {
-      "name": "D.3.2.1.2",
-      "qty": 22
-    },
-    {
-      "name": "C.3.4.2.9",
-      "qty": 21
-    },
-    {
-      "name": "E.1.3",
-      "qty": 21
-    },
-    {
-      "name": "C.3.8.1",
-      "qty": 21
-    },
-    {
-      "name": "D.4.6.1",
-      "qty": 21
-    },
-    {
-      "name": "C.2.5.2.24",
-      "qty": 21
-    },
-    {
-      "name": "C.3.3.5",
-      "qty": 21
-    },
-    {
-      "name": "D.3.3.1.2",
-      "qty": 20
-    },
-    {
-      "name": "A.1.7.1",
-      "qty": 20
-    },
-    {
-      "name": "C.5.7.19",
-      "qty": 19
-    },
-    {
-      "name": "E.5.2.1",
-      "qty": 19
-    },
-    {
-      "name": "E.5.2.2",
-      "qty": 19
-    },
-    {
-      "name": "E.5.2.3",
-      "qty": 19
-    },
-    {
-      "name": "E.5.2.4",
-      "qty": 19
-    },
-    {
-      "name": "E.2.4",
-      "qty": 18
-    },
-    {
-      "name": "C.2.5.4.5",
-      "qty": 17
-    },
-    {
-      "name": "B.3.2.3",
-      "qty": 16
-    },
-    {
-      "name": "C.4.6.4",
-      "qty": 16
-    },
-    {
-      "name": "D.2.5.1",
-      "qty": 16
-    },
-    {
-      "name": "D.3.4.1",
-      "qty": 16
-    },
-    {
-      "name": "D.4.5.3",
-      "qty": 16
-    },
-    {
-      "name": "C.5.3.15",
-      "qty": 16
-    },
-    {
-      "name": "D.1.2.3",
-      "qty": 15
-    },
-    {
-      "name": "C.3.4.3.1",
-      "qty": 15
-    },
-    {
-      "name": "C.3.4.4.1",
-      "qty": 15
-    },
-    {
-      "name": "C.3.6.1.3",
-      "qty": 15
-    },
-    {
-      "name": "A.1.2",
-      "qty": 15
-    },
-    {
-      "name": "C.5.7.31",
-      "qty": 15
-    },
-    {
-      "name": "C.1.2.2",
-      "qty": 14
-    },
-    {
-      "name": "C.5.2.13",
-      "qty": 14
-    },
-    {
-      "name": "H.2.9",
-      "qty": 14
-    },
-    {
-      "name": "C.5.7.15",
-      "qty": 13
-    },
-    {
-      "name": "C.5.7.18",
-      "qty": 13
-    },
-    {
-      "name": "C.2.5.4.17",
-      "qty": 13
-    },
-    {
-      "name": "C.5.3.2",
-      "qty": 13
-    },
-    {
-      "name": "C.2.5.2.5.1",
-      "qty": 13
-    },
-    {
-      "name": "C.5.4.1",
-      "qty": 13
-    },
-    {
-      "name": "C.5.11.1",
-      "qty": 12
-    }
-  ],
   "byMes": [
     {
-      "name": "2026-05",
-      "qty": 66
+      "name": "mayo de 2026",
+      "qty": 110
     },
     {
-      "name": "2026-06",
-      "qty": 44
+      "name": "junio de 2026",
+      "qty": 2929
     },
     {
-      "name": "2026-07",
-      "qty": 4084
-    },
-    {
-      "name": "2026-08",
+      "name": "agosto de 2026",
       "qty": 277
+    },
+    {
+      "name": "julio de 2026",
+      "qty": 1155
     }
   ],
-  "bySemana": [],
-  "byDia": [],
   "fechaStats": {
     "totalConFecha": 1978,
     "fechaMin": "2026-05-04",
-    "fechaMax": "2026-09-11",
-    "totalMeses": 4,
-    "totalSemanas": 0
+    "fechaMax": "2026-08-03",
+    "totalMeses": 4
   },
+  "hospital": "Hospital Buin Paine",
+  "proyecto": "Mobiliario No Clínico (MNC)",
+  "psp": "NOVIEMBRE 2026",
   "cronograma": {
     "fechaInicioMin": "2026-05-04",
     "fechaInicioMax": "2026-08-03",
@@ -819,82 +612,82 @@ export const SUMMARY = {
   ],
   "totalCNOs": 76,
   "cnos": [
-    "HBP-MNC- 053",
-    "HBP-MNC- 100",
-    "HBP-MNC- 125",
-    "HBP-MNC-004",
-    "HBP-MNC-005",
-    "HBP-MNC-006",
-    "HBP-MNC-007",
-    "HBP-MNC-008",
-    "HBP-MNC-009",
-    "HBP-MNC-010",
-    "HBP-MNC-011",
-    "HBP-MNC-012",
-    "HBP-MNC-039",
-    "HBP-MNC-040",
-    "HBP-MNC-045",
-    "HBP-MNC-062",
-    "HBP-MNC-063",
-    "HBP-MNC-074",
-    "HBP-MNC-082",
-    "HBP-MNC-083",
-    "HBP-MNC-084",
-    "HBP-MNC-087",
-    "HBP-MNC-088",
-    "HBP-MNC-089",
-    "HBP-MNC-090",
-    "HBP-MNC-091",
-    "HBP-MNC-092",
-    "HBP-MNC-093",
-    "HBP-MNC-094",
-    "HBP-MNC-095",
-    "HBP-MNC-096",
-    "HBP-MNC-097",
-    "HBP-MNC-098",
-    "HBP-MNC-099",
-    "HBP-MNC-101",
-    "HBP-MNC-102",
-    "HBP-MNC-103",
-    "HBP-MNC-104",
-    "HBP-MNC-105",
-    "HBP-MNC-106",
-    "HBP-MNC-107",
-    "HBP-MNC-108",
-    "HBP-MNC-109",
-    "HBP-MNC-110",
-    "HBP-MNC-111",
     "HBP-MNC-112",
     "HBP-MNC-113",
     "HBP-MNC-114",
     "HBP-MNC-115",
-    "HBP-MNC-116",
-    "HBP-MNC-117",
-    "HBP-MNC-118",
-    "HBP-MNC-119",
-    "HBP-MNC-120",
-    "HBP-MNC-121",
-    "HBP-MNC-122",
-    "HBP-MNC-123",
-    "HBP-MNC-124",
-    "HBP-MNC-126",
-    "HBP-MNC-127",
-    "HBP-MNC-128",
-    "HBP-MNC-129",
+    "HBP-MNC-009",
+    "HBP-MNC-010",
+    "HBP-MNC-090",
+    "HBP-MNC-089",
+    "HBP-MNC-092",
+    "HBP-MNC-093",
+    "HBP-MNC-094",
+    "HBP-MNC-095",
+    "HBP-MNC-039",
+    "HBP-MNC-040",
+    "HBP-MNC-096",
+    "HBP-MNC-098",
+    "HBP-MNC-097",
+    "HBP-MNC-088",
+    "HBP-MNC-045",
+    "HBP-MNC- 100",
+    "HBP-MNC-158",
     "HBP-MNC-132",
+    "HBP-MNC-146",
+    "HBP-MNC-147",
+    "HBP-MNC-101",
     "HBP-MNC-135",
+    "HBP-MNC-102",
+    "HBP-MNC-103",
+    "HBP-MNC-004",
+    "HBP-MNC-104",
     "HBP-MNC-136",
+    "HBP-MNC- 053",
     "HBP-MNC-137",
     "HBP-MNC-138",
     "HBP-MNC-139",
     "HBP-MNC-140",
     "HBP-MNC-141",
+    "HBP-MNC-005",
+    "HBP-MNC-006",
+    "HBP-MNC-007",
+    "HBP-MNC-008",
     "HBP-MNC-142",
+    "HBP-MNC-011",
+    "HBP-MNC-012",
+    "HBP-MNC-105",
+    "HBP-MNC-106",
+    "HBP-MNC-091",
+    "HBP-MNC-099",
+    "HBP-MNC-107",
+    "HBP-MNC-109",
+    "HBP-MNC-062",
     "HBP-MNC-143",
-    "HBP-MNC-146",
-    "HBP-MNC-147",
+    "HBP-MNC-063",
+    "HBP-MNC-111",
+    "HBP-MNC-116",
     "HBP-MNC-157",
-    "HBP-MNC-158"
+    "HBP-MNC-117",
+    "HBP-MNC-108",
+    "HBP-MNC-129",
+    "HBP-MNC-118",
+    "HBP-MNC-123",
+    "HBP-MNC-119",
+    "HBP-MNC-074",
+    "HBP-MNC-120",
+    "HBP-MNC-121",
+    "HBP-MNC-122",
+    "HBP-MNC-124",
+    "HBP-MNC- 125",
+    "HBP-MNC-126",
+    "HBP-MNC-082",
+    "HBP-MNC-083",
+    "HBP-MNC-110",
+    "HBP-MNC-084",
+    "HBP-MNC-127",
+    "HBP-MNC-128",
+    "HBP-MNC-087"
   ],
   "byServiceFull": {
     "Imagenología": {
@@ -1224,8 +1017,8 @@ export const SUMMARY = {
     {
       "codigo": "204012",
       "nombre": "Silla Visita",
-      "units": 1265,
-      "items": 382
+      "units": 1285,
+      "items": 386
     },
     {
       "codigo": "204006C",
@@ -1314,8 +1107,8 @@ export const SUMMARY = {
     {
       "codigo": "201008",
       "nombre": "Mesa Reuniones Tipo I",
-      "units": 53,
-      "items": 48
+      "units": 54,
+      "items": 49
     },
     {
       "codigo": "204009",
@@ -1340,6 +1133,36 @@ export const SUMMARY = {
       "nombre": "Mesa Lateral",
       "units": 31,
       "items": 12
+    },
+    {
+      "codigo": "204013",
+      "nombre": "Sillón 1 Cuerpo",
+      "units": 31,
+      "items": 21
+    },
+    {
+      "codigo": "204002A",
+      "nombre": "Banca Madera_A",
+      "units": 30,
+      "items": 18
+    },
+    {
+      "codigo": "202006",
+      "nombre": "Cama Apilable",
+      "units": 28,
+      "items": 2
+    },
+    {
+      "codigo": "204006B",
+      "nombre": "Taburete con Ruedas sin Respaldo",
+      "units": 24,
+      "items": 24
+    },
+    {
+      "codigo": "204002C",
+      "nombre": "Banca Madera_C",
+      "units": 22,
+      "items": 20
     }
   ],
   "topServicios": [
@@ -1382,6 +1205,26 @@ export const SUMMARY = {
     {
       "name": "Laboratorio",
       "qty": 161
+    },
+    {
+      "name": "Med física y rehabilitación",
+      "qty": 144
+    },
+    {
+      "name": "Imagenología",
+      "qty": 90
+    },
+    {
+      "name": "Pabellones",
+      "qty": 85
+    },
+    {
+      "name": "Contabilidad",
+      "qty": 83
+    },
+    {
+      "name": "Diálisis",
+      "qty": 76
     }
   ]
-} as const;
+};
