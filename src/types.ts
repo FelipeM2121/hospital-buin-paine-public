@@ -9,6 +9,15 @@ export interface RawItem {
   piso: number;
   recinto: string;
   fechaInstalacion: string;
+  // Nuevos campos MNC
+  tipoEquipo?: string;
+  nCNO?: string;
+  ordenCompra?: string;
+  fechaRecintoTerminado?: string;
+  duracion?: number;
+  fechaTermino?: string;
+  planEntrenamiento?: string;
+  fechaRecepcionConforme?: string;
 }
 
 export interface InventoryItem extends RawItem {}

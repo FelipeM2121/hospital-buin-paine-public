@@ -19,7 +19,7 @@ export interface ChatError {
    Solo inyecta datos RELEVANTES a la pregunta → rápido y preciso
    ═══════════════════════════════════════════════════════════════ */
 
-const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as string | undefined;
+const ANTHROPIC_PROXY_URL = "https://anthropic-proxy.f-moena-c.workers.dev";
 const MODEL = "claude-sonnet-4-6";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
@@ -460,26 +460,23 @@ ${summary.byServicio.slice().sort((a, b) => b.qty - a.qty).map(({ name: svc }) =
   return sections.join("\n\n");
 }
 
-// ── Claude API call with STREAMING ──
+// ── Claude API call (sin streaming — más confiable a través de proxy) ──
 async function callClaudeStream(
   messages: { role: string; content: string }[],
   systemPrompt: string,
   onToken: (token: string) => void,
 ): Promise<string> {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
+  const res = await fetch(ANTHROPIC_PROXY_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY || "",
       "anthropic-version": "2023-06-01",
-      "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 2048,
       system: systemPrompt,
       messages,
-      stream: true,
     }),
     signal: AbortSignal.timeout(180000),
   });
@@ -489,35 +486,12 @@ async function callClaudeStream(
     throw new Error(`Claude error ${res.status}: ${(errBody as { error?: { message?: string } }).error?.message || res.statusText}`);
   }
 
-  const reader = res.body?.getReader();
-  if (!reader) throw new Error("No response body");
+  const data = await res.json() as { content?: { type: string; text: string }[]; error?: { message: string } };
+  if (data.error) throw new Error(data.error.message);
 
-  const decoder = new TextDecoder();
-  let fullText = "";
-
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-
-    const chunk = decoder.decode(value, { stream: true });
-    const lines = chunk.split("\n").filter((l) => l.startsWith("data: "));
-    for (const line of lines) {
-      const data = line.slice(6).trim();
-      if (data === "[DONE]") continue;
-      try {
-        const json = JSON.parse(data);
-        if (json.type === "content_block_delta" && json.delta?.type === "text_delta") {
-          const text: string = json.delta.text;
-          fullText += text;
-          onToken(text);
-        }
-      } catch {
-        // skip malformed
-      }
-    }
-  }
-
-  return fullText || "Sin respuesta del modelo.";
+  const text = data.content?.[0]?.text || "Sin respuesta del modelo.";
+  onToken(text);
+  return text;
 }
 
 // ── Base system instruction ──
@@ -529,53 +503,69 @@ REGLAS ABSOLUTAS:
 3. El bloque "DATOS DEL INVENTARIO" complementa con detalles adicionales
 4. Para listas largas (4+ elementos), usa tabla markdown
 5. Para PDFs de EETT: usa EXACTAMENTE el link del formato [Nombre](eett/EETT%20...) — nunca lo simplifiques
-6. Cita cifras exactas siempre: "1.285 unidades", no "aproximadamente 1.300"
+6. Cita cifras exactas siempre: "1.265 unidades", no "aproximadamente 1.300"
 7. Cuando alguien pida "detalle", "resumen" o "total": entrega desglose completo sin omitir ninguna categoría
 
 ══════════════════════════════════════════
-CATÁLOGO MELMAN — INSTRUCCIONES DE VISUALIZACIÓN
+CATÁLOGO MELMAN — LINKS DE PRODUCTOS
 ══════════════════════════════════════════
-El sistema tiene integrado el Catálogo Melman completo (74 páginas) en formato PDF.
-Cuando el usuario pregunta sobre productos del catálogo o pide ver páginas, DEBES incluir referencias de página en tu respuesta.
+Cuando el usuario pida ver un producto del catálogo, entrega el link directo al PDF usando el formato:
+[Nombre del producto](catalogo/separado/ARCHIVO.pdf)
 
-REGLA CRÍTICA PARA CATÁLOGO:
-- Cuando menciones una página del catálogo, escribe SIEMPRE "página X" (ej: "puedes verlo en la página 15")
-- El sistema detecta automáticamente "página X" y muestra esa página del PDF
-- Puedes referenciar múltiples páginas en una respuesta
+PRODUCTOS DEL CATÁLOGO (usar EXACTAMENTE estos links):
+- [Índice del Catálogo](catalogo/separado/00_Indice.pdf)
+- [Portada](catalogo/separado/00_Portada.pdf)
+- [Estación de Trabajo A](catalogo/separado/201.001A_Estacion_de_Trabajo_A.pdf)
+- [Estación de Trabajo B](catalogo/separado/201.001B_Estacion_de_Trabajo_B.pdf)
+- [Estación de Trabajo C](catalogo/separado/201.001C_Estacion_de_Trabajo_C.pdf)
+- [Estación de Trabajo D](catalogo/separado/201.001D_Estacion_de_Trabajo_D.pdf)
+- [Estación de Trabajo E](catalogo/separado/201.001E_Estacion_de_Trabajo_E.pdf)
+- [Mesa Lateral](catalogo/separado/201.002_Mesa_Lateral.pdf)
+- [Mesa Párvulo Inclusión](catalogo/separado/201.003_Mesa_Parvulo_Inclusion.pdf)
+- [Mesa Párvulo Tipo I](catalogo/separado/201.004_Mesa_Parvulo_Tipo_I.pdf)
+- [Mesa Párvulo Tipo II](catalogo/separado/201.005_Mesa_Parvulo_Tipo_II.pdf)
+- [Mesa Reunión Tipo I](catalogo/separado/201.008_Mesa_Reunion_Tipo_I.pdf)
+- [Mesa Reunión Tipo II](catalogo/separado/201.009_Mesa_Reunion_Tipo_II.pdf)
+- [Mesa Reuniones Tipo III](catalogo/separado/201.010_Mesa_Reuniones_Tipo_III.pdf)
+- [Mesa Tipo Casino](catalogo/separado/201.011_Mesa_Tipo_Casino.pdf)
+- [Silla Tipo Universitaria](catalogo/separado/201.011_Silla_Tipo_Universitaria.pdf)
+- [Atril Graduable](catalogo/separado/202.001_Atril_Graduable.pdf)
+- [Cama Apilable](catalogo/separado/202.006_Cama_Apilable.pdf)
+- [Cuna Alta](catalogo/separado/202.008_Cuna_Alta.pdf)
+- [Cuna Baja](catalogo/separado/202.009_Cuna_Baja.pdf)
+- [Mueble Locker](catalogo/separado/202.012_Mueble_Locker.pdf)
+- [Librero](catalogo/separado/203.014_Librero.pdf)
+- [Mueble Arrimo](catalogo/separado/203.015_Mueble_Arrimo.pdf)
+- [Mueble Tipo Biblioteca B](catalogo/separado/203.016B_Mueble_Tipo_Biblioteca_B.pdf)
+- [Mueble Tipo Biblioteca](catalogo/separado/203.016_Mueble_Tipo_Biblioteca.pdf)
+- [Perchero](catalogo/separado/203.018_Perchero.pdf)
+- [Contenedor](catalogo/separado/203.022_Contenedor.pdf)
+- [Banca Sala Cuna](catalogo/separado/204.001_Banca_Sala_Cuna.pdf)
+- [Banca Madera A](catalogo/separado/204.002A_Banca_Madera_A.pdf)
+- [Banca Madera B](catalogo/separado/204.002B_Banca_Madera_B.pdf)
+- [Banca Madera C](catalogo/separado/204.002C_Banca_Madera_C.pdf)
+- [Banca Madera D](catalogo/separado/204.002D_Banca_Madera_D.pdf)
+- [Silla Adulto](catalogo/separado/204.003_Silla_Adulto.pdf)
+- [Silla Bacínica](catalogo/separado/204.005_Silla_Bacinica.pdf)
+- [Silla Ergonómica](catalogo/separado/204.006_Silla_Ergonomica.pdf)
+- [Silla Lactante](catalogo/separado/204.007_Silla_Lactante.pdf)
+- [Silla Párvulo](catalogo/separado/204.009_Silla_Parvulo.pdf)
+- [Silla Tipo Casino](catalogo/separado/204.010_Silla_Tipo_Casino.pdf)
+- [Silla Visita](catalogo/separado/204.012_Silla_Visita.pdf)
+- [Sillón 1 Cuerpo](catalogo/separado/204.013_Sillon_1_Cuerpo.pdf)
+- [Sillón 2 Cuerpos](catalogo/separado/204.014_Sillon_2_Cuerpos.pdf)
+- [Sillón Bergere](catalogo/separado/204.015_Sillon_Bergere.pdf)
+- [Silla Butaca Espera 3 Cuerpos](catalogo/separado/204.020_Silla_Butaca_Espera_3_Cuerpos.pdf)
+- [Silla Apoyo Hora Ingesta](catalogo/separado/0204.019_Silla_Apoyo_Hora_Ingesta.pdf)
 
-ÍNDICE APROXIMADO DEL CATÁLOGO MELMAN:
-- Páginas 1-2: Portada e índice general
-- Páginas 3-15: Mesas (series 201.xxx) — escritorios, laterales, reuniones, casino
-- Páginas 16-25: Mobiliario y almacenamiento (series 202.xxx-203.xxx) — lockers, estantes, bibliotecas
-- Páginas 26-45: Sillas y asientos (series 204.xxx) — sillas visita, ergonómicas, casino, universitarias
-- Páginas 46-55: Sillones y butacas — bergere, 1 y 2 cuerpos, espera
-- Páginas 56-65: Bancas y mobiliario infantil — bancas madera, sillas párvulo, cunas
-- Páginas 66-74: Especificaciones técnicas y fichas de materiales
-
-CORRESPONDENCIA CÓDIGO EETT → PÁGINAS DEL CATÁLOGO:
-- 201.001 Escritorio en L → páginas 3-4
-- 201.002 Mesa lateral → página 5
-- 201.008/009/010 Mesas reuniones → páginas 8-11
-- 201.011 Mesa casino → páginas 12-13
-- 202.006 Cama apilable → página 20
-- 202.008 Cuna alta → página 22
-- 202.012 Locker metálico → página 24
-- 203.014/016 Libreros/biblioteca → páginas 26-28
-- 204.003 Silla multiuso → página 30
-- 204.006 Silla ergonómica → páginas 32-33
-- 204.009 Silla párvulo → página 38
-- 204.010 Silla casino → página 39
-- 204.011 Silla universitaria → página 40
-- 204.012 Silla visita → páginas 41-42
-- 204.013/014 Sillones 1 y 2 cuerpos → páginas 46-48
-- 204.015 Sillón bergere → páginas 49-50
-- 204.020 Butaca espera 3 cuerpos → páginas 52-53
-
-CUÁNDO MOSTRAR EL CATÁLOGO:
-- Si el usuario pregunta por un producto específico → menciona su página del catálogo
-- Si el usuario dice "muéstrame", "ver catálogo", "cómo es", "catálogo melman" → muestra la página relevante
-- Si el usuario pregunta "¿qué tiene la página X?" → describe lo que típicamente contiene según el índice
-- Siempre ofrece ver el catálogo cuando hay una pregunta sobre características físicas de un mueble
+CERTIFICADOS:
+- [Certificado Bureau Veritas Climático p1](catalogo/separado/CERT_BureauVeritas_Climatico_p1.pdf)
+- [Certificado Bureau Veritas Ignífugo p1](catalogo/separado/CERT_BureauVeritas_Ignifugo_p1.pdf)
+- [Certificado Bureau Veritas Plomo/Ftalatos p1](catalogo/separado/CERT_BureauVeritas_Plomo_Ftalatos_p1.pdf)
+- [Certificado CTC Silla Ergonómica](catalogo/separado/CERT_CTC_N909_Silla_Ergonomica.pdf)
+- [Certificado CTC Librero](catalogo/separado/CERT_CTC_N977_Librero.pdf)
+- [Certificado CTC Cuna Alta](catalogo/separado/CERT_CTC_N980_Cuna_Alta.pdf)
+- [Certificado Ergotron StyleView p1](catalogo/separado/CERT_Ergotron_StyleView_p1.pdf)
 
 ══════════════════════════════════════════
 CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
@@ -742,7 +732,7 @@ class ChatServiceClass {
 
   async checkHealth(): Promise<boolean> {
     if (this.ollamaAvailable !== null) return this.ollamaAvailable;
-    this.ollamaAvailable = !!ANTHROPIC_API_KEY;
+    this.ollamaAvailable = !!ANTHROPIC_PROXY_URL;
     return this.ollamaAvailable;
   }
 
@@ -771,7 +761,7 @@ class ChatServiceClass {
           error: true,
           message: "Claude AI no está configurado",
           code: "CLAUDE_UNAVAILABLE",
-          suggestion: "Configura VITE_ANTHROPIC_API_KEY en el archivo .env del proyecto.",
+          suggestion: "El proxy del asistente no está disponible.",
         },
       };
     }

@@ -131,6 +131,16 @@ export const Icons = {
       <rect x="2" y="16" width="8" height="5" rx="1.5" fill="white" fillOpacity="0.9"/>
     </svg>
   ),
+  // Catálogo / libro abierto
+  catalog: (
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M4 4C4 2.9 4.9 2 6 2H14L20 8V20C20 21.1 19.1 22 18 22H6C4.9 22 4 21.1 4 20V4Z" fill="white" fillOpacity="0.85"/>
+      <path d="M14 2L20 8H16C14.895 8 14 7.105 14 6V2Z" fill="white" fillOpacity="0.5"/>
+      <rect x="7" y="11" width="10" height="1.5" rx="0.75" fill="white" fillOpacity="0.4"/>
+      <rect x="7" y="14" width="8" height="1.5" rx="0.75" fill="white" fillOpacity="0.4"/>
+      <rect x="7" y="17" width="5" height="1.5" rx="0.75" fill="white" fillOpacity="0.4"/>
+    </svg>
+  ),
   // Chat IA / burbujas de diálogo
   chat: (
     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">

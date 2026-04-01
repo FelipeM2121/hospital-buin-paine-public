@@ -1,8 +1,6 @@
 import React from "react";
 import { Copy, Check, ThumbsUp, ThumbsDown } from "lucide-react";
 import { Message } from "./ChatService";
-import { detectCatalogoPages } from "../Catalogo/CatalogoHelper";
-import CatalogoPageViewer from "../Catalogo/CatalogoPageViewer";
 
 interface ChatMessageProps {
   message: Message;
@@ -189,12 +187,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
     );
   }
 
-  // Assistant message — no avatar, full width text like Claude
-  const catalogoPages = detectCatalogoPages(message.content);
-  const hasCatalogo = message.content.toLowerCase().includes('catálogo') ||
-                      message.content.toLowerCase().includes('catalogo') ||
-                      message.content.toLowerCase().includes('melman');
-
   return (
     <div
       style={{ padding: "4px 24px", maxWidth: "820px", margin: "0 auto", width: "100%" }}
@@ -204,45 +196,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
       <div style={{ fontSize: "14px", color: "#1C1B1A" }}>
         {renderMarkdown(message.content)}
       </div>
-
-      {/* Catalog PDF Link */}
-      {hasCatalogo && (
-        <div style={{ marginTop: "12px", padding: "12px", backgroundColor: "#F5F3EE", borderRadius: "8px", border: "1px solid #E8E5DF" }}>
-          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-            <span style={{ fontSize: "12px", fontWeight: 600, color: "#6B6560" }}>📄 Catálogo Melman:</span>
-            <a
-              href="/catalogo-melman.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{
-                fontSize: "13px",
-                color: "#CF6E4A",
-                textDecoration: "underline",
-                textUnderlineOffset: "3px",
-                fontWeight: 500,
-                cursor: "pointer"
-              }}
-            >
-              Abrir PDF Completo
-            </a>
-          </div>
-        </div>
-      )}
-
-      {/* Catalog pages viewer */}
-      {catalogoPages.length > 0 && (
-        <div style={{ marginTop: "16px" }}>
-          {catalogoPages.map((pageNum, idx) => (
-            <div key={idx} style={{ marginBottom: idx < catalogoPages.length - 1 ? "20px" : "0" }}>
-              <CatalogoPageViewer
-                pageNumber={pageNum}
-                showControls={true}
-                showDownload={true}
-              />
-            </div>
-          ))}
-        </div>
-      )}
 
       {/* Action buttons */}
       {message.content && (

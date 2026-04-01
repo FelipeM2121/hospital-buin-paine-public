@@ -11,6 +11,7 @@ import {
   EspecificacionesTecnicasTab,
 } from "./components/Dashboard";
 import { ChatTab } from "./components/Chat/ChatTab";
+import { CatalogoTab } from "./components/Catalogo/CatalogoTab";
 import { RAW, SUMMARY, EETT_FILES } from "./data";
 import { PdfViewer } from "./components/PdfViewer";
 import { Sidebar } from "./components/Sidebar";
@@ -48,10 +49,11 @@ export default function App() {
                   <EspecificacionesTecnicasTab eettFiles={EETT_FILES} pdfViewer={PdfViewer} />
                 )}
                 {activeTab === "Control Documento" && <ControlDocumentos />}
+                {activeTab === "Catálogo" && <CatalogoTab />}
 
                 <div className="dashboard-footer">
-                  <span>Hospital Buin Paine • Mobiliario No Clínico</span>
-                  <span>Fuente: MNC_Claude_20260209.xlsx • {S.totalQty.toLocaleString("es-CL")} unidades</span>
+                  <span>Hospital Salvador • Mobiliario No Clínico</span>
+                  <span>Fuente: Cronograma MNC_20260327 • {S.totalQty.toLocaleString("es-CL")} unidades</span>
                 </div>
               </div>
             </div>

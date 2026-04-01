@@ -4,7 +4,7 @@ import { useMsal } from "@azure/msal-react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ChatService, Message, ChatError } from "./ChatService";
-import { CatalogoPageViewer } from "../Catalogo/CatalogoPageViewer";
+import { ChatCatalogo } from "../Catalogo/ChatCatalogo";
 import { mentionsCatalogo } from "../Catalogo/CatalogoHelper";
 import type { RawItem, SummaryData, EETTFile } from "../../types";
 
@@ -155,7 +155,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
               <X size={16} />
             </button>
           </div>
-          <CatalogoPageViewer />
+          <ChatCatalogo />
         </div>
       )}
 

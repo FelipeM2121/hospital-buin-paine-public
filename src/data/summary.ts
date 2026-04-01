@@ -1,14 +1,18 @@
-// Auto-generated from Cronograma de Instalacion de MNC_20260327.xlsx
-import type { SummaryData } from "../types";
+// AUTO-GENERADO desde: Cronograma de Instalacion de MNC_20260327_CLAUDE.xlsx
+// Hospital Salvador - Mobiliario No Clínico | 1978 ítems | 4471 unidades
 
-export const SUMMARY: SummaryData = {
+export const SUMMARY = {
+  "hospital": "Hospital Salvador - Licitación PMJH",
+  "proyecto": "Mobiliario No Clínico (MNC)",
+  "psp": "NOVIEMBRE 2026",
+  "fuente": "Cronograma de Instalacion de MNC_20260327_CLAUDE.xlsx",
   "totalItems": 1978,
   "totalQty": 4471,
-  "uniqueRecintos": 815,
+  "uniqueRecintos": 28,
   "uniqueNombres": 80,
   "uniqueServicios": 40,
-  "uniqueZonas": 28,
-  "pisos": 7,
+  "uniqueZonas": 815,
+  "pisos": 8,
   "proveedores": 4,
   "familias": 4,
   "byFamilia": [
@@ -575,116 +579,204 @@ export const SUMMARY: SummaryData = {
   ],
   "byZona": [
     {
-      "name": "NC-Áreas Administrativas en General",
-      "qty": 559
+      "name": "E.3.5",
+      "qty": 296
     },
     {
-      "name": "NC-Otros Servicios Adyacentes",
-      "qty": 546
+      "name": "H.2.8.1",
+      "qty": 61
     },
     {
-      "name": "CN-Otros Servicios Adyacentes",
-      "qty": 539
+      "name": "H.2.11.1",
+      "qty": 60
     },
     {
-      "name": "CM-Consultas Ambulatorias",
-      "qty": 387
+      "name": "H.2.11.2",
+      "qty": 60
     },
     {
-      "name": "CM-Otros Servicios Adyacentes",
-      "qty": 366
+      "name": "H.2.8.2",
+      "qty": 60
     },
     {
-      "name": "CN-Salas y Habitaciones de Hospitalización",
-      "qty": 312
+      "name": "A.1.7.2",
+      "qty": 40
     },
     {
-      "name": "NC-Casino",
-      "qty": 300
-    },
-    {
-      "name": "CM-Sala Cuna y Jardín Infantil",
-      "qty": 267
-    },
-    {
-      "name": "CA-Otros Servicios Adyacentes",
-      "qty": 251
-    },
-    {
-      "name": "NC-Áreas de Servicios Generales",
-      "qty": 207
-    },
-    {
-      "name": "CN-Urgencia",
-      "qty": 163
-    },
-    {
-      "name": "CM-Áreas de Rehabilitación",
-      "qty": 94
-    },
-    {
-      "name": "CN-Laboratorios",
-      "qty": 78
-    },
-    {
-      "name": "CM-Salas de Procedimientos no Invasivos",
-      "qty": 59
-    },
-    {
-      "name": "CM-Farmacia General",
-      "qty": 56
-    },
-    {
-      "name": "CN-Imagenología",
-      "qty": 55
-    },
-    {
-      "name": "NC-SAMU",
-      "qty": 49
-    },
-    {
-      "name": "CA-Áreas de Tratamiento Especial",
-      "qty": 45
-    },
-    {
-      "name": "CN-Pensionado",
+      "name": "C.2.2.2.1",
       "qty": 35
     },
     {
-      "name": "CM-Servicio Dental",
+      "name": "D.4.5.4",
+      "qty": 27
+    },
+    {
+      "name": "C.3.6.1.10",
+      "qty": 26
+    },
+    {
+      "name": "D.4.2.3",
+      "qty": 25
+    },
+    {
+      "name": "C.2.5.3.18",
+      "qty": 23
+    },
+    {
+      "name": "C.5.10.1",
+      "qty": 22
+    },
+    {
+      "name": "D.3.2.1.2",
+      "qty": 22
+    },
+    {
+      "name": "C.3.4.2.9",
       "qty": 21
     },
     {
-      "name": "CM-Central de Alimentación",
+      "name": "E.1.3",
+      "qty": 21
+    },
+    {
+      "name": "C.3.8.1",
+      "qty": 21
+    },
+    {
+      "name": "D.4.6.1",
+      "qty": 21
+    },
+    {
+      "name": "C.2.5.2.24",
+      "qty": 21
+    },
+    {
+      "name": "C.3.3.5",
+      "qty": 21
+    },
+    {
+      "name": "D.3.3.1.2",
+      "qty": 20
+    },
+    {
+      "name": "A.1.7.1",
+      "qty": 20
+    },
+    {
+      "name": "C.5.7.19",
+      "qty": 19
+    },
+    {
+      "name": "E.5.2.1",
+      "qty": 19
+    },
+    {
+      "name": "E.5.2.2",
+      "qty": 19
+    },
+    {
+      "name": "E.5.2.3",
+      "qty": 19
+    },
+    {
+      "name": "E.5.2.4",
+      "qty": 19
+    },
+    {
+      "name": "E.2.4",
+      "qty": 18
+    },
+    {
+      "name": "C.2.5.4.5",
+      "qty": 17
+    },
+    {
+      "name": "B.3.2.3",
       "qty": 16
     },
     {
-      "name": "CA-Unidad de Paciente Crítico",
+      "name": "C.4.6.4",
+      "qty": 16
+    },
+    {
+      "name": "D.2.5.1",
+      "qty": 16
+    },
+    {
+      "name": "D.3.4.1",
+      "qty": 16
+    },
+    {
+      "name": "D.4.5.3",
+      "qty": 16
+    },
+    {
+      "name": "C.5.3.15",
+      "qty": 16
+    },
+    {
+      "name": "D.1.2.3",
+      "qty": 15
+    },
+    {
+      "name": "C.3.4.3.1",
+      "qty": 15
+    },
+    {
+      "name": "C.3.4.4.1",
+      "qty": 15
+    },
+    {
+      "name": "C.3.6.1.3",
+      "qty": 15
+    },
+    {
+      "name": "A.1.2",
+      "qty": 15
+    },
+    {
+      "name": "C.5.7.31",
+      "qty": 15
+    },
+    {
+      "name": "C.1.2.2",
       "qty": 14
     },
     {
-      "name": "CM-Sala Mortuoria",
-      "qty": 11
+      "name": "C.5.2.13",
+      "qty": 14
     },
     {
-      "name": "CA-Central de Esterilización",
-      "qty": 11
+      "name": "H.2.9",
+      "qty": 14
     },
     {
-      "name": "CN-Salas de Procedimientos Invasivos y/o de Mayor Complejidad",
-      "qty": 9
+      "name": "C.5.7.15",
+      "qty": 13
     },
     {
-      "name": "CA-Sala Parto o Pabellón de Parto",
-      "qty": 9
+      "name": "C.5.7.18",
+      "qty": 13
     },
     {
-      "name": "CM-Residencias Médicas",
-      "qty": 6
+      "name": "C.2.5.4.17",
+      "qty": 13
     },
     {
-      "name": "NC-Locales Externos",
-      "qty": 6
+      "name": "C.5.3.2",
+      "qty": 13
+    },
+    {
+      "name": "C.2.5.2.5.1",
+      "qty": 13
+    },
+    {
+      "name": "C.5.4.1",
+      "qty": 13
+    },
+    {
+      "name": "C.5.11.1",
+      "qty": 12
     }
   ],
   "byMes": [
@@ -705,34 +797,591 @@ export const SUMMARY: SummaryData = {
       "qty": 277
     }
   ],
-  "bySemana": [
-    {
-      "name": "Sem 18",
-      "qty": 66
-    },
-    {
-      "name": "Sem 22",
-      "qty": 44
-    },
-    {
-      "name": "Sem 26",
-      "qty": 2929
-    },
-    {
-      "name": "Sem 29",
-      "qty": 1155
-    },
-    {
-      "name": "Sem 31",
-      "qty": 277
-    }
-  ],
+  "bySemana": [],
   "byDia": [],
   "fechaStats": {
     "totalConFecha": 1978,
     "fechaMin": "2026-05-04",
-    "fechaMax": "2026-08-03",
+    "fechaMax": "2026-09-11",
     "totalMeses": 4,
-    "totalSemanas": 5
-  }
-};
+    "totalSemanas": 0
+  },
+  "cronograma": {
+    "fechaInicioMin": "2026-05-04",
+    "fechaInicioMax": "2026-08-03",
+    "fechaTerminoMax": "2026-09-11"
+  },
+  "ordenesCompra": [
+    "11105DSPA-93-2025",
+    "11105DSPAMNC-104-2025",
+    "11105DSPAMNC-109-2025",
+    "11105DSPAMNC-105-2025"
+  ],
+  "totalCNOs": 76,
+  "cnos": [
+    "HBP-MNC- 053",
+    "HBP-MNC- 100",
+    "HBP-MNC- 125",
+    "HBP-MNC-004",
+    "HBP-MNC-005",
+    "HBP-MNC-006",
+    "HBP-MNC-007",
+    "HBP-MNC-008",
+    "HBP-MNC-009",
+    "HBP-MNC-010",
+    "HBP-MNC-011",
+    "HBP-MNC-012",
+    "HBP-MNC-039",
+    "HBP-MNC-040",
+    "HBP-MNC-045",
+    "HBP-MNC-062",
+    "HBP-MNC-063",
+    "HBP-MNC-074",
+    "HBP-MNC-082",
+    "HBP-MNC-083",
+    "HBP-MNC-084",
+    "HBP-MNC-087",
+    "HBP-MNC-088",
+    "HBP-MNC-089",
+    "HBP-MNC-090",
+    "HBP-MNC-091",
+    "HBP-MNC-092",
+    "HBP-MNC-093",
+    "HBP-MNC-094",
+    "HBP-MNC-095",
+    "HBP-MNC-096",
+    "HBP-MNC-097",
+    "HBP-MNC-098",
+    "HBP-MNC-099",
+    "HBP-MNC-101",
+    "HBP-MNC-102",
+    "HBP-MNC-103",
+    "HBP-MNC-104",
+    "HBP-MNC-105",
+    "HBP-MNC-106",
+    "HBP-MNC-107",
+    "HBP-MNC-108",
+    "HBP-MNC-109",
+    "HBP-MNC-110",
+    "HBP-MNC-111",
+    "HBP-MNC-112",
+    "HBP-MNC-113",
+    "HBP-MNC-114",
+    "HBP-MNC-115",
+    "HBP-MNC-116",
+    "HBP-MNC-117",
+    "HBP-MNC-118",
+    "HBP-MNC-119",
+    "HBP-MNC-120",
+    "HBP-MNC-121",
+    "HBP-MNC-122",
+    "HBP-MNC-123",
+    "HBP-MNC-124",
+    "HBP-MNC-126",
+    "HBP-MNC-127",
+    "HBP-MNC-128",
+    "HBP-MNC-129",
+    "HBP-MNC-132",
+    "HBP-MNC-135",
+    "HBP-MNC-136",
+    "HBP-MNC-137",
+    "HBP-MNC-138",
+    "HBP-MNC-139",
+    "HBP-MNC-140",
+    "HBP-MNC-141",
+    "HBP-MNC-142",
+    "HBP-MNC-143",
+    "HBP-MNC-146",
+    "HBP-MNC-147",
+    "HBP-MNC-157",
+    "HBP-MNC-158"
+  ],
+  "byServiceFull": {
+    "Imagenología": {
+      "items": 44,
+      "units": 90,
+      "recintos": 2,
+      "inicio": "2026-05-04",
+      "termino": "2026-08-12"
+    },
+    "Administración y apoyo general": {
+      "items": 371,
+      "units": 819,
+      "recintos": 7,
+      "inicio": "2026-07-01",
+      "termino": "2026-09-11"
+    },
+    "Sala Cuna": {
+      "items": 76,
+      "units": 298,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Pabellones": {
+      "items": 47,
+      "units": 85,
+      "recintos": 3,
+      "inicio": "2026-07-17",
+      "termino": "2026-08-27"
+    },
+    "Med física y rehabilitación": {
+      "items": 72,
+      "units": 144,
+      "recintos": 2,
+      "inicio": "2026-05-04",
+      "termino": "2026-08-12"
+    },
+    "Cafetería": {
+      "items": 7,
+      "units": 66,
+      "recintos": 1,
+      "inicio": "2026-05-04",
+      "termino": "2026-08-12"
+    },
+    "Abastecimiento": {
+      "items": 33,
+      "units": 44,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Urgencia": {
+      "items": 177,
+      "units": 313,
+      "recintos": 5,
+      "inicio": "2026-05-04",
+      "termino": "2026-08-12"
+    },
+    "Vestuario": {
+      "items": 7,
+      "units": 41,
+      "recintos": 1,
+      "inicio": "2026-07-01",
+      "termino": "2026-07-07"
+    },
+    "Esterilización": {
+      "items": 20,
+      "units": 29,
+      "recintos": 3,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-27"
+    },
+    "Parto Integral": {
+      "items": 31,
+      "units": 48,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-27"
+    },
+    "Farmacia": {
+      "items": 33,
+      "units": 75,
+      "recintos": 3,
+      "inicio": "2026-06-01",
+      "termino": "2026-08-12"
+    },
+    "Central de Alimentación ": {
+      "items": 48,
+      "units": 69,
+      "recintos": 4,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Comedor para funcionarios y público": {
+      "items": 12,
+      "units": 307,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Neonatología": {
+      "items": 14,
+      "units": 25,
+      "recintos": 4,
+      "inicio": "2026-07-17",
+      "termino": "2026-08-27"
+    },
+    "SEDILE": {
+      "items": 10,
+      "units": 14,
+      "recintos": 1,
+      "inicio": "2026-07-17",
+      "termino": "2026-08-27"
+    },
+    "Consultas medicas generales": {
+      "items": 212,
+      "units": 376,
+      "recintos": 8,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Diálisis": {
+      "items": 44,
+      "units": 76,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Auditorio": {
+      "items": 11,
+      "units": 46,
+      "recintos": 1,
+      "inicio": "2026-07-17",
+      "termino": "2026-08-27"
+    },
+    "Lavandería": {
+      "items": 10,
+      "units": 12,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Mantenimiento": {
+      "items": 28,
+      "units": 52,
+      "recintos": 4,
+      "inicio": "2026-07-17",
+      "termino": "2026-08-27"
+    },
+    "Hospitalización": {
+      "items": 89,
+      "units": 230,
+      "recintos": 4,
+      "inicio": "2026-07-17",
+      "termino": "2026-09-11"
+    },
+    "Cirugía menor": {
+      "items": 2,
+      "units": 2,
+      "recintos": 1,
+      "inicio": "2026-07-01",
+      "termino": "2026-07-07"
+    },
+    "Cuidados Paliativos": {
+      "items": 31,
+      "units": 45,
+      "recintos": 4,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Psiquiatría": {
+      "items": 96,
+      "units": 179,
+      "recintos": 3,
+      "inicio": "2026-06-01",
+      "termino": "2026-08-12"
+    },
+    "UHCIP": {
+      "items": 77,
+      "units": 170,
+      "recintos": 2,
+      "inicio": "2026-05-04",
+      "termino": "2026-08-12"
+    },
+    "Hospital de día": {
+      "items": 91,
+      "units": 212,
+      "recintos": 5,
+      "inicio": "2026-06-01",
+      "termino": "2026-08-12"
+    },
+    "Consultas Ambulatorias": {
+      "items": 36,
+      "units": 59,
+      "recintos": 3,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Odontología": {
+      "items": 31,
+      "units": 69,
+      "recintos": 3,
+      "inicio": "2026-06-01",
+      "termino": "2026-08-27"
+    },
+    "Laboratorio UMT": {
+      "items": 18,
+      "units": 46,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Laboratorio": {
+      "items": 73,
+      "units": 161,
+      "recintos": 4,
+      "inicio": "2026-06-01",
+      "termino": "2026-08-12"
+    },
+    "Contabilidad": {
+      "items": 42,
+      "units": 83,
+      "recintos": 3,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "UTI": {
+      "items": 49,
+      "units": 73,
+      "recintos": 3,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-27"
+    },
+    "Morgue": {
+      "items": 9,
+      "units": 11,
+      "recintos": 1,
+      "inicio": "2026-05-04",
+      "termino": "2026-08-12"
+    },
+    "Chile Crece Contigo": {
+      "items": 2,
+      "units": 26,
+      "recintos": 1,
+      "inicio": "2026-07-17",
+      "termino": "2026-08-27"
+    },
+    "Biblioteca": {
+      "items": 11,
+      "units": 52,
+      "recintos": 2,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Telemedicina": {
+      "items": 6,
+      "units": 8,
+      "recintos": 1,
+      "inicio": "2026-08-03",
+      "termino": "2026-09-11"
+    },
+    "Exterior portería": {
+      "items": 6,
+      "units": 6,
+      "recintos": 1,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Circulación Rehabilitación": {
+      "items": 1,
+      "units": 8,
+      "recintos": 1,
+      "inicio": "2026-07-01",
+      "termino": "2026-08-12"
+    },
+    "Administración y Apoyo General": {
+      "items": 1,
+      "units": 2,
+      "recintos": 1,
+      "inicio": "2026-07-17",
+      "termino": "2026-08-27"
+    }
+  },
+  "byFloorFull": {
+    "Piso 1": {
+      "items": 687,
+      "units": 1470,
+      "recintos": 17
+    },
+    "Piso 6": {
+      "items": 60,
+      "units": 150,
+      "recintos": 4
+    },
+    "Piso 3": {
+      "items": 432,
+      "units": 855,
+      "recintos": 10
+    },
+    "Piso 7": {
+      "items": 42,
+      "units": 127,
+      "recintos": 3
+    },
+    "Piso 2": {
+      "items": 612,
+      "units": 1547,
+      "recintos": 16
+    },
+    "Piso 4": {
+      "items": 78,
+      "units": 184,
+      "recintos": 4
+    },
+    "Piso 5": {
+      "items": 66,
+      "units": 137,
+      "recintos": 3
+    },
+    "Piso -1": {
+      "items": 1,
+      "units": 1,
+      "recintos": 1
+    }
+  },
+  "topTipos": [
+    {
+      "codigo": "204012",
+      "nombre": "Silla Visita",
+      "units": 1265,
+      "items": 382
+    },
+    {
+      "codigo": "204006C",
+      "nombre": "Silla Ergonómica",
+      "units": 548,
+      "items": 342
+    },
+    {
+      "codigo": "204010",
+      "nombre": "Silla tipo Casino",
+      "units": 478,
+      "items": 45
+    },
+    {
+      "codigo": "203016A",
+      "nombre": "Mueble Tipo Biblioteca M45_A",
+      "units": 273,
+      "items": 201
+    },
+    {
+      "codigo": "204020",
+      "nombre": "Silla Butaca Espera 3 Cuerpos",
+      "units": 238,
+      "items": 34
+    },
+    {
+      "codigo": "204015",
+      "nombre": "Sillón Bergere",
+      "units": 185,
+      "items": 85
+    },
+    {
+      "codigo": "201001B",
+      "nombre": "Escritorio en L administrativo",
+      "units": 177,
+      "items": 145
+    },
+    {
+      "codigo": "201001A",
+      "nombre": "Escritorio simple 120x70 cm",
+      "units": 122,
+      "items": 68
+    },
+    {
+      "codigo": "204014",
+      "nombre": "Sillón 2 Cuerpo",
+      "units": 103,
+      "items": 61
+    },
+    {
+      "codigo": "201011A",
+      "nombre": "Mesa Tipo Casino Circular",
+      "units": 73,
+      "items": 17
+    },
+    {
+      "codigo": "201001E",
+      "nombre": "Punto de registro clínico",
+      "units": 67,
+      "items": 67
+    },
+    {
+      "codigo": "204006A",
+      "nombre": "Silla Ergonómica Reforzada",
+      "units": 60,
+      "items": 60
+    },
+    {
+      "codigo": "204002B",
+      "nombre": "Banca Madera_B",
+      "units": 59,
+      "items": 21
+    },
+    {
+      "codigo": "201001C",
+      "nombre": "Escritorio de Consultas",
+      "units": 58,
+      "items": 58
+    },
+    {
+      "codigo": "203010A",
+      "nombre": "Colchoneta Reposo A",
+      "units": 56,
+      "items": 4
+    },
+    {
+      "codigo": "201008",
+      "nombre": "Mesa Reuniones Tipo I",
+      "units": 53,
+      "items": 48
+    },
+    {
+      "codigo": "204009",
+      "nombre": "Silla Párvulo",
+      "units": 52,
+      "items": 11
+    },
+    {
+      "codigo": "201011B",
+      "nombre": "Mesa Tipo Casino Redonda 90 cm",
+      "units": 42,
+      "items": 28
+    },
+    {
+      "codigo": "204011",
+      "nombre": "Silla Tipo Universitaria",
+      "units": 33,
+      "items": 3
+    },
+    {
+      "codigo": "201002",
+      "nombre": "Mesa Lateral",
+      "units": 31,
+      "items": 12
+    }
+  ],
+  "topServicios": [
+    {
+      "name": "Administración y apoyo general",
+      "qty": 819
+    },
+    {
+      "name": "Consultas medicas generales",
+      "qty": 376
+    },
+    {
+      "name": "Urgencia",
+      "qty": 313
+    },
+    {
+      "name": "Comedor para funcionarios y público",
+      "qty": 307
+    },
+    {
+      "name": "Sala Cuna",
+      "qty": 298
+    },
+    {
+      "name": "Hospitalización",
+      "qty": 230
+    },
+    {
+      "name": "Hospital de día",
+      "qty": 212
+    },
+    {
+      "name": "Psiquiatría",
+      "qty": 179
+    },
+    {
+      "name": "UHCIP",
+      "qty": 170
+    },
+    {
+      "name": "Laboratorio",
+      "qty": 161
+    }
+  ]
+} as const;
