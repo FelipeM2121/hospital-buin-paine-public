@@ -573,28 +573,31 @@ export const SUMMARY: SummaryData = {
     }
   ],
   "byMes": [
-    {
-      "name": "mayo 2026",
-      "qty": 66
-    },
-    {
-      "name": "junio 2026",
-      "qty": 44
-    },
-    {
-      "name": "julio 2026",
-      "qty": 4084
-    },
-    {
-      "name": "agosto 2026",
-      "qty": 277
-    }
+    {"name":"2026-05","qty":66},
+    {"name":"2026-06","qty":44},
+    {"name":"2026-07","qty":4084},
+    {"name":"2026-08","qty":277}
+  ],
+  "bySemana": [
+    {"name":"2026-S27","qty":2929},
+    {"name":"2026-S29","qty":1155},
+    {"name":"2026-S31","qty":277},
+    {"name":"2026-S18","qty":66},
+    {"name":"2026-S22","qty":44}
+  ],
+  "byDia": [
+    {"name":"2026-07-01","qty":2929},
+    {"name":"2026-07-17","qty":1155},
+    {"name":"2026-08-03","qty":277},
+    {"name":"2026-05-04","qty":66},
+    {"name":"2026-06-01","qty":44}
   ],
   "fechaStats": {
     "totalConFecha": 1978,
     "fechaMin": "2026-05-04",
     "fechaMax": "2026-08-03",
-    "totalMeses": 4
+    "totalMeses": 4,
+    "totalSemanas": 5
   },
   "hospital": "Hospital Buin Paine",
   "proyecto": "Mobiliario No Clínico (MNC)",
