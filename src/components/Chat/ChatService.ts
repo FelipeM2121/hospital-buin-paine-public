@@ -19,7 +19,8 @@ export interface ChatError {
    Solo inyecta datos RELEVANTES a la pregunta → rápido y preciso
    ═══════════════════════════════════════════════════════════════ */
 
-const ANTHROPIC_PROXY_URL = "https://anthropic-proxy.f-moena-c.workers.dev";
+const ANTHROPIC_API_URL = "https://api.anthropic.com/v1/messages";
+const ANTHROPIC_API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY as string;
 const MODEL = "claude-sonnet-4-6";
 
 const fmt = (n: number) => n.toLocaleString("es-CL");
@@ -466,11 +467,13 @@ async function callClaudeStream(
   systemPrompt: string,
   onToken: (token: string) => void,
 ): Promise<string> {
-  const res = await fetch(ANTHROPIC_PROXY_URL, {
+  const res = await fetch(ANTHROPIC_API_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "x-api-key": ANTHROPIC_API_KEY,
       "anthropic-version": "2023-06-01",
+      "anthropic-dangerous-direct-browser-access": "true",
     },
     body: JSON.stringify({
       model: MODEL,
@@ -732,7 +735,7 @@ class ChatServiceClass {
 
   async checkHealth(): Promise<boolean> {
     if (this.ollamaAvailable !== null) return this.ollamaAvailable;
-    this.ollamaAvailable = !!ANTHROPIC_PROXY_URL;
+    this.ollamaAvailable = !!ANTHROPIC_API_KEY;
     return this.ollamaAvailable;
   }
 
