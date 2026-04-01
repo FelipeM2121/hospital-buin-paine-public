@@ -1,11 +1,9 @@
 import React, { useEffect, useRef } from "react";
-import { SquarePen, AlertCircle, BookOpen, X } from "lucide-react";
+import { SquarePen, AlertCircle } from "lucide-react";
 import { useMsal } from "@azure/msal-react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ChatService, Message, ChatError } from "./ChatService";
-import { ChatCatalogo } from "../Catalogo/ChatCatalogo";
-import { mentionsCatalogo } from "../Catalogo/CatalogoHelper";
 import type { RawItem, SummaryData, EETTFile } from "../../types";
 
 interface ChatTabProps {
@@ -18,7 +16,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
   const [messages, setMessages] = React.useState<Message[]>([]);
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<ChatError | null>(null);
-  const [showCatalogo, setShowCatalogo] = React.useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { accounts } = useMsal();
   const firstName = accounts[0]?.name?.split(" ")[0] ?? "";
@@ -32,7 +29,6 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
   }, [messages]);
 
   const handleSendMessage = async (userMessage: string) => {
-    if (mentionsCatalogo(userMessage)) setShowCatalogo(true);
     setIsLoading(true);
     setError(null);
 
@@ -107,57 +103,18 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
         <div style={{ fontSize: "14px", fontWeight: 600, color: "#1C1B1A" }}>
           Asistente IA — Mobiliario No Clínico
         </div>
-        <div style={{ display: "flex", gap: "4px" }}>
-          <button onClick={() => setShowCatalogo(v => !v)} title="Catálogo Melman" style={{
-            background: showCatalogo ? "#E8F4FD" : "none", border: showCatalogo ? "1px solid #3B82F6" : "none",
-            cursor: "pointer", padding: "6px", borderRadius: "8px",
-            color: showCatalogo ? "#2563EB" : "#9B958E",
-            display: "flex", alignItems: "center", gap: "5px",
-            transition: "background 0.15s, color 0.15s",
-            fontSize: "12px", fontWeight: 500,
-          }}
-            onMouseEnter={(e) => { if (!showCatalogo) { e.currentTarget.style.background = "#EDE9E3"; e.currentTarget.style.color = "#1C1B1A"; }}}
-            onMouseLeave={(e) => { if (!showCatalogo) { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#9B958E"; }}}
-          >
-            <BookOpen size={16} />
-            Catálogo
-          </button>
-          <button onClick={handleClearChat} title="Nuevo chat" style={{
-            background: "none", border: "none", cursor: "pointer",
-            padding: "6px", borderRadius: "8px", color: "#9B958E",
-            display: "flex", alignItems: "center",
-            transition: "background 0.15s, color 0.15s",
-          }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = "#EDE9E3"; e.currentTarget.style.color = "#1C1B1A"; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#9B958E"; }}
-          >
-            <SquarePen size={18} />
-          </button>
-        </div>
+        <button onClick={handleClearChat} title="Nuevo chat" style={{
+          background: "none", border: "none", cursor: "pointer",
+          padding: "6px", borderRadius: "8px", color: "#9B958E",
+          display: "flex", alignItems: "center",
+          transition: "background 0.15s, color 0.15s",
+        }}
+          onMouseEnter={(e) => { e.currentTarget.style.background = "#EDE9E3"; e.currentTarget.style.color = "#1C1B1A"; }}
+          onMouseLeave={(e) => { e.currentTarget.style.background = "none"; e.currentTarget.style.color = "#9B958E"; }}
+        >
+          <SquarePen size={18} />
+        </button>
       </div>
-
-      {/* ── Catalog panel ── */}
-      {showCatalogo && (
-        <div style={{
-          borderBottom: "1px solid #EDE9E3",
-          background: "#fff",
-          padding: "12px 16px",
-          maxHeight: "480px",
-          overflowY: "auto",
-        }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px" }}>
-            <span style={{ fontSize: "13px", fontWeight: 600, color: "#1C1B1A" }}>Catálogo Melman</span>
-            <button onClick={() => setShowCatalogo(false)} style={{
-              background: "none", border: "none", cursor: "pointer",
-              padding: "4px", borderRadius: "6px", color: "#9B958E",
-              display: "flex", alignItems: "center",
-            }}>
-              <X size={16} />
-            </button>
-          </div>
-          <ChatCatalogo />
-        </div>
-      )}
 
       {/* ── Messages area ── */}
       <div className="chat-scroll" style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column" }}>

@@ -11,7 +11,6 @@ import {
   EspecificacionesTecnicasTab,
 } from "./components/Dashboard";
 import { ChatTab } from "./components/Chat/ChatTab";
-import { CatalogoTab } from "./components/Catalogo/CatalogoTab";
 import { RAW, SUMMARY, EETT_FILES } from "./data";
 import { PdfViewer } from "./components/PdfViewer";
 import { Sidebar } from "./components/Sidebar";
@@ -49,7 +48,6 @@ export default function App() {
                   <EspecificacionesTecnicasTab eettFiles={EETT_FILES} pdfViewer={PdfViewer} />
                 )}
                 {activeTab === "Control Documento" && <ControlDocumentos />}
-                {activeTab === "Catálogo" && <CatalogoTab />}
 
                 <div className="dashboard-footer">
                   <span>Hospital Salvador • Mobiliario No Clínico</span>

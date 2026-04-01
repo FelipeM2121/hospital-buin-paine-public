@@ -16,7 +16,6 @@ export const TABS: TabConfig[] = [
   { name: "Por Fecha",    icon: Icons.calendar, color: "#f59e0b" },
   { name: "Esp. Técnicas",      icon: Icons.document, color: "#14b8a6" },
   { name: "Control Documento",  icon: Icons.tree,     color: "#7c3aed" },
-  { name: "Catálogo",          icon: Icons.catalog, color: "#f97316" },
   { name: "Chat IA",           icon: Icons.chat,    color: "#10b981" },
 ];
 
