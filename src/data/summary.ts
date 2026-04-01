@@ -1226,5 +1226,35 @@ export const SUMMARY: SummaryData = {
       "name": "Diálisis",
       "qty": 76
     }
+  ],
+  "byZona": [
+    {"name":"NC-Áreas Administrativas en General","qty":559},
+    {"name":"NC-Otros Servicios Adyacentes","qty":546},
+    {"name":"CN-Otros Servicios Adyacentes","qty":539},
+    {"name":"CM-Consultas Ambulatorias","qty":387},
+    {"name":"CM-Otros Servicios Adyacentes","qty":366},
+    {"name":"CN-Salas y Habitaciones de Hospitalización","qty":312},
+    {"name":"NC-Casino","qty":300},
+    {"name":"CM-Sala Cuna y Jardín Infantil","qty":267},
+    {"name":"CA-Otros Servicios Adyacentes","qty":251},
+    {"name":"NC-Áreas de Servicios Generales","qty":207},
+    {"name":"CN-Urgencia","qty":163},
+    {"name":"CM-Áreas de Rehabilitación","qty":94},
+    {"name":"CN-Laboratorios","qty":78},
+    {"name":"CM-Salas de Procedimientos no Invasivos","qty":59},
+    {"name":"CM-Farmacia General","qty":56},
+    {"name":"CN-Imagenología","qty":55},
+    {"name":"NC-SAMU","qty":49},
+    {"name":"CA-Áreas de Tratamiento Especial","qty":45},
+    {"name":"CN-Pensionado","qty":35},
+    {"name":"CM-Servicio Dental","qty":21},
+    {"name":"CM-Central de Alimentación","qty":16},
+    {"name":"CA-Unidad de Paciente Crítico","qty":14},
+    {"name":"CM-Sala Mortuoria","qty":11},
+    {"name":"CA-Central de Esterilización","qty":11},
+    {"name":"CN-Salas de Procedimientos Invasivos y/o de Mayor Complejidad","qty":9},
+    {"name":"CA-Sala Parto o Pabellón de Parto","qty":9},
+    {"name":"CM-Residencias Médicas","qty":6},
+    {"name":"NC-Locales Externos","qty":6}
   ]
 };
