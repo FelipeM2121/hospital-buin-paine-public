@@ -3,10 +3,10 @@ import type { SummaryData } from '../types';
 export const SUMMARY: SummaryData = {
   "totalItems": 1978,
   "totalQty": 4471,
-  "uniqueRecintos": 28,
+  "uniqueRecintos": 815,
   "uniqueNombres": 80,
   "uniqueServicios": 40,
-  "uniqueZonas": 815,
+  "uniqueZonas": 28,
   "pisos": 8,
   "proveedores": 4,
   "familias": 4,
@@ -574,20 +574,20 @@ export const SUMMARY: SummaryData = {
   ],
   "byMes": [
     {
-      "name": "mayo de 2026",
-      "qty": 110
+      "name": "mayo 2026",
+      "qty": 66
     },
     {
-      "name": "junio de 2026",
-      "qty": 2929
+      "name": "junio 2026",
+      "qty": 44
     },
     {
-      "name": "agosto de 2026",
+      "name": "julio 2026",
+      "qty": 4084
+    },
+    {
+      "name": "agosto 2026",
       "qty": 277
-    },
-    {
-      "name": "julio de 2026",
-      "qty": 1155
     }
   ],
   "fechaStats": {
@@ -693,238 +693,238 @@ export const SUMMARY: SummaryData = {
     "Imagenología": {
       "items": 44,
       "units": 90,
-      "recintos": 2,
+      "recintos": 17,
       "inicio": "2026-05-04",
       "termino": "2026-08-12"
     },
     "Administración y apoyo general": {
       "items": 371,
       "units": 819,
-      "recintos": 7,
+      "recintos": 114,
       "inicio": "2026-07-01",
       "termino": "2026-09-11"
     },
     "Sala Cuna": {
       "items": 76,
       "units": 298,
-      "recintos": 2,
+      "recintos": 13,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Pabellones": {
       "items": 47,
       "units": 85,
-      "recintos": 3,
+      "recintos": 30,
       "inicio": "2026-07-17",
       "termino": "2026-08-27"
     },
     "Med física y rehabilitación": {
       "items": 72,
       "units": 144,
-      "recintos": 2,
+      "recintos": 26,
       "inicio": "2026-05-04",
       "termino": "2026-08-12"
     },
     "Cafetería": {
       "items": 7,
       "units": 66,
-      "recintos": 1,
+      "recintos": 5,
       "inicio": "2026-05-04",
       "termino": "2026-08-12"
     },
     "Abastecimiento": {
       "items": 33,
       "units": 44,
-      "recintos": 2,
+      "recintos": 13,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Urgencia": {
       "items": 177,
       "units": 313,
-      "recintos": 5,
+      "recintos": 79,
       "inicio": "2026-05-04",
       "termino": "2026-08-12"
     },
     "Vestuario": {
       "items": 7,
       "units": 41,
-      "recintos": 1,
+      "recintos": 6,
       "inicio": "2026-07-01",
       "termino": "2026-07-07"
     },
     "Esterilización": {
       "items": 20,
       "units": 29,
-      "recintos": 3,
+      "recintos": 12,
       "inicio": "2026-07-01",
       "termino": "2026-08-27"
     },
     "Parto Integral": {
       "items": 31,
       "units": 48,
-      "recintos": 2,
+      "recintos": 16,
       "inicio": "2026-07-01",
       "termino": "2026-08-27"
     },
     "Farmacia": {
       "items": 33,
       "units": 75,
-      "recintos": 3,
+      "recintos": 20,
       "inicio": "2026-06-01",
       "termino": "2026-08-12"
     },
     "Central de Alimentación ": {
       "items": 48,
       "units": 69,
-      "recintos": 4,
+      "recintos": 19,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Comedor para funcionarios y público": {
       "items": 12,
       "units": 307,
-      "recintos": 2,
+      "recintos": 8,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Neonatología": {
       "items": 14,
       "units": 25,
-      "recintos": 4,
+      "recintos": 7,
       "inicio": "2026-07-17",
       "termino": "2026-08-27"
     },
     "SEDILE": {
       "items": 10,
       "units": 14,
-      "recintos": 1,
+      "recintos": 6,
       "inicio": "2026-07-17",
       "termino": "2026-08-27"
     },
     "Consultas medicas generales": {
       "items": 212,
       "units": 376,
-      "recintos": 8,
+      "recintos": 78,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Diálisis": {
       "items": 44,
       "units": 76,
-      "recintos": 2,
+      "recintos": 21,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Auditorio": {
       "items": 11,
       "units": 46,
-      "recintos": 1,
+      "recintos": 7,
       "inicio": "2026-07-17",
       "termino": "2026-08-27"
     },
     "Lavandería": {
       "items": 10,
       "units": 12,
-      "recintos": 2,
+      "recintos": 7,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Mantenimiento": {
       "items": 28,
       "units": 52,
-      "recintos": 4,
+      "recintos": 10,
       "inicio": "2026-07-17",
       "termino": "2026-08-27"
     },
     "Hospitalización": {
       "items": 89,
       "units": 230,
-      "recintos": 4,
+      "recintos": 79,
       "inicio": "2026-07-17",
       "termino": "2026-09-11"
     },
     "Cirugía menor": {
       "items": 2,
       "units": 2,
-      "recintos": 1,
+      "recintos": 2,
       "inicio": "2026-07-01",
       "termino": "2026-07-07"
     },
     "Cuidados Paliativos": {
       "items": 31,
       "units": 45,
-      "recintos": 4,
+      "recintos": 10,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Psiquiatría": {
       "items": 96,
       "units": 179,
-      "recintos": 3,
+      "recintos": 25,
       "inicio": "2026-06-01",
       "termino": "2026-08-12"
     },
     "UHCIP": {
       "items": 77,
       "units": 170,
-      "recintos": 2,
+      "recintos": 26,
       "inicio": "2026-05-04",
       "termino": "2026-08-12"
     },
     "Hospital de día": {
       "items": 91,
       "units": 212,
-      "recintos": 5,
+      "recintos": 28,
       "inicio": "2026-06-01",
       "termino": "2026-08-12"
     },
     "Consultas Ambulatorias": {
       "items": 36,
       "units": 59,
-      "recintos": 3,
+      "recintos": 10,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Odontología": {
       "items": 31,
       "units": 69,
-      "recintos": 3,
+      "recintos": 19,
       "inicio": "2026-06-01",
       "termino": "2026-08-27"
     },
     "Laboratorio UMT": {
       "items": 18,
       "units": 46,
-      "recintos": 2,
+      "recintos": 6,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Laboratorio": {
       "items": 73,
       "units": 161,
-      "recintos": 4,
+      "recintos": 37,
       "inicio": "2026-06-01",
       "termino": "2026-08-12"
     },
     "Contabilidad": {
       "items": 42,
       "units": 83,
-      "recintos": 3,
+      "recintos": 11,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "UTI": {
       "items": 49,
       "units": 73,
-      "recintos": 3,
+      "recintos": 28,
       "inicio": "2026-07-01",
       "termino": "2026-08-27"
     },
     "Morgue": {
       "items": 9,
       "units": 11,
-      "recintos": 1,
+      "recintos": 3,
       "inicio": "2026-05-04",
       "termino": "2026-08-12"
     },
@@ -938,21 +938,21 @@ export const SUMMARY: SummaryData = {
     "Biblioteca": {
       "items": 11,
       "units": 52,
-      "recintos": 2,
+      "recintos": 6,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
     "Telemedicina": {
       "items": 6,
       "units": 8,
-      "recintos": 1,
+      "recintos": 2,
       "inicio": "2026-08-03",
       "termino": "2026-09-11"
     },
     "Exterior portería": {
       "items": 6,
       "units": 6,
-      "recintos": 1,
+      "recintos": 6,
       "inicio": "2026-07-01",
       "termino": "2026-08-12"
     },
@@ -975,37 +975,37 @@ export const SUMMARY: SummaryData = {
     "Piso 1": {
       "items": 687,
       "units": 1470,
-      "recintos": 17
+      "recintos": 264
     },
     "Piso 6": {
       "items": 60,
       "units": 150,
-      "recintos": 4
+      "recintos": 33
     },
     "Piso 3": {
       "items": 432,
       "units": 855,
-      "recintos": 10
+      "recintos": 173
     },
     "Piso 7": {
       "items": 42,
       "units": 127,
-      "recintos": 3
+      "recintos": 27
     },
     "Piso 2": {
       "items": 612,
       "units": 1547,
-      "recintos": 16
+      "recintos": 237
     },
     "Piso 4": {
       "items": 78,
       "units": 184,
-      "recintos": 4
+      "recintos": 40
     },
     "Piso 5": {
       "items": 66,
       "units": 137,
-      "recintos": 3
+      "recintos": 40
     },
     "Piso -1": {
       "items": 1,
