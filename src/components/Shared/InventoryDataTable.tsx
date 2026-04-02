@@ -20,6 +20,7 @@ interface InventoryItem {
   cantidad: number;
   piso: number;
   recinto: string;
+  tipoEquipo: string;
   inicioInstalacion: string | null;
   terminoInstalacion: string | null;
 }
@@ -45,6 +46,7 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
         cantidad: item.cantidad,
         piso: item.piso,
         recinto: item.codigoRecinto || item.recinto || '',
+        tipoEquipo: item.tipoEquipo || '',
         inicioInstalacion: item.inicioInstalacion || null,
         terminoInstalacion: item.terminoInstalacion || null,
       }))))
@@ -341,6 +343,7 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
               <tr style={{ background: COLORS.bg, borderBottom: `2px solid ${COLORS.border}` }}>
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Nombre</th>
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Familia</th>
+                <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Tipo Equipo</th>
                 <th style={{ padding: "12px 16px", textAlign: "center", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Cant.</th>
                 <th style={{ padding: "12px 16px", textAlign: "center", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Piso</th>
                 <th style={{ padding: "12px 16px", textAlign: "left", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, textTransform: "uppercase", letterSpacing: 0.5 }}>Recinto</th>
@@ -371,6 +374,7 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
                       {row.familia}
                     </span>
                   </td>
+                  <td style={{ padding: "12px 16px", fontSize: 12, color: COLORS.textMuted }}>{row.tipoEquipo}</td>
                   <td style={{ padding: "12px 16px", fontSize: 14, color: COLORS.text, textAlign: "center", fontWeight: 700 }}>{row.cantidad}</td>
                   <td style={{ padding: "12px 16px", fontSize: 13, color: COLORS.text, textAlign: "center", fontWeight: 600 }}>{row.piso}</td>
                   <td style={{ padding: "12px 16px", fontSize: 12, color: COLORS.textMuted, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{row.recinto}</td>
@@ -381,7 +385,7 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
                 </tr>
               )) : (
                 <tr>
-                  <td colSpan={9} style={{ padding: "40px", textAlign: "center", color: COLORS.textMuted, fontSize: 14 }}>
+                  <td colSpan={10} style={{ padding: "40px", textAlign: "center", color: COLORS.textMuted, fontSize: 14 }}>
                     No se encontraron resultados con los filtros aplicados
                   </td>
                 </tr>
