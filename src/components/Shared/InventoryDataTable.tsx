@@ -92,8 +92,6 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
     search: "",
     fechaDesde: "",
     fechaHasta: "",
-    adqDesde: "",
-    adqHasta: "",
   });
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 20;
@@ -142,9 +140,7 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
         item.item?.toLowerCase().includes(filters.search.toLowerCase());
       const matchDesde = !filters.fechaDesde || !item.inicioInstalacion || item.inicioInstalacion >= filters.fechaDesde;
       const matchHasta = !filters.fechaHasta || !item.inicioInstalacion || item.inicioInstalacion <= filters.fechaHasta;
-      const matchAdqDesde = !filters.adqDesde || !item.entregaRecinto || item.entregaRecinto >= filters.adqDesde;
-      const matchAdqHasta = !filters.adqHasta || !item.entregaRecinto || item.entregaRecinto <= filters.adqHasta;
-      return matchZona && matchFamilia && matchProveedor && matchPiso && matchServicio && matchCNO && matchOrden && matchSearch && matchDesde && matchHasta && matchAdqDesde && matchAdqHasta;
+      return matchZona && matchFamilia && matchProveedor && matchPiso && matchServicio && matchCNO && matchOrden && matchSearch && matchDesde && matchHasta;
     });
   }, [data, filters]);
 
@@ -440,41 +436,11 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
             />
           </div>
 
-          {/* Adquisición desde */}
-          <div style={{ flex: 1, minWidth: 150 }}>
-            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Adq. Desde
-            </label>
-            <input
-              type="date"
-              value={filters.adqDesde}
-              onChange={(e) => setFilters({ ...filters, adqDesde: e.target.value })}
-              style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: COLORS.white, fontSize: 13, color: COLORS.text, cursor: "pointer" }}
-              onFocus={(e) => e.currentTarget.style.borderColor = COLORS.primary}
-              onBlur={(e) => e.currentTarget.style.borderColor = COLORS.border}
-            />
-          </div>
-
-          {/* Adquisición hasta */}
-          <div style={{ flex: 1, minWidth: 150 }}>
-            <label style={{ display: "block", fontSize: 11, fontWeight: 600, color: COLORS.textMuted, marginBottom: 6, textTransform: "uppercase", letterSpacing: 0.5 }}>
-              Adq. Hasta
-            </label>
-            <input
-              type="date"
-              value={filters.adqHasta}
-              onChange={(e) => setFilters({ ...filters, adqHasta: e.target.value })}
-              style={{ width: "100%", padding: "8px 12px", borderRadius: 8, border: `1px solid ${COLORS.border}`, background: COLORS.white, fontSize: 13, color: COLORS.text, cursor: "pointer" }}
-              onFocus={(e) => e.currentTarget.style.borderColor = COLORS.primary}
-              onBlur={(e) => e.currentTarget.style.borderColor = COLORS.border}
-            />
-          </div>
-
           {/* Limpiar filtros */}
           {Object.values(filters).some(v => v) && (
             <div style={{ flex: 1, minWidth: 150, display: "flex", alignItems: "flex-end" }}>
               <button
-                onClick={() => setFilters({ zona: "", familia: "", proveedor: "", piso: "", servicio: "", nCNO: "", ordenCompra: "", search: "", fechaDesde: "", fechaHasta: "", adqDesde: "", adqHasta: "" })}
+                onClick={() => setFilters({ zona: "", familia: "", proveedor: "", piso: "", servicio: "", nCNO: "", ordenCompra: "", search: "", fechaDesde: "", fechaHasta: "" })}
                 style={{ ...btnBase, width: "100%", justifyContent: "center", color: COLORS.textMuted }}
                 onMouseEnter={(e) => { e.currentTarget.style.background = COLORS.red; e.currentTarget.style.color = COLORS.white; e.currentTarget.style.borderColor = COLORS.red; }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = COLORS.white; e.currentTarget.style.color = COLORS.textMuted; e.currentTarget.style.borderColor = COLORS.border; }}>
