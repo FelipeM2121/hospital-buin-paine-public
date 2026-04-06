@@ -156,24 +156,6 @@ export function ControlDocumentos() {
 
   return (
     <div className="control-documentos">
-      {/* KPI Cards */}
-      <div className="cd-kpis">
-        <div className="cd-kpi-card cd-kpi-total">
-          <div className="cd-kpi-value">{TOTAL_FOLDERS.toLocaleString("es-CL")}</div>
-          <div className="cd-kpi-label">Total Carpetas</div>
-        </div>
-        <div className="cd-kpi-card" style={{ borderTop: "4px solid #8b5cf6" }}>
-          <div className="cd-kpi-value" style={{ color: "#8b5cf6" }}>
-            {TREE[0]?.children?.length || 0}
-          </div>
-          <div className="cd-kpi-label">Subcarpetas Nivel 2</div>
-        </div>
-        <div className="cd-kpi-card" style={{ borderTop: "4px solid #00b4d8" }}>
-          <div className="cd-kpi-value" style={{ color: "#00b4d8" }}>{MAX_LEVEL}</div>
-          <div className="cd-kpi-label">Niveles de Profundidad</div>
-        </div>
-      </div>
-
       {/* Controls */}
       <div className="cd-controls">
         <div className="cd-search-wrap">
