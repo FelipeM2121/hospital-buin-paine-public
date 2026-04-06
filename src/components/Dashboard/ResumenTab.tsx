@@ -90,7 +90,7 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
       </div>
 
       {/* Charts */}
-      <div className="charts-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 32 }}>
+      <div className="charts-grid" style={{ marginBottom: 32 }}>
         {/* Distribución por Familia - Barras Horizontales (Mobile-optimized) */}
         <div className="chart-card" style={{
           background: COLORS.white,
