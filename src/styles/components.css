@@ -177,6 +177,26 @@
   .dt-hide-mobile {
     display: none;
   }
+
+  /* DataTable full-width en mobile */
+  .data-table-scroll table {
+    width: 100% !important;
+    table-layout: auto !important;
+  }
+
+  /* Anular anchos fijos de columnas */
+  .data-table-scroll th,
+  .data-table-scroll td {
+    width: auto !important;
+    padding: 10px 8px !important;
+    font-size: 12px !important;
+  }
+
+  /* Columna de nombre: puede wrappear */
+  .data-table-scroll td:nth-child(2),
+  .data-table-scroll th:nth-child(2) {
+    max-width: 120px;
+  }
 }
 
 @media (max-width: 768px) {

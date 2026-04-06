@@ -31,7 +31,7 @@ export function DataTable({ data, columns, maxRows = 10 }: DataTableProps) {
       boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
     }}>
       <div className="data-table-scroll">
-        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: "420px" }}>
+        <table style={{ borderCollapse: "collapse", width: "100%" }}>
           <thead>
             <tr style={{
               background: `${COLORS.primary}08`,
