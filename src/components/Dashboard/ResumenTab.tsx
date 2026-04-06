@@ -148,16 +148,16 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
           <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.text, marginBottom: 20, marginTop: 0 }}>
             Top Proveedores
           </h3>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={S.byProveedor} margin={{ top: 20, right: 8, left: 0, bottom: 60 }}>
+          <ResponsiveContainer width="100%" height={360}>
+            <BarChart data={S.byProveedor} margin={{ top: 20, right: 8, left: 0, bottom: 0 }}>
               <XAxis
                 dataKey="name"
                 tick={{ fill: COLORS.textMuted, fontSize: 11 }}
                 axisLine={{ stroke: COLORS.border }}
                 interval={0}
-                angle={-30}
+                angle={-35}
                 textAnchor="end"
-                height={70}
+                height={90}
               />
               <YAxis
                 tick={{ fill: COLORS.textMuted, fontSize: 11 }}
@@ -219,7 +219,7 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
           Distribución por Proveedor
         </h3>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={S.byProveedor} margin={{ top: 20, right: 8, left: 0, bottom: 60 }}>
+          <BarChart data={S.byProveedor} margin={{ top: 20, right: 8, left: 0, bottom: 0 }}>
             <XAxis
               dataKey="name"
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}
