@@ -120,13 +120,13 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
             <BarChart
               data={S.byFamilia}
               layout="vertical"
-              margin={{ top: 5, right: 30, left: 100, bottom: 5 }}>
+              margin={{ top: 5, right: 8, left: 0, bottom: 5 }}>
               <XAxis type="number" tick={{ fontSize: 10, fill: COLORS.textMuted }} />
               <YAxis
                 dataKey="name"
                 type="category"
                 tick={{ fontSize: 12, fill: COLORS.text }}
-                width={95}
+                width={isMobile ? 80 : 95}
               />
               <Tooltip content={<CustomTooltip />} />
               <Bar dataKey="qty" radius={[0, 8, 8, 0]}>
