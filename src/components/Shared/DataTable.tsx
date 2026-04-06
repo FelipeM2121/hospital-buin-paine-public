@@ -29,66 +29,71 @@ export function DataTable({ data, columns, maxRows = 10 }: DataTableProps) {
       border: `1px solid ${COLORS.borderLight}`,
       boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
     }}>
-      {/* Scroll wrapper for mobile */}
       <div className="data-table-scroll">
-      {/* Header */}
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: columns.map(c => c.width || "1fr").join(" "),
-        columnGap: 16,
-        background: `${COLORS.primary}08`,
-        borderBottom: `1px solid ${COLORS.borderLight}`,
-        padding: "13px 20px",
-        fontWeight: 700,
-        fontSize: 11,
-        color: COLORS.primary,
-        letterSpacing: 0.8,
-        textTransform: "uppercase",
-        minWidth: "fit-content",
-        width: "100%",
-      }}>
-        {columns.map((col) => (
-          <div key={col.key} style={{ textAlign: col.align || "left" }}>
-            {col.label}
-          </div>
-        ))}
+        <table style={{
+          width: "100%",
+          borderCollapse: "collapse",
+          tableLayout: "fixed",
+          minWidth: columns.filter(c => c.width).reduce((acc, c) => acc + parseInt(c.width!), 0) + "px",
+        }}>
+          <colgroup>
+            {columns.map((col, i) => (
+              <col key={i} style={{ width: col.width || "auto" }} />
+            ))}
+          </colgroup>
+
+          <thead>
+            <tr style={{
+              background: `${COLORS.primary}08`,
+              borderBottom: `1px solid ${COLORS.borderLight}`,
+            }}>
+              {columns.map((col, i) => (
+                <th key={i} style={{
+                  textAlign: col.align || "left",
+                  padding: "13px 20px",
+                  fontWeight: 700,
+                  fontSize: 11,
+                  color: COLORS.primary,
+                  letterSpacing: 0.8,
+                  textTransform: "uppercase",
+                  whiteSpace: "nowrap",
+                }}>
+                  {col.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+
+          <tbody>
+            {display.map((row, i) => (
+              <tr
+                key={i}
+                style={{ borderBottom: i < display.length - 1 ? `1px solid ${COLORS.borderLight}` : "none" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = `${COLORS.primary}05`)}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
+              >
+                {columns.map((col, j) => {
+                  const val = row[col.key];
+                  return (
+                    <td key={j} style={{
+                      textAlign: col.align || "left",
+                      padding: "13px 20px",
+                      fontSize: 13.5,
+                      color: col.highlight ? COLORS.text : COLORS.textMuted,
+                      fontWeight: col.highlight ? 600 : 400,
+                      fontFamily: col.mono ? "'SF Mono', 'Monaco', monospace" : "inherit",
+                      fontVariantNumeric: col.mono ? "tabular-nums" : "normal",
+                    }}>
+                      {col.render ? col.render(val, row) : val}
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      {/* Rows */}
-      {display.map((row, i) => (
-        <div key={i} style={{
-          display: "grid",
-          gridTemplateColumns: columns.map(c => c.width || "1fr").join(" "),
-          columnGap: 16,
-          padding: "13px 20px",
-          borderBottom: i < display.length - 1 ? `1px solid ${COLORS.borderLight}` : "none",
-          transition: "background 0.15s ease",
-          minWidth: "fit-content",
-          width: "100%",
-        }}
-        onMouseEnter={(e) => e.currentTarget.style.background = `${COLORS.primary}05`}
-        onMouseLeave={(e) => e.currentTarget.style.background = COLORS.white}>
-          {columns.map((col) => {
-            const val = row[col.key];
-            return (
-              <div key={col.key} style={{
-                textAlign: col.align || "left",
-                fontSize: 13.5,
-                color: col.highlight ? COLORS.text : COLORS.textMuted,
-                fontWeight: col.highlight ? 600 : 400,
-                fontFamily: col.mono ? "'SF Mono', 'Monaco', monospace" : "inherit",
-                fontVariantNumeric: col.mono ? "tabular-nums" : "normal",
-              }}>
-                {col.render ? col.render(val, row) : val}
-              </div>
-            );
-          })}
-        </div>
-      ))}
-
-      </div>{/* end data-table-scroll */}
-
-      {/* Ver más */}
       {data.length > maxRows && (
         <div style={{
           padding: "14px 20px",
