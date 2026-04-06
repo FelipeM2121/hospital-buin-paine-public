@@ -60,7 +60,7 @@ export function PorServicioTab({ summary: S }: PorServicioTabProps) {
           { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "120px" },
           { 
             key: "qty", 
-            label: "Distribución", 
+            label: "Distribución", hideMobile: true,
             render: (v) => <ProgressBar value={v} max={825} color={COLORS.primary} /> 
           },
         ]}

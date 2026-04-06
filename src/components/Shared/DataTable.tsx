@@ -8,6 +8,7 @@ interface DataTableColumn {
   mono?: boolean;
   width?: string;
   highlight?: boolean;
+  hideMobile?: boolean;
   render?: (value: any, row: any) => React.ReactNode;
 }
 
@@ -30,34 +31,28 @@ export function DataTable({ data, columns, maxRows = 10 }: DataTableProps) {
       boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
     }}>
       <div className="data-table-scroll">
-        <table style={{
-          width: "100%",
-          borderCollapse: "collapse",
-          tableLayout: "fixed",
-          minWidth: columns.filter(c => c.width).reduce((acc, c) => acc + parseInt(c.width!), 0) + "px",
-        }}>
-          <colgroup>
-            {columns.map((col, i) => (
-              <col key={i} style={{ width: col.width || "auto" }} />
-            ))}
-          </colgroup>
-
+        <table style={{ borderCollapse: "collapse", width: "100%", minWidth: "420px" }}>
           <thead>
             <tr style={{
               background: `${COLORS.primary}08`,
               borderBottom: `1px solid ${COLORS.borderLight}`,
             }}>
               {columns.map((col, i) => (
-                <th key={i} style={{
-                  textAlign: col.align || "left",
-                  padding: "13px 20px",
-                  fontWeight: 700,
-                  fontSize: 11,
-                  color: COLORS.primary,
-                  letterSpacing: 0.8,
-                  textTransform: "uppercase",
-                  whiteSpace: "nowrap",
-                }}>
+                <th
+                  key={i}
+                  className={col.hideMobile ? "dt-hide-mobile" : undefined}
+                  style={{
+                    textAlign: col.align || "left",
+                    padding: "13px 16px",
+                    fontWeight: 700,
+                    fontSize: 11,
+                    color: COLORS.primary,
+                    letterSpacing: 0.8,
+                    textTransform: "uppercase",
+                    whiteSpace: "nowrap",
+                    width: col.width || undefined,
+                  }}
+                >
                   {col.label}
                 </th>
               ))}
@@ -75,15 +70,20 @@ export function DataTable({ data, columns, maxRows = 10 }: DataTableProps) {
                 {columns.map((col, j) => {
                   const val = row[col.key];
                   return (
-                    <td key={j} style={{
-                      textAlign: col.align || "left",
-                      padding: "13px 20px",
-                      fontSize: 13.5,
-                      color: col.highlight ? COLORS.text : COLORS.textMuted,
-                      fontWeight: col.highlight ? 600 : 400,
-                      fontFamily: col.mono ? "'SF Mono', 'Monaco', monospace" : "inherit",
-                      fontVariantNumeric: col.mono ? "tabular-nums" : "normal",
-                    }}>
+                    <td
+                      key={j}
+                      className={col.hideMobile ? "dt-hide-mobile" : undefined}
+                      style={{
+                        textAlign: col.align || "left",
+                        padding: "13px 16px",
+                        fontSize: 13.5,
+                        color: col.highlight ? COLORS.text : COLORS.textMuted,
+                        fontWeight: col.highlight ? 600 : 400,
+                        fontFamily: col.mono ? "'SF Mono', 'Monaco', monospace" : "inherit",
+                        fontVariantNumeric: col.mono ? "tabular-nums" : "normal",
+                        whiteSpace: col.mono ? "nowrap" : undefined,
+                      }}
+                    >
                       {col.render ? col.render(val, row) : val}
                     </td>
                   );

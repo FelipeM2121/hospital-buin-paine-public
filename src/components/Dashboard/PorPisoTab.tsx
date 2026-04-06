@@ -57,7 +57,7 @@ export function PorPisoTab({ summary: S }: PorPisoTabProps) {
           { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "120px" },
           { 
             key: "qty", 
-            label: "Distribución", 
+            label: "Distribución", hideMobile: true,
             render: (v) => <ProgressBar value={v} max={1547} color={COLORS.orange} /> 
           },
         ]}

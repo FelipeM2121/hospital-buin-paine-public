@@ -260,6 +260,7 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
             {
               key: "qty",
               label: "Distribución",
+              hideMobile: true,
               render: (v) => <ProgressBar value={v} max={4256} color={COLORS.green} />
             },
           ]}

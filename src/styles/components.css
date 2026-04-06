@@ -173,6 +173,12 @@
 }
 
 /* ── Mobile Responsive ──────────────────────────────────────── */
+@media (max-width: 767px) {
+  .dt-hide-mobile {
+    display: none;
+  }
+}
+
 @media (max-width: 768px) {
   /* Content */
   .content-container {

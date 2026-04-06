@@ -117,7 +117,7 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
           { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "120px" },
           { 
             key: "qty", 
-            label: "Distribución", 
+            label: "Distribución", hideMobile: true,
             render: (v) => <ProgressBar value={v} max={4069} color={COLORS.primary} /> 
           },
         ]}

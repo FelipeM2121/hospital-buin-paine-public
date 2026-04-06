@@ -64,7 +64,7 @@ export function PorProductoTab({ summary: S }: PorProductoTabProps) {
           { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "120px" },
           { 
             key: "qty", 
-            label: "Distribución", 
+            label: "Distribución", hideMobile: true,
             render: (v) => <ProgressBar value={v} max={1285} color={COLORS.orange} /> 
           },
         ]}
