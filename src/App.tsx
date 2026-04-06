@@ -31,7 +31,7 @@ export default function App() {
           <Sidebar activeTab={activeTab} onTabChange={setActiveTab} />
 
           {activeTab === "Chat IA" ? (
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden", background: "#f0f6fa", height: "100vh" }}>
+            <div className="chat-content-wrap">
               <ChatTab data={RAW} summary={S} eettFiles={EETT_FILES} />
             </div>
           ) : (
