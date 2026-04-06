@@ -256,7 +256,7 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
       }}>
 
         {/* Barra de búsqueda + acciones */}
-        <div style={{ display: "flex", gap: 10, marginBottom: 20, alignItems: "center" }}>
+        <div className="inv-action-bar">
           <input
             type="text"
             placeholder="🔍 Buscar por nombre, recinto o código..."
@@ -272,17 +272,21 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
               transition: "border-color 0.2s ease",
               background: COLORS.bg,
               boxSizing: "border-box",
+              minWidth: 0,
             }}
             onFocus={(e) => e.currentTarget.style.borderColor = COLORS.primary}
             onBlur={(e) => e.currentTarget.style.borderColor = COLORS.borderLight}
           />
 
+          <div className="inv-btn-group">
           {/* Botón columnas */}
           <div style={{ position: "relative" }} ref={colMenuRef}>
             <button
               onClick={() => setShowColMenu(v => !v)}
               style={{
                 ...btnBase,
+                width: "100%",
+                justifyContent: "center",
                 background: showColMenu ? COLORS.primary : COLORS.white,
                 color: showColMenu ? COLORS.white : COLORS.text,
                 borderColor: showColMenu ? COLORS.primary : COLORS.border,
@@ -347,12 +351,13 @@ export function InventoryDataTable({ data: initialData }: InventoryDataTableProp
           {/* Botón PDF */}
           <button
             onClick={exportPDF}
-            style={{ ...btnBase, background: "#dc2626", color: COLORS.white, borderColor: "#dc2626" }}
+            style={{ ...btnBase, justifyContent: "center", background: "#dc2626", color: COLORS.white, borderColor: "#dc2626" }}
             onMouseEnter={(e) => { e.currentTarget.style.background = "#b91c1c"; e.currentTarget.style.borderColor = "#b91c1c"; }}
             onMouseLeave={(e) => { e.currentTarget.style.background = "#dc2626"; e.currentTarget.style.borderColor = "#dc2626"; }}>
             ⬇ PDF
           </button>
-        </div>
+          </div>{/* end inv-btn-group */}
+        </div>{/* end inv-action-bar */}
 
         {/* Filtros */}
         <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>

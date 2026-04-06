@@ -151,6 +151,36 @@
   }
 }
 
+/* InventoryDataTable action bar */
+.inv-action-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.inv-btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+  min-width: 120px;
+}
+
+@media (min-width: 768px) {
+  .inv-btn-group {
+    flex-direction: row;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 767px) {
+  .inv-action-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
 /* DataTable scroll wrapper */
 .data-table-scroll {
   overflow-x: auto;
