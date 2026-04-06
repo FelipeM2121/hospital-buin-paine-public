@@ -31,6 +31,7 @@ export function PorPisoTab({ summary: S }: PorPisoTabProps) {
               dataKey="name"
               tick={{ fill: COLORS.textMuted, fontSize: 12 }}
               axisLine={{ stroke: COLORS.border }}
+              interval={0}
             />
             <YAxis
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}

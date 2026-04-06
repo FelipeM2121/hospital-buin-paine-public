@@ -82,11 +82,15 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
         marginBottom: 24,
       }}>
         <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={S.byMes.map(m => ({ ...m, name: formatMonth(m.name) }))} margin={{ top: 20, right: 8, left: 0, bottom: 5 }}>
+          <BarChart data={S.byMes.map(m => ({ ...m, name: formatMonth(m.name) }))} margin={{ top: 20, right: 8, left: 0, bottom: 60 }}>
             <XAxis
               dataKey="name"
-              tick={{ fill: COLORS.textMuted, fontSize: 12 }}
+              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
               axisLine={{ stroke: COLORS.border }}
+              interval={0}
+              angle={-30}
+              textAnchor="end"
+              height={70}
             />
             <YAxis
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}
@@ -141,14 +145,15 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
         marginBottom: 24,
       }}>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={S.bySemana} margin={{ top: 20, right: 8, left: 0, bottom: 5 }}>
+          <BarChart data={S.bySemana} margin={{ top: 20, right: 8, left: 0, bottom: 60 }}>
             <XAxis
               dataKey="name"
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}
               axisLine={{ stroke: COLORS.border }}
-              angle={-15}
+              interval={0}
+              angle={-30}
               textAnchor="end"
-              height={60}
+              height={70}
             />
             <YAxis
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}
