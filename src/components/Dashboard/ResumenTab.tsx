@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, Tooltip, ResponsiveContainer, LabelList } from "recharts";
 import { COLORS, CHART_COLORS, PIE_FAMILIA_COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
 import { KPICard } from "../Shared/KPICard";
@@ -149,7 +149,7 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
             Top Proveedores
           </h3>
           <ResponsiveContainer width="100%" height={280}>
-            <BarChart data={S.byProveedor}>
+            <BarChart data={S.byProveedor} margin={{ top: 20, right: 8, left: 0, bottom: 5 }}>
               <XAxis
                 dataKey="name"
                 tick={{ fill: COLORS.textMuted, fontSize: 11 }}
@@ -164,6 +164,12 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
                 {S.byProveedor.map((_, i) => (
                   <Cell key={i} fill={CHART_COLORS[i]} />
                 ))}
+                <LabelList
+                  dataKey="qty"
+                  position="top"
+                  formatter={(v: number) => v.toLocaleString("es-CL")}
+                  style={{ fontSize: 11, fontWeight: 600, fill: COLORS.text }}
+                />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
@@ -209,7 +215,7 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
           Distribución por Proveedor
         </h3>
         <ResponsiveContainer width="100%" height={280}>
-          <BarChart data={S.byProveedor}>
+          <BarChart data={S.byProveedor} margin={{ top: 20, right: 8, left: 0, bottom: 5 }}>
             <XAxis
               dataKey="name"
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}
@@ -224,6 +230,12 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
               {S.byProveedor.map((_, i) => (
                 <Cell key={i} fill={CHART_COLORS[i]} />
               ))}
+              <LabelList
+                dataKey="qty"
+                position="top"
+                formatter={(v: number) => v.toLocaleString("es-CL")}
+                style={{ fontSize: 11, fontWeight: 600, fill: COLORS.text }}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>

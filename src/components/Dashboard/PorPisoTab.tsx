@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
 import { COLORS, CHART_COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
 import { KPICard } from "../Shared/KPICard";
@@ -26,13 +26,13 @@ export function PorPisoTab({ summary: S }: PorPisoTabProps) {
         marginBottom: 24,
       }}>
         <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={S.byPiso}>
-            <XAxis 
-              dataKey="name" 
+          <BarChart data={S.byPiso} margin={{ top: 20, right: 8, left: 0, bottom: 5 }}>
+            <XAxis
+              dataKey="name"
               tick={{ fill: COLORS.textMuted, fontSize: 12 }}
               axisLine={{ stroke: COLORS.border }}
             />
-            <YAxis 
+            <YAxis
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
@@ -41,6 +41,12 @@ export function PorPisoTab({ summary: S }: PorPisoTabProps) {
               {S.byPiso.map((_, i) => (
                 <Cell key={i} fill={CHART_COLORS[i]} />
               ))}
+              <LabelList
+                dataKey="qty"
+                position="top"
+                formatter={(v: number) => v.toLocaleString("es-CL")}
+                style={{ fontSize: 11, fontWeight: 600, fill: COLORS.text }}
+              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
