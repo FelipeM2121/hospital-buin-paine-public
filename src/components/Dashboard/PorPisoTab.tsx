@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell, LabelList } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { COLORS, CHART_COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
 import { KPICard } from "../Shared/KPICard";
@@ -42,12 +42,6 @@ export function PorPisoTab({ summary: S }: PorPisoTabProps) {
               {S.byPiso.map((_, i) => (
                 <Cell key={i} fill={CHART_COLORS[i]} />
               ))}
-              <LabelList
-                dataKey="qty"
-                position="top"
-                formatter={(v: number) => v.toLocaleString("es-CL")}
-                style={{ fontSize: 11, fontWeight: 600, fill: COLORS.text }}
-              />
             </Bar>
           </BarChart>
         </ResponsiveContainer>
