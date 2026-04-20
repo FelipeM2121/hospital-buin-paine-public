@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { SquarePen, AlertCircle } from "lucide-react";
-import { useMsal } from "@azure/msal-react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatInput } from "./ChatInput";
 import { ChatService, Message, ChatError } from "./ChatService";
@@ -17,8 +16,7 @@ export const ChatTab: React.FC<ChatTabProps> = ({ data, summary, eettFiles }) =>
   const [isLoading, setIsLoading] = React.useState(false);
   const [error, setError] = React.useState<ChatError | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const { accounts } = useMsal();
-  const firstName = accounts[0]?.name?.split(" ")[0] ?? "";
+  const firstName = "";
 
   useEffect(() => {
     ChatService.setData(data, summary, eettFiles || []);
