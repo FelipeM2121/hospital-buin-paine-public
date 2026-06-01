@@ -1,9 +1,9 @@
 /* ── Sidebar / Bottom Nav ─────────────────────────────────────── */
 
-/* Desktop: vertical icon rail */
+/* Desktop: vertical icon rail with labels */
 .sidebar {
-  width: 72px;
-  min-width: 72px;
+  width: 96px;
+  min-width: 96px;
   background: var(--color-sidebar);
   padding: 20px 0;
   display: flex;
@@ -22,14 +22,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   width: 100%;
   padding-top: 4px;
 }
 
 .sidebar-tab-btn {
-  width: 52px;
-  height: 52px;
+  width: 82px;
+  height: 58px;
   border: none;
   border-radius: 15px;
   cursor: pointer;
@@ -40,12 +40,12 @@
   transition: all var(--transition-normal);
   padding: 0;
   flex-shrink: 0;
-  gap: 0;
+  gap: 4px;
 }
 
 .sidebar-tab-icon {
-  width: 26px;
-  height: 26px;
+  width: 22px;
+  height: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,7 +59,18 @@
 }
 
 .sidebar-tab-label {
-  display: none;
+  display: block;
+  font-size: 9px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.55);
+  text-align: center;
+  white-space: nowrap;
+  line-height: 1;
+  letter-spacing: 0.2px;
+}
+
+.sidebar-tab-btn.active .sidebar-tab-label {
+  color: rgba(255, 255, 255, 0.95);
 }
 
 .sidebar-divider {
