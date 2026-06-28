@@ -2,6 +2,14 @@
 
 Dashboard interactivo para la gestión y seguimiento del mobiliario no clínico del Hospital Buin Paine, desarrollado con React + TypeScript + Vite.
 
+## 🌐 Proyecto en línea
+
+El proyecto está alojado y disponible públicamente en Netlify:
+
+👉 **https://hospital-buin-paine.netlify.app**
+
+Puedes acceder al dashboard directamente desde el navegador, sin necesidad de instalación ni login.
+
 ## 📋 Descripción
 
 Esta herramienta permite visualizar y analizar el estado del mobiliario no clínico distribuido en las distintas unidades del hospital, incluyendo:
