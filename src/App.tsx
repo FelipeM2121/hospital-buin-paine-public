@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   ResumenTab,
-  PorFechaTab,
   DespachoTab,
   EspecificacionesTecnicasTab,
 } from "./components/Dashboard";
@@ -30,7 +29,6 @@ export default function App() {
             <Header activeTab={activeTab} />
 
             {activeTab === "Resumen" && <ResumenTab summary={S} data={RAW} />}
-            {activeTab === "Por Fecha" && <PorFechaTab summary={S} />}
             {activeTab === "Despacho" && <DespachoTab progress={DESPACHO_PROGRESS} batches={DESPACHO_BATCHES} detalle={DESPACHO_DETALLE} />}
             {activeTab === "Esp. Técnicas" && (
               <EspecificacionesTecnicasTab eettFiles={EETT_FILES} pdfViewer={PdfViewer} />

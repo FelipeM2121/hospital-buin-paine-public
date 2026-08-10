@@ -24,6 +24,32 @@ function formatDateShort(d: string): string {
   const [, m, day] = d.split('-');
   return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]}`;
 }
+
+// "Despachado" (DESPACHO_DETALLE) siempre es ≥ "Entregado" (DESPACHO_PROGRESS) por tipo de
+// equipo — se despacha primero y la confirmación de entrega llega después. Para que la
+// tendencia acumulada cuadre exactamente con el KPI "Entregado", se acumula por tipo de
+// equipo y se limita cada uno a su total confirmado en progress (nunca a lo simplemente
+// despachado), en vez de sumar directo las unidades de cada despacho.
+function buildCumulativeChart(
+  sortedBatches: DespachoBatch[],
+  detalle: DespachoBatchDetalle[],
+  progress: DespachoProgressItem[],
+): { name: string; fecha: string; acumulado: number }[] {
+  const entregadoPorTipo = new Map(progress.map((p) => [p.tipoEquipo, p.entregado]));
+  const acumuladoPorTipo = new Map<string, number>();
+  return sortedBatches.map((b) => {
+    const det = detalle.find((d) => d.numero === b.numero);
+    det?.items.forEach((item) => {
+      const prev = acumuladoPorTipo.get(item.tipoEquipo) ?? 0;
+      const ceiling = entregadoPorTipo.get(item.tipoEquipo) ?? 0;
+      acumuladoPorTipo.set(item.tipoEquipo, Math.min(prev + item.cantidad, ceiling));
+    });
+    let acumulado = 0;
+    acumuladoPorTipo.forEach((v) => { acumulado += v; });
+    return { name: `Despacho ${b.numero}`, fecha: formatDateShort(b.fecha), acumulado };
+  });
+}
+
 export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 767);
 
@@ -44,11 +70,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
 
   const batchChart = batches.map(b => ({ name: `Despacho ${b.numero} (${formatDateShort(b.fecha)})`, qty: b.unidades, recintos: b.recintos }));
 
-  let acumulado = 0;
-  const cumulativeChart = sortedBatches.map(b => {
-    acumulado += b.unidades;
-    return { name: `Despacho ${b.numero}`, fecha: formatDateShort(b.fecha), acumulado };
-  });
+  const cumulativeChart = buildCumulativeChart(sortedBatches, detalle, progress);
 
   const tableData = [...progress]
     .sort((a, b) => b.restante - a.restante || a.pct - b.pct)
@@ -153,6 +175,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
               height={40}
             />
             <YAxis
+              domain={[0, total]}
               tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
@@ -161,7 +184,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
               y={total}
               stroke={COLORS.textMuted}
               strokeDasharray="4 4"
-              label={{ value: "Total requerido", position: "insideTopRight", fill: COLORS.textMuted, fontSize: 11 }}
+              label={{ value: "Total requerido", position: "insideBottomRight", fill: COLORS.textMuted, fontSize: 11 }}
             />
             <Line
               type="monotone"

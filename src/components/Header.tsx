@@ -3,7 +3,6 @@ import { TABS } from "./Sidebar";
 
 const TAB_TITLES: Record<string, string> = {
   "Resumen":           "Resumen General",
-  "Por Fecha":         "Cronograma de Instalación",
   "Esp. Técnicas":     "Especificaciones Técnicas",
 };
 
