@@ -3,7 +3,7 @@ import { COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
 import { SectionTitle } from "../Shared/SectionTitle";
 import { Breadcrumbs, type BreadcrumbItem } from "../Shared/Breadcrumbs";
-import { categoriaPorCodigo } from "../../data/catalogo";
+import { FAMILIAS, familiaPorCodigoEETT } from "../../data/familias";
 import type { EETTFile } from "../../types";
 
 interface EspecificacionesTecnicasTabProps {
@@ -33,19 +33,11 @@ export function EspecificacionesTecnicasTab({ eettFiles: EETT_FILES, pdfViewer: 
     return () => mq.removeEventListener("change", handler);
   }, []);
 
-  // Mismo orden de familias que usa el Catálogo Melman (por prefijo de código).
-  const familias = useMemo(() => {
-    const seen = new Set<string>();
-    const ordered: string[] = [];
-    for (const f of EETT_FILES) {
-      const cat = categoriaPorCodigo(f.code);
-      if (!seen.has(cat)) {
-        seen.add(cat);
-        ordered.push(cat);
-      }
-    }
-    return ordered;
-  }, [EETT_FILES]);
+  // Las 4 familias oficiales del inventario (Silla, Mobiliario, Otro, Mesa), solo las que tienen fichas.
+  const familias = useMemo(
+    () => FAMILIAS.filter((fam) => EETT_FILES.some((f) => familiaPorCodigoEETT(f.code) === fam)),
+    [EETT_FILES]
+  );
 
   const searching = search.trim().length > 0;
   const q = normalizeCode(search.trim());
@@ -58,7 +50,7 @@ export function EspecificacionesTecnicasTab({ eettFiles: EETT_FILES, pdfViewer: 
   );
 
   const fichasDeFamilia = useMemo(
-    () => (familia ? EETT_FILES.filter((f) => categoriaPorCodigo(f.code) === familia) : []),
+    () => (familia ? EETT_FILES.filter((f) => familiaPorCodigoEETT(f.code) === familia) : []),
     [EETT_FILES, familia]
   );
 
@@ -135,7 +127,7 @@ export function EspecificacionesTecnicasTab({ eettFiles: EETT_FILES, pdfViewer: 
             title={`Resultados para "${search}"`}
             fichas={resultados}
             onSelect={(f) => {
-              setFamilia(categoriaPorCodigo(f.code));
+              setFamilia(familiaPorCodigoEETT(f.code));
               setSelected(f);
             }}
           />
@@ -150,7 +142,7 @@ export function EspecificacionesTecnicasTab({ eettFiles: EETT_FILES, pdfViewer: 
             }}
           >
             {familias.map((fam) => {
-              const count = EETT_FILES.filter((f) => categoriaPorCodigo(f.code) === fam).length;
+              const count = EETT_FILES.filter((f) => familiaPorCodigoEETT(f.code) === fam).length;
               return (
                 <button
                   key={fam}
