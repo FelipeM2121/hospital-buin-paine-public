@@ -18,15 +18,18 @@ function formatDate(d: string): string {
   const [y, m, day] = d.split('-');
   return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]} ${y}`;
 }
+function formatDateShort(d: string): string {
+  const [, m, day] = d.split('-');
+  return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]}`;
+}
 
 export function DespachoTab({ progress, batches }: DespachoTabProps) {
   const total = progress.reduce((a, p) => a + p.total, 0);
   const entregado = progress.reduce((a, p) => a + p.entregado, 0);
   const restante = progress.reduce((a, p) => a + p.restante, 0);
   const pctGlobal = total > 0 ? (entregado / total) * 100 : 0;
-  const tiposPendientes = progress.filter(p => p.restante > 0).length;
 
-  const batchChart = batches.map(b => ({ name: formatDate(b.fecha), qty: b.unidades, recintos: b.recintos }));
+  const batchChart = batches.map(b => ({ name: `Despacho ${b.numero} (${formatDateShort(b.fecha)})`, qty: b.unidades, recintos: b.recintos }));
 
   const tableData = [...progress]
     .sort((a, b) => b.restante - a.restante || a.pct - b.pct)
@@ -73,14 +76,6 @@ export function DespachoTab({ progress, batches }: DespachoTabProps) {
           </div>
           <div style={{ fontSize: 34, fontWeight: 800, letterSpacing: "-0.5px" }}>
             {restante.toLocaleString("es-CL")} <span style={{ fontSize: 15, fontWeight: 500, opacity: 0.9 }}>unidades</span>
-          </div>
-        </div>
-        <div style={{ textAlign: "right" }}>
-          <div style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.8, opacity: 0.9, marginBottom: 4 }}>
-            Tipos pendientes
-          </div>
-          <div style={{ fontSize: 26, fontWeight: 800 }}>
-            {tiposPendientes} <span style={{ fontSize: 14, fontWeight: 500, opacity: 0.9 }}>de {progress.length}</span>
           </div>
         </div>
       </div>
