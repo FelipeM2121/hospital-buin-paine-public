@@ -166,13 +166,14 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
         marginBottom: 16,
       }}>
         <ResponsiveContainer width="100%" height={280}>
-          <LineChart data={cumulativeChart} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+          <LineChart data={cumulativeChart} margin={{ top: 8, right: 24, left: 0, bottom: 0 }}>
             <XAxis
               dataKey="name"
               tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
               interval={0}
               height={40}
+              padding={{ left: 16, right: 16 }}
             />
             <YAxis
               domain={[0, total]}
