@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import { COLORS } from "../constants/theme";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 const btnStyle: React.CSSProperties = {
-  width: 32, height: 32, border: "1px solid #d1d5db", borderRadius: 6,
-  background: "#fff", cursor: "pointer", fontSize: 16, fontWeight: 700,
+  width: 32, height: 32, border: `1px solid ${COLORS.border}`, borderRadius: 6,
+  background: COLORS.white, cursor: "pointer", fontSize: 16, fontWeight: 700,
   display: "flex", alignItems: "center", justifyContent: "center",
 };
 
@@ -124,20 +125,20 @@ export function PdfViewer({ url }: { url: string }) {
       {/* Toolbar */}
       <div style={{
         display: "flex", alignItems: "center", gap: 8, padding: "10px 16px",
-        borderBottom: "1px solid #e5e7eb", background: "#f8fafc", flexShrink: 0,
+        borderBottom: `1px solid ${COLORS.borderLight}`, background: COLORS.bg, flexShrink: 0,
       }}>
         <button onClick={() => zoom(-0.15)} style={btnStyle} title="Alejar">&minus;</button>
-        <span style={{ fontSize: 13, fontWeight: 600, color: "#374151", minWidth: 48, textAlign: "center" }}>
+        <span style={{ fontSize: 13, fontWeight: 600, color: COLORS.text, minWidth: 48, textAlign: "center" }}>
           {Math.round(scale * 100)}%
         </span>
         <button onClick={() => zoom(0.15)} style={btnStyle} title="Acercar">+</button>
         <button onClick={fitToWidth} style={{ ...btnStyle, width: "auto", padding: "0 10px", fontSize: 12 }} title="Ajustar al ancho">&#x292E; Ajustar</button>
         <span style={{ flex: 1 }} />
         {numPages > 0 && (
-          <span style={{ fontSize: 12, color: "#6b7280" }}>Pág. {currentPage} / {numPages}</span>
+          <span style={{ fontSize: 12, color: COLORS.textMuted }}>Pág. {currentPage} / {numPages}</span>
         )}
         <a href={url} target="_blank" rel="noopener noreferrer"
-          style={{ fontSize: 12, color: "#2563eb", fontWeight: 600, textDecoration: "none", padding: "4px 10px", border: "1px solid #2563eb", borderRadius: 6 }}>
+          style={{ fontSize: 12, color: COLORS.primary, fontWeight: 600, textDecoration: "none", padding: "4px 10px", border: `1px solid ${COLORS.primary}`, borderRadius: 6 }}>
           ↗ Nueva pestaña
         </a>
       </div>
@@ -145,16 +146,16 @@ export function PdfViewer({ url }: { url: string }) {
       {/* Área de scroll */}
       <div ref={containerRef} style={{
         flex: 1, overflowY: "auto", overflowX: "hidden",
-        background: "#525659", padding: "16px 12px",
+        background: COLORS.sidebar, padding: "16px 12px",
         display: "flex", flexDirection: "column", alignItems: "center", gap: 12, minHeight: 600,
       }}>
-        {loading && <div style={{ color: "#fff", marginTop: 60, fontSize: 15 }}>Cargando PDF…</div>}
-        {error && <div style={{ color: "#fca5a5", marginTop: 60, fontSize: 15 }}>{error}</div>}
+        {loading && <div style={{ color: COLORS.white, marginTop: 60, fontSize: 15 }}>Cargando PDF…</div>}
+        {error && <div style={{ color: COLORS.redLight, marginTop: 60, fontSize: 15 }}>{error}</div>}
         {!loading && !error && Array.from({ length: numPages }).map((_, i) => (
           <canvas
             key={i}
             ref={(el) => { if (el) canvasRefs.current[i] = el; }}
-            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.4)", background: "#fff", display: "block", maxWidth: "100%" }}
+            style={{ boxShadow: "0 2px 8px rgba(0,0,0,0.4)", background: COLORS.white, display: "block", maxWidth: "100%" }}
           />
         ))}
       </div>

@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { COLORS, CHART_COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
@@ -24,8 +25,21 @@ function formatMonth(ym: string): string {
   const [y, m] = ym.split('-');
   return `${MESES_FULL[parseInt(m, 10) - 1]} ${y}`;
 }
+function formatMonthShort(ym: string): string {
+  const [y, m] = ym.split('-');
+  return `${MESES[parseInt(m, 10) - 1]} ${y.slice(2)}`;
+}
 
 export function PorFechaTab({ summary: S }: PorFechaTabProps) {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 767);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   return (
     <>
       <SectionTitle icon={Icons.calendar}>Cronograma de Instalación</SectionTitle>
@@ -82,16 +96,16 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
         marginBottom: 24,
       }}>
         <ResponsiveContainer width="100%" height={320}>
-          <BarChart data={S.byMes.map(m => ({ ...m, name: formatMonth(m.name) }))} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+          <BarChart data={S.byMes.map(m => ({ ...m, name: isMobile ? formatMonthShort(m.name) : formatMonth(m.name) }))} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <XAxis
               dataKey="name"
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
               interval={0}
               height={40}
             />
             <YAxis
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -140,13 +154,13 @@ export function PorFechaTab({ summary: S }: PorFechaTabProps) {
           <BarChart data={S.bySemana} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <XAxis
               dataKey="name"
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
               interval={0}
               height={40}
             />
             <YAxis
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
             <Tooltip content={<CustomTooltip />} />

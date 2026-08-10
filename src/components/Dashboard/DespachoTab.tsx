@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BarChart, Bar, LineChart, Line, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { COLORS, CHART_COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
@@ -25,6 +25,15 @@ function formatDateShort(d: string): string {
   return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]}`;
 }
 export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 767);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
+
   const total = progress.reduce((a, p) => a + p.total, 0);
   const entregado = progress.reduce((a, p) => a + p.entregado, 0);
   const restante = progress.reduce((a, p) => a + p.restante, 0);
@@ -138,13 +147,13 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           <LineChart data={cumulativeChart} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
             <XAxis
               dataKey="name"
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
               interval={0}
               height={40}
             />
             <YAxis
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
             <Tooltip content={<CustomTooltip />} />
@@ -179,15 +188,16 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           <BarChart data={pendingChart} layout="vertical" margin={{ top: 5, right: 8, left: 0, bottom: 5 }}>
             <XAxis
               type="number"
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
             <YAxis
               type="category"
               dataKey="name"
-              width={160}
-              tick={{ fill: COLORS.text, fontSize: 10 }}
+              width={isMobile ? 96 : 160}
+              tick={{ fill: COLORS.text, fontSize: isMobile ? 9 : 10 }}
               axisLine={{ stroke: COLORS.border }}
+              tickFormatter={(v: string) => isMobile && v.length > 14 ? v.slice(0, 14) + "…" : v}
             />
             <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="qty" name="Faltante" radius={[0, 6, 6, 0]} fill={COLORS.red} />
@@ -234,13 +244,14 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           <BarChart data={batchChart} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
             <XAxis
               dataKey="name"
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 8 : 11 }}
               axisLine={{ stroke: COLORS.border }}
               interval={0}
               height={40}
+              tickFormatter={(v: string) => isMobile ? v.replace("Despacho ", "#") : v}
             />
             <YAxis
-              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              tick={{ fill: COLORS.textMuted, fontSize: isMobile ? 9 : 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
             <Tooltip content={<CustomTooltip />} />

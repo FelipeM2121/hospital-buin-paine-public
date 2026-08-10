@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import { ArrowUp, Square, Camera, X } from "lucide-react";
+import { COLORS } from "../../constants/theme";
 
 export interface ChatImageAttachment {
   dataUrl: string;
@@ -109,18 +110,18 @@ export const ChatInput: React.FC<ChatInputProps> = ({
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      background: "#f0f6fa",
+      background: COLORS.bg,
     }}>
       <form onSubmit={handleSubmit} style={{
         width: "100%", maxWidth: "760px",
-        background: "#fff",
+        background: COLORS.white,
         borderRadius: "16px",
-        border: focused ? "1px solid #C9623F" : "1px solid #E0DDD7",
+        border: focused ? `1px solid ${COLORS.primary}` : `1px solid ${COLORS.border}`,
         padding: "14px 16px 10px",
         display: "flex", flexDirection: "column",
         transition: "border-color 0.15s, box-shadow 0.15s",
         boxShadow: focused
-          ? "0 0 0 3px rgba(201,98,63,0.10), 0 2px 8px rgba(0,0,0,0.06)"
+          ? `0 0 0 3px ${COLORS.primary}1a, 0 2px 8px rgba(0,0,0,0.06)`
           : "0 1px 4px rgba(0,0,0,0.06)",
       }}>
         {image && (
@@ -129,7 +130,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               <img
                 src={image.dataUrl}
                 alt="Foto del recinto"
-                style={{ width: 56, height: 56, objectFit: "cover", borderRadius: "10px", border: "1px solid #E0DDD7" }}
+                style={{ width: 56, height: 56, objectFit: "cover", borderRadius: "10px", border: `1px solid ${COLORS.border}` }}
               />
               <button
                 type="button"
@@ -138,8 +139,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 style={{
                   position: "absolute", top: -6, right: -6,
                   width: 20, height: 20, borderRadius: "50%",
-                  background: "#1C1B1A", color: "#fff",
-                  border: "2px solid #fff",
+                  background: COLORS.text, color: COLORS.white,
+                  border: `2px solid ${COLORS.white}`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   cursor: "pointer", padding: 0,
                 }}
@@ -147,14 +148,14 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 <X size={11} />
               </button>
             </div>
-            <span style={{ fontSize: "12.5px", color: "#9B958E" }}>
+            <span style={{ fontSize: "12.5px", color: COLORS.textMuted }}>
               Foto del recinto adjunta — se identificará el código automáticamente
             </span>
           </div>
         )}
 
         {imageError && (
-          <div style={{ fontSize: "12.5px", color: "#C9623F", marginBottom: "8px" }}>{imageError}</div>
+          <div style={{ fontSize: "12.5px", color: COLORS.red, marginBottom: "8px" }}>{imageError}</div>
         )}
 
         <textarea
@@ -171,7 +172,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             width: "100%", resize: "none",
             background: "transparent", border: "none", outline: "none",
             fontSize: "15px", lineHeight: "1.6",
-            color: "#1C1B1A",
+            color: COLORS.text,
             padding: "0",
             fontFamily: "inherit",
             maxHeight: "180px",
@@ -202,28 +203,28 @@ export const ChatInput: React.FC<ChatInputProps> = ({
                 width: 30, height: 30,
                 borderRadius: "8px",
                 border: "none",
-                background: image ? "#F5E4DB" : "transparent",
-                color: image ? "#C9623F" : "#9B958E",
+                background: image ? `${COLORS.primary}15` : "transparent",
+                color: image ? COLORS.primary : COLORS.textMuted,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 cursor: isLoading || disabled ? "not-allowed" : "pointer",
                 transition: "background 0.15s, color 0.15s",
                 flexShrink: 0,
               }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = "#F0EDE8"; e.currentTarget.style.color = "#1C1B1A"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = image ? "#F5E4DB" : "transparent"; e.currentTarget.style.color = image ? "#C9623F" : "#9B958E"; }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = COLORS.bg; e.currentTarget.style.color = COLORS.text; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = image ? `${COLORS.primary}15` : "transparent"; e.currentTarget.style.color = image ? COLORS.primary : COLORS.textMuted; }}
             >
               <Camera size={16} />
             </button>
 
             {/* Model badge */}
             <span style={{
-              fontSize: "11.5px", color: "#9B958E",
+              fontSize: "11.5px", color: COLORS.textMuted,
               display: "flex", alignItems: "center", gap: "5px",
               userSelect: "none",
             }}>
               <span style={{
                 width: 7, height: 7, borderRadius: "50%",
-                background: "linear-gradient(135deg, #C9623F, #E8956D)",
+                background: `linear-gradient(135deg, ${COLORS.primary}, ${COLORS.primaryLight})`,
                 flexShrink: 0,
               }} />
               Claude Sonnet
@@ -238,8 +239,8 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               width: 34, height: 34,
               borderRadius: "10px",
               border: "none",
-              background: canSend || isLoading ? "#C9623F" : "#E0DDD7",
-              color: "#fff",
+              background: canSend || isLoading ? COLORS.primary : COLORS.border,
+              color: COLORS.white,
               display: "flex", alignItems: "center", justifyContent: "center",
               cursor: canSend || isLoading ? "pointer" : "not-allowed",
               transition: "background 0.15s, transform 0.1s",
@@ -247,19 +248,19 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             }}
             onMouseEnter={(e) => {
               if (canSend || isLoading) {
-                e.currentTarget.style.background = "#B5522F";
+                e.currentTarget.style.background = COLORS.primaryDark;
                 e.currentTarget.style.transform = "scale(1.05)";
               }
             }}
             onMouseLeave={(e) => {
               if (canSend || isLoading) {
-                e.currentTarget.style.background = "#C9623F";
+                e.currentTarget.style.background = COLORS.primary;
                 e.currentTarget.style.transform = "scale(1)";
               }
             }}
           >
             {isLoading ? (
-              <Square size={14} fill="#fff" strokeWidth={0} />
+              <Square size={14} fill={COLORS.white} strokeWidth={0} />
             ) : (
               <ArrowUp size={17} strokeWidth={2.5} />
             )}
@@ -267,16 +268,9 @@ export const ChatInput: React.FC<ChatInputProps> = ({
         </div>
       </form>
 
-      <div style={{ fontSize: "11px", color: "#C4BFB8", marginTop: "8px", textAlign: "center" }}>
+      <div style={{ fontSize: "11px", color: COLORS.textLight, marginTop: "8px", textAlign: "center" }}>
         Los datos provienen del inventario SGD — Hospital Buin Paine
       </div>
-
-      <style>{`
-        @keyframes spin {
-          from { transform: rotate(0deg); }
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
     </div>
   );
 };
