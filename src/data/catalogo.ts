@@ -162,6 +162,22 @@ export const categorias = [
 ];
 
 /**
+ * Prefijo de código (los 3 dígitos antes del punto, ej. "201.001A" → "201")
+ * mapeado a la categoría del catálogo — misma agrupación que usa el Catálogo Melman,
+ * reutilizada para ordenar otras listas de productos (ej. Especificaciones Técnicas) por familia.
+ */
+const PREFIJO_A_CATEGORIA: Record<string, string> = {};
+for (const p of productosCatalogo) {
+  const prefijo = p.codigo.split(".")[0].replace(/^0+(?=\d)/, "");
+  if (!(prefijo in PREFIJO_A_CATEGORIA)) PREFIJO_A_CATEGORIA[prefijo] = p.categoria;
+}
+
+export function categoriaPorCodigo(codigo: string): string {
+  const prefijo = codigo.split(".")[0].replace(/^0+(?=\d)/, "");
+  return PREFIJO_A_CATEGORIA[prefijo] ?? "Otros";
+}
+
+/**
  * @deprecated Mantenido para compatibilidad - usar ProductoCatalogo
  */
 export const catalogoItems: CatalogItem[] = productosCatalogo.map((p, i) => ({
