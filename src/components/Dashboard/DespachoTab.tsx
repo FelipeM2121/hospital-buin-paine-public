@@ -73,7 +73,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
   const cumulativeChart = buildCumulativeChart(sortedBatches, detalle, progress);
 
   const tableData = [...progress]
-    .sort((a, b) => b.restante - a.restante || a.pct - b.pct)
+    .sort((a, b) => b.entregado - a.entregado || b.restante - a.restante)
     .map((p, i) => ({
       ...p,
       rank: i + 1,
