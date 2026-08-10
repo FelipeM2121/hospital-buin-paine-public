@@ -63,6 +63,23 @@ export interface SummaryData {
   fechaStats: FechaStats;
 }
 
+export interface DespachoProgressItem {
+  tipoEquipo: string;
+  nombre: string;
+  porPiso: number[];
+  total: number;
+  entregado: number;
+  restante: number;
+  pct: number;
+}
+
+export interface DespachoBatch {
+  numero: number;
+  fecha: string;
+  recintos: number;
+  unidades: number;
+}
+
 export interface EETTFile {
   code: string;
   name: string;

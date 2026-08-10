@@ -12,6 +12,7 @@ export interface TabConfig {
 export const TABS: TabConfig[] = [
   { name: "Resumen",           icon: Icons.chart,    color: COLORS.primary },
   { name: "Por Fecha",         icon: Icons.calendar, color: "#f59e0b" },
+  { name: "Despacho",          icon: Icons.box,      color: "#3b82f6" },
   { name: "Esp. Técnicas",     icon: Icons.document, color: "#14b8a6" },
   { name: "Chat IA",           icon: Icons.chat,     color: "#10b981" },
 ];
@@ -19,6 +20,7 @@ export const TABS: TabConfig[] = [
 const SHORT_LABELS: Record<string, string> = {
   "Resumen":           "Resumen",
   "Por Fecha":         "Fecha",
+  "Despacho":          "Despacho",
   "Esp. Técnicas":     "EETT",
   "Chat IA":           "Chat IA",
 };
