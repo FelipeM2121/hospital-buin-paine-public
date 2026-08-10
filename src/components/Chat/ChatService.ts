@@ -737,7 +737,7 @@ CIFRAS OFICIALES — INVENTARIO MNC HOSPITAL BUIN PAINE
 ══════════════════════════════════════════
 
 TOTAL GENERAL: 4.471 unidades | 1.978 registros | 80 tipos de producto
-Servicios: 40 | Pisos: 8 (-1, 1, 2, 3, 4, 5, 6, 7) | Recintos: 815 | Proveedores: 4 | Familias: 4
+Servicios: 40 | Pisos: 8 (-1, 1, 2, 3, 4, 5, 6, 7) | Recintos: 815 | Proveedores: 3 | Familias: 4
 
 ── FAMILIAS DE MUEBLES (4 familias) ──
 | Familia    | Unidades | % Total | Descripción |
@@ -889,10 +889,9 @@ Servicios: 40 | Pisos: 8 (-1, 1, 2, 3, 4, 5, 6, 7) | Recintos: 815 | Proveedores
 ── PROVEEDORES ──
 | Proveedor | Unidades | % Total |
 |-----------|----------|---------|
-| MELMAN SPA | 4.205 | 94,1% |
+| MELMAN SPA | 4.271 | 95,5% |
 | ALLMEDICA | 106 | 2,4% |
 | COMERCIAL HAGELIN | 94 | 2,1% |
-| SIN ADJUDICAR | 66 | 1,5% |
 
 ── CRONOGRAMA DE INSTALACIÓN ──
 Período: Mayo 2026 – Agosto 2026

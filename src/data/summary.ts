@@ -8,7 +8,7 @@ export const SUMMARY: SummaryData = {
   "uniqueServicios": 40,
   "uniqueZonas": 28,
   "pisos": 8,
-  "proveedores": 4,
+  "proveedores": 3,
   "familias": 4,
   "byFamilia": [
     {
@@ -31,7 +31,7 @@ export const SUMMARY: SummaryData = {
   "byProveedor": [
     {
       "name": "MELMAN SPA",
-      "qty": 4205
+      "qty": 4271
     },
     {
       "name": "ALLMEDICA",
@@ -40,10 +40,6 @@ export const SUMMARY: SummaryData = {
     {
       "name": "COMERCIAL HAGELIN ",
       "qty": 94
-    },
-    {
-      "name": "SIN ADJUDICAR",
-      "qty": 66
     }
   ],
   "byPiso": [
