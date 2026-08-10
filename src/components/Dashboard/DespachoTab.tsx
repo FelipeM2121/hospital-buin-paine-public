@@ -1,4 +1,5 @@
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { useState } from "react";
+import { BarChart, Bar, LineChart, Line, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { COLORS, CHART_COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
 import { KPICard } from "../Shared/KPICard";
@@ -6,11 +7,12 @@ import { SectionTitle } from "../Shared/SectionTitle";
 import { DataTable } from "../Shared/DataTable";
 import { ProgressBar } from "../Shared/ProgressBar";
 import { CustomTooltip } from "../Shared/CustomTooltip";
-import type { DespachoProgressItem, DespachoBatch } from "../../types";
+import type { DespachoProgressItem, DespachoBatch, DespachoBatchDetalle } from "../../types";
 
 interface DespachoTabProps {
   progress: DespachoProgressItem[];
   batches: DespachoBatch[];
+  detalle: DespachoBatchDetalle[];
 }
 
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -22,14 +24,46 @@ function formatDateShort(d: string): string {
   const [, m, day] = d.split('-');
   return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]}`;
 }
+function parseISODate(d: string): Date {
+  const [y, m, day] = d.split('-').map(Number);
+  return new Date(y, m - 1, day);
+}
+function diffDays(a: string, b: string): number {
+  return Math.round((parseISODate(b).getTime() - parseISODate(a).getTime()) / 86400000);
+}
+function addDays(d: string, days: number): Date {
+  const dt = parseISODate(d);
+  dt.setDate(dt.getDate() + days);
+  return dt;
+}
 
-export function DespachoTab({ progress, batches }: DespachoTabProps) {
+export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
   const total = progress.reduce((a, p) => a + p.total, 0);
   const entregado = progress.reduce((a, p) => a + p.entregado, 0);
   const restante = progress.reduce((a, p) => a + p.restante, 0);
   const pctGlobal = total > 0 ? (entregado / total) * 100 : 0;
 
+  const sortedBatches = [...batches].sort((a, b) => a.fecha.localeCompare(b.fecha) || a.numero - b.numero);
+  const [selectedBatch, setSelectedBatch] = useState(sortedBatches[sortedBatches.length - 1]?.numero ?? 1);
+
   const batchChart = batches.map(b => ({ name: `Despacho ${b.numero} (${formatDateShort(b.fecha)})`, qty: b.unidades, recintos: b.recintos }));
+
+  let acumulado = 0;
+  const cumulativeChart = sortedBatches.map(b => {
+    acumulado += b.unidades;
+    return { name: `Despacho ${b.numero}`, fecha: formatDateShort(b.fecha), acumulado };
+  });
+
+  const primerDespacho = sortedBatches[0];
+  const ultimoDespacho = sortedBatches[sortedBatches.length - 1];
+  const diasTranscurridos = primerDespacho && ultimoDespacho
+    ? Math.max(1, diffDays(primerDespacho.fecha, ultimoDespacho.fecha))
+    : 1;
+  const ritmoDiario = entregado / diasTranscurridos;
+  const diasRestantesEstimados = ritmoDiario > 0 ? Math.ceil(restante / ritmoDiario) : null;
+  const fechaProyectada = diasRestantesEstimados !== null && ultimoDespacho
+    ? addDays(ultimoDespacho.fecha, diasRestantesEstimados)
+    : null;
 
   const tableData = [...progress]
     .sort((a, b) => b.restante - a.restante || a.pct - b.pct)
@@ -44,6 +78,9 @@ export function DespachoTab({ progress, batches }: DespachoTabProps) {
     .sort((a, b) => b.restante - a.restante)
     .slice(0, 15)
     .map(p => ({ name: p.nombre, qty: p.restante }));
+
+  const detalleSeleccionado = detalle.find(d => d.numero === selectedBatch);
+  const batchSeleccionado = batches.find(b => b.numero === selectedBatch);
 
   return (
     <>
@@ -110,6 +147,88 @@ export function DespachoTab({ progress, batches }: DespachoTabProps) {
           color={COLORS.purple}
           compact
         />
+      </div>
+
+      <SectionTitle icon={Icons.chart}>Tendencia y Proyección</SectionTitle>
+      <div style={{
+        background: COLORS.white,
+        borderRadius: 18,
+        padding: 24,
+        border: `1px solid ${COLORS.borderLight}`,
+        boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
+        marginBottom: 16,
+      }}>
+        <ResponsiveContainer width="100%" height={280}>
+          <LineChart data={cumulativeChart} margin={{ top: 8, right: 16, left: 0, bottom: 0 }}>
+            <XAxis
+              dataKey="name"
+              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              axisLine={{ stroke: COLORS.border }}
+              interval={0}
+              height={40}
+            />
+            <YAxis
+              tick={{ fill: COLORS.textMuted, fontSize: 11 }}
+              axisLine={{ stroke: COLORS.border }}
+            />
+            <Tooltip content={<CustomTooltip />} />
+            <ReferenceLine
+              y={total}
+              stroke={COLORS.textMuted}
+              strokeDasharray="4 4"
+              label={{ value: "Total requerido", position: "insideTopRight", fill: COLORS.textMuted, fontSize: 11 }}
+            />
+            <Line
+              type="monotone"
+              dataKey="acumulado"
+              name="Entregado acumulado"
+              stroke={COLORS.primary}
+              strokeWidth={3}
+              dot={{ r: 5, fill: COLORS.primary }}
+            />
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+
+      <div style={{
+        background: `${COLORS.orange}10`,
+        border: `1px solid ${COLORS.orange}40`,
+        borderRadius: 18,
+        padding: 20,
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 16,
+        marginBottom: 24,
+      }}>
+        <div style={{
+          width: 40,
+          height: 40,
+          background: COLORS.orange,
+          borderRadius: 8,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 20,
+          flexShrink: 0,
+        }}>
+          📈
+        </div>
+        <div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.text, marginBottom: 6 }}>
+            Proyección de Término
+          </div>
+          <div style={{ fontSize: 14, color: COLORS.textMuted, lineHeight: 1.5 }}>
+            {fechaProyectada ? (
+              <>
+                Al ritmo actual (<strong style={{ color: COLORS.text }}>~{ritmoDiario.toFixed(1)} unidades/día</strong>), se estima el término el{" "}
+                <strong style={{ color: COLORS.text }}>{formatDate(`${fechaProyectada.getFullYear()}-${fechaProyectada.getMonth() + 1}-${fechaProyectada.getDate()}`)}</strong>
+                {" "}(~{diasRestantesEstimados} días más).
+              </>
+            ) : (
+              "Sin despachos recientes suficientes para proyectar una fecha de término."
+            )}
+          </div>
+        </div>
       </div>
 
       <SectionTitle>Top 15 Ítems con Mayor Cantidad Faltante</SectionTitle>
@@ -198,6 +317,45 @@ export function DespachoTab({ progress, batches }: DespachoTabProps) {
           </BarChart>
         </ResponsiveContainer>
       </div>
+
+      <SectionTitle>Detalle por Despacho</SectionTitle>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 16 }}>
+        {sortedBatches.map(b => (
+          <button
+            key={b.numero}
+            onClick={() => setSelectedBatch(b.numero)}
+            style={{
+              padding: "8px 16px",
+              borderRadius: 20,
+              border: `1px solid ${selectedBatch === b.numero ? COLORS.primary : COLORS.border}`,
+              background: selectedBatch === b.numero ? COLORS.primary : COLORS.bg,
+              color: selectedBatch === b.numero ? COLORS.white : COLORS.text,
+              fontSize: 13,
+              fontWeight: selectedBatch === b.numero ? 600 : 400,
+              cursor: "pointer",
+              transition: "all 0.15s ease",
+            }}
+          >
+            Despacho {b.numero}
+          </button>
+        ))}
+      </div>
+
+      {batchSeleccionado && (
+        <div style={{ fontSize: 13, color: COLORS.textMuted, marginBottom: 12 }}>
+          {formatDate(batchSeleccionado.fecha)} · <strong style={{ color: COLORS.text }}>{batchSeleccionado.unidades.toLocaleString("es-CL")} unidades</strong> en {batchSeleccionado.recintos.toLocaleString("es-CL")} recintos
+        </div>
+      )}
+
+      <DataTable
+        data={detalleSeleccionado?.items ?? []}
+        columns={[
+          { key: "tipoEquipo", label: "Código", align: "left", mono: true, width: "110px" },
+          { key: "nombre", label: "Tipo de Equipo / Mobiliario", highlight: true },
+          { key: "cantidad", label: "Cantidad", align: "right", mono: true, width: "100px" },
+        ]}
+        maxRows={20}
+      />
     </>
   );
 }

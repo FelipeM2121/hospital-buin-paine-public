@@ -6,7 +6,7 @@ import {
   EspecificacionesTecnicasTab,
 } from "./components/Dashboard";
 import { ChatTab } from "./components/Chat/ChatTab";
-import { RAW, SUMMARY, EETT_FILES, DESPACHO_PROGRESS, DESPACHO_BATCHES } from "./data";
+import { RAW, SUMMARY, EETT_FILES, DESPACHO_PROGRESS, DESPACHO_BATCHES, DESPACHO_DETALLE } from "./data";
 import { PdfViewer } from "./components/PdfViewer";
 import { Sidebar } from "./components/Sidebar";
 import { Header } from "./components/Header";
@@ -31,7 +31,7 @@ export default function App() {
 
             {activeTab === "Resumen" && <ResumenTab summary={S} data={RAW} />}
             {activeTab === "Por Fecha" && <PorFechaTab summary={S} />}
-            {activeTab === "Despacho" && <DespachoTab progress={DESPACHO_PROGRESS} batches={DESPACHO_BATCHES} />}
+            {activeTab === "Despacho" && <DespachoTab progress={DESPACHO_PROGRESS} batches={DESPACHO_BATCHES} detalle={DESPACHO_DETALLE} />}
             {activeTab === "Esp. Técnicas" && (
               <EspecificacionesTecnicasTab eettFiles={EETT_FILES} pdfViewer={PdfViewer} />
             )}

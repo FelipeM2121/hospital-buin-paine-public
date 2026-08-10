@@ -80,6 +80,11 @@ export interface DespachoBatch {
   unidades: number;
 }
 
+export interface DespachoBatchDetalle {
+  numero: number;
+  items: { tipoEquipo: string; nombre: string; cantidad: number }[];
+}
+
 export interface EETTFile {
   code: string;
   name: string;
