@@ -13,6 +13,7 @@ export const TABS: TabConfig[] = [
   { name: "Resumen",           icon: Icons.chart,    color: COLORS.primary },
   { name: "Despacho",          icon: Icons.box,      color: "#3b82f6" },
   { name: "Esp. Técnicas",     icon: Icons.document, color: "#14b8a6" },
+  { name: "Inventario",        icon: Icons.search,   color: "#8b5cf6" },
   { name: "Chat IA",           icon: Icons.chat,     color: "#10b981" },
 ];
 
@@ -20,6 +21,7 @@ const SHORT_LABELS: Record<string, string> = {
   "Resumen":           "Resumen",
   "Despacho":          "Despacho",
   "Esp. Técnicas":     "EETT",
+  "Inventario":        "Inventario",
   "Chat IA":           "Chat IA",
 };
 

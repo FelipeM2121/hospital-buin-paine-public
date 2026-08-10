@@ -8,15 +8,13 @@ import { StatusBadge } from "../Shared/StatusBadge";
 import { DataTable } from "../Shared/DataTable";
 import { ProgressBar } from "../Shared/ProgressBar";
 import { CustomTooltip } from "../Shared/CustomTooltip";
-import { InventoryDataTable } from "../Shared/InventoryDataTable";
-import type { InventoryItem, SummaryData } from "../../types";
+import type { SummaryData } from "../../types";
 
 interface ResumenTabProps {
   summary: SummaryData;
-  data: InventoryItem[];
 }
 
-export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
+export function ResumenTab({ summary: S }: ResumenTabProps) {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 767);
 
   useEffect(() => {
@@ -421,9 +419,6 @@ export function ResumenTab({ summary: S, data: RAW }: ResumenTabProps) {
           maxRows={10}
         />
       </div>
-
-      {/* Tabla de Datos Completa con Filtros */}
-      <InventoryDataTable data={RAW} />
     </>
   );
 }
