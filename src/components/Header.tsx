@@ -5,6 +5,7 @@ const TAB_TITLES: Record<string, string> = {
   "Resumen":           "Resumen General",
   "Por Fecha":         "Cronograma de Instalación",
   "Esp. Técnicas":     "Especificaciones Técnicas",
+  "Catálogo":          "Catálogo Melman",
 };
 
 interface HeaderProps {

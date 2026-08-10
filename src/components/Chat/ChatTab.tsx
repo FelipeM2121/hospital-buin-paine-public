@@ -1,8 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import { SquarePen, AlertCircle } from "lucide-react";
 import { ChatMessage } from "./ChatMessage";
-import { ChatInput, ChatImageAttachment } from "./ChatInput";
-import { ChatService, Message, ChatError } from "./ChatService";
+import { ChatInput } from "./ChatInput";
+import type { ChatImageAttachment } from "./ChatInput";
+import { ChatService } from "./ChatService";
+import type { Message, ChatError } from "./ChatService";
 import type { RawItem, SummaryData, EETTFile } from "../../types";
 
 interface ChatTabProps {

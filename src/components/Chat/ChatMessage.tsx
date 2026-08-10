@@ -1,6 +1,6 @@
 import React from "react";
 import { Copy, Check, ThumbsUp, ThumbsDown } from "lucide-react";
-import { Message } from "./ChatService";
+import type { Message } from "./ChatService";
 
 interface ChatMessageProps {
   message: Message;

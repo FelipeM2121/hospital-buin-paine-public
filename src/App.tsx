@@ -5,6 +5,7 @@ import {
   DespachoTab,
   EspecificacionesTecnicasTab,
 } from "./components/Dashboard";
+import { CatalogoTab } from "./components/Catalogo/CatalogoTab";
 import { ChatTab } from "./components/Chat/ChatTab";
 import { RAW, SUMMARY, EETT_FILES, DESPACHO_PROGRESS, DESPACHO_BATCHES, DESPACHO_DETALLE } from "./data";
 import { PdfViewer } from "./components/PdfViewer";
@@ -35,6 +36,7 @@ export default function App() {
             {activeTab === "Esp. Técnicas" && (
               <EspecificacionesTecnicasTab eettFiles={EETT_FILES} pdfViewer={PdfViewer} />
             )}
+            {activeTab === "Catálogo" && <CatalogoTab />}
             <div className="dashboard-footer">
               <span>Hospital Buin Paine • Mobiliario No Clínico</span>
               <span>Fuente: Cronograma MNC_20260327 • {S.totalQty.toLocaleString("es-CL")} unidades</span>
