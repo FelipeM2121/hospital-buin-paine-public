@@ -1,5 +1,6 @@
 import type { RawItem, SummaryData, EETTFile } from "../../types";
 import { RECINTO_NOMBRES } from "../../data/recintoNombres";
+import { FAMILIAS, familiaPorCodigoEETT } from "../../data/familias";
 
 export interface Message {
   id: string;
@@ -469,15 +470,22 @@ ${summary.bySemana?.map((s) => `  Semana ${s.name}: ${fmt(s.qty)} uds`).join("\n
 Por día de instalación:
 ${summary.byDia?.map((d) => `  ${d.name}: ${fmt(d.qty)} uds`).join("\n")}`);
 
-  // ═══ 9. FICHAS TÉCNICAS EETT (todas con PDF) ═══
-  sections.push(`══ FICHAS TÉCNICAS EETT (${eettFiles.length} especificaciones) ══
-${eettFiles.map((e) => {
+  // ═══ 9. FICHAS TÉCNICAS EETT (todas con PDF) — agrupadas por familia, igual que en la pestaña Esp. Técnicas ═══
+  {
+    const eettPorFamilia = FAMILIAS.map((fam) => ({
+      fam,
+      fichas: eettFiles.filter((e) => familiaPorCodigoEETT(e.code) === fam),
+    })).filter((g) => g.fichas.length > 0);
+
+    sections.push(`══ FICHAS TÉCNICAS EETT (${eettFiles.length} especificaciones, agrupadas por familia: ${eettPorFamilia.map((g) => `${g.fam} ${g.fichas.length}`).join(", ")}) ══
+${eettPorFamilia.map(({ fam, fichas }) => `─ FAMILIA ${fam.toUpperCase()} (${fichas.length} fichas) ─\n${fichas.map((e) => {
   const spec = EETT_KNOWLEDGE[e.code];
   const link = `eett/${encodeURIComponent(e.file)}`;
   return spec
     ? `  ${e.code} — ${e.name}\n    Descripción: ${spec.desc}\n    Material: ${spec.material}\n    Dimensiones: ${spec.dimensiones}\n    Color: ${spec.color}\n    PDF: [${e.name}](${link})`
     : `  ${e.code} — ${e.name}\n    PDF: [${e.name}](${link})`;
-}).join("\n\n")}`);
+}).join("\n\n")}`).join("\n\n")}`);
+  }
 
   // ═══ 10. RECINTOS COMPLETOS POR SERVICIO ═══
   const totalRecintos = summary.uniqueRecintos;
