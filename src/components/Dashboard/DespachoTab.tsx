@@ -212,7 +212,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           { key: "rank", label: "#", align: "center", mono: true, width: "50px" },
           { key: "nombre", label: "Tipo de Equipo / Mobiliario", highlight: true },
           { key: "total", label: "Total", align: "right", mono: true, width: "90px" },
-          { key: "entregado", label: "Entregado", align: "right", mono: true, width: "100px" },
+          { key: "entregado", label: "Entregado", align: "right", mono: true, width: "100px", hideMobile: true },
           {
             key: "restante", label: "Faltante", align: "right", mono: true, width: "100px",
             render: (v) => (
@@ -221,7 +221,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
               </span>
             ),
           },
-          { key: "pctLabel", label: "% Avance", align: "right", mono: true, width: "100px" },
+          { key: "pctLabel", label: "% Avance", align: "right", mono: true, width: "100px", hideMobile: true },
           {
             key: "pct",
             label: "Avance", hideMobile: true,
