@@ -24,19 +24,6 @@ function formatDateShort(d: string): string {
   const [, m, day] = d.split('-');
   return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]}`;
 }
-function parseISODate(d: string): Date {
-  const [y, m, day] = d.split('-').map(Number);
-  return new Date(y, m - 1, day);
-}
-function diffDays(a: string, b: string): number {
-  return Math.round((parseISODate(b).getTime() - parseISODate(a).getTime()) / 86400000);
-}
-function addDays(d: string, days: number): Date {
-  const dt = parseISODate(d);
-  dt.setDate(dt.getDate() + days);
-  return dt;
-}
-
 export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
   const total = progress.reduce((a, p) => a + p.total, 0);
   const entregado = progress.reduce((a, p) => a + p.entregado, 0);
@@ -53,17 +40,6 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
     acumulado += b.unidades;
     return { name: `Despacho ${b.numero}`, fecha: formatDateShort(b.fecha), acumulado };
   });
-
-  const primerDespacho = sortedBatches[0];
-  const ultimoDespacho = sortedBatches[sortedBatches.length - 1];
-  const diasTranscurridos = primerDespacho && ultimoDespacho
-    ? Math.max(1, diffDays(primerDespacho.fecha, ultimoDespacho.fecha))
-    : 1;
-  const ritmoDiario = entregado / diasTranscurridos;
-  const diasRestantesEstimados = ritmoDiario > 0 ? Math.ceil(restante / ritmoDiario) : null;
-  const fechaProyectada = diasRestantesEstimados !== null && ultimoDespacho
-    ? addDays(ultimoDespacho.fecha, diasRestantesEstimados)
-    : null;
 
   const tableData = [...progress]
     .sort((a, b) => b.restante - a.restante || a.pct - b.pct)
@@ -149,7 +125,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
         />
       </div>
 
-      <SectionTitle icon={Icons.chart}>Tendencia y Proyección</SectionTitle>
+      <SectionTitle icon={Icons.chart}>Tendencia de Entregas</SectionTitle>
       <div style={{
         background: COLORS.white,
         borderRadius: 18,
@@ -188,47 +164,6 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
             />
           </LineChart>
         </ResponsiveContainer>
-      </div>
-
-      <div style={{
-        background: `${COLORS.orange}10`,
-        border: `1px solid ${COLORS.orange}40`,
-        borderRadius: 18,
-        padding: 20,
-        display: "flex",
-        alignItems: "flex-start",
-        gap: 16,
-        marginBottom: 24,
-      }}>
-        <div style={{
-          width: 40,
-          height: 40,
-          background: COLORS.orange,
-          borderRadius: 8,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 20,
-          flexShrink: 0,
-        }}>
-          📈
-        </div>
-        <div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: COLORS.text, marginBottom: 6 }}>
-            Proyección de Término
-          </div>
-          <div style={{ fontSize: 14, color: COLORS.textMuted, lineHeight: 1.5 }}>
-            {fechaProyectada ? (
-              <>
-                Al ritmo actual (<strong style={{ color: COLORS.text }}>~{ritmoDiario.toFixed(1)} unidades/día</strong>), se estima el término el{" "}
-                <strong style={{ color: COLORS.text }}>{formatDate(`${fechaProyectada.getFullYear()}-${fechaProyectada.getMonth() + 1}-${fechaProyectada.getDate()}`)}</strong>
-                {" "}(~{diasRestantesEstimados} días más).
-              </>
-            ) : (
-              "Sin despachos recientes suficientes para proyectar una fecha de término."
-            )}
-          </div>
-        </div>
       </div>
 
       <SectionTitle>Top 15 Ítems con Mayor Cantidad Faltante</SectionTitle>
