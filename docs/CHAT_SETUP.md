@@ -1,80 +1,50 @@
 # Chat IA - Setup & Ejecución
 
-Esta guía te ayudará a ejecutar el Chat IA con Ollama en el Dashboard Hospital Buin Paine.
+El Chat IA usa **Claude (Anthropic)** como modelo. La API key vive solo en el servidor
+(nunca en el bundle del navegador): en producción la llama `netlify/functions/chat.mts`,
+y en desarrollo local un proxy configurado en `vite.config.ts` cumple el mismo rol.
 
 ## Requisitos Previos
 
 - **Node.js 18+** (verificar: `node --version`)
 - **npm 9+** (verificar: `npm --version`)
-- **Ollama** instalado (descargar: https://ollama.ai/download)
+- Una **API key de Anthropic**: https://console.anthropic.com/settings/keys
 
-## 1. Instalar y Configurar Ollama
+## 1. Configurar la API Key
 
-### Windows:
+```bash
+copy .env.example .env
+```
 
-1. **Descargar**: https://ollama.ai/download
-2. **Instalar**: Ejecutar el instalador
-3. **Ejecutar en terminal**:
-   ```bash
-   ollama serve
-   ```
-   Esto iniciará Ollama en `http://localhost:11434`
+Edita `.env` y completa tu key:
 
-4. **En otra terminal**, descargar el modelo:
-   ```bash
-   ollama pull mistral
-   # O un modelo más ligero:
-   # ollama pull neural-chat
-   ```
+```
+ANTHROPIC_API_KEY=sk-ant-api03-...
+```
 
-5. **Verificar** que funciona:
-   ```bash
-   curl http://localhost:11434/api/tags
-   ```
+Este archivo está en `.gitignore`, nunca se commitea.
 
 ## 2. Instalar Dependencias
 
-### Frontend (ya instaladas por defecto):
 ```bash
-cd "C:\Users\usuario\hospital-buin-paine-dashboard"
 npm install
 ```
 
-### Backend:
-```bash
-cd backend
-npm install
-# Ya completado si usaste el setup anterior
-```
+## 3. Ejecutar el Sistema
 
-## 3. Ejecutar el Sistema (3 Terminales)
-
-### Terminal 1 - Frontend:
 ```bash
-cd "C:\Users\usuario\hospital-buin-paine-dashboard"
 npm run dev
-# Se abrirá en http://localhost:5173
 ```
 
-### Terminal 2 - Backend:
-```bash
-cd "C:\Users\usuario\hospital-buin-paine-dashboard\backend"
-npm run dev
-# Corre en http://localhost:3001
-```
-
-### Terminal 3 - Ollama:
-```bash
-ollama serve
-# Ya debería estar ejecutándose, pero si no:
-```
+Se abre en `http://localhost:5173`. El proxy de Vite reenvía las peticiones de
+`/api/chat` a la API de Anthropic usando la key de tu `.env` — no hace falta
+levantar ningún otro proceso.
 
 ## 4. Usar el Chat IA
 
 1. Abre el navegador: http://localhost:5173
-2. Inicia sesión (Azure AD)
-3. Haz clic en el **tab "Chat IA"** en la barra lateral izquierda
-4. ¡Escribe tu pregunta!
+2. Haz clic en el tab **Chat IA** en la barra lateral izquierda
+3. Escribe tu pregunta (también puedes adjuntar una foto de la placa de un recinto)
 
 ## Preguntas de Ejemplo
 
@@ -86,59 +56,38 @@ ollama serve
 
 ## Troubleshooting
 
-### Error: "Backend no disponible"
-- Verifica que Terminal 2 (backend) está ejecutándose
-- Comprueba que el puerto 3001 no está en uso
-- Revisa la consola del backend para errores
+### Error: "ANTHROPIC_API_KEY no configurada en el servidor" (en producción/Netlify)
+- Configura la variable `ANTHROPIC_API_KEY` en el dashboard de Netlify: **Site settings → Environment variables**
+- Vuelve a desplegar después de agregarla
 
-### Error: "Ollama unreachable"
-- Verifica que Terminal 3 (ollama) está ejecutándose
-- Confirma: `curl http://localhost:11434/api/tags`
-- Si no funciona, reinicia Ollama
+### El chat no responde en local / error 401 de Anthropic
+- Verifica que existe `.env` en la raíz del proyecto con `ANTHROPIC_API_KEY` válida
+- Reinicia `npm run dev` después de crear o modificar `.env` (Vite solo lee env vars al arrancar)
 
-### Error: "Modelo no encontrado"
-- Ejecuta: `ollama pull mistral`
-- Espera a que se complete (primera vez toma ~5 min)
+### Error: "Demasiadas solicitudes, intenta de nuevo en un minuto"
+- El proxy de producción limita a 20 solicitudes por minuto por IP (el sitio es público, sin login). Espera un minuto.
 
-### Respuesta lenta
-- Verifica recursos del sistema
-- Si usas neural-chat (más ligero): `ollama pull neural-chat`
-- Actualiza el modelo en backend/.env: `OLLAMA_MODEL=neural-chat`
+### Respuesta lenta o se corta
+- Verifica tu conexión a internet — el chat llama a la API de Anthropic en la nube
+- Revisa la consola del navegador (F12) para ver el error exacto
 
 ## Configuración Avanzada
 
-### Cambiar Modelo (neural-chat es más rápido):
-1. Ejecuta: `ollama pull neural-chat`
-2. En `backend/.env`, cambia:
-   ```
-   OLLAMA_MODEL=neural-chat
-   ```
-3. Reinicia el backend
+### Cambiar el modelo
+- En `src/components/Chat/ChatService.ts`, cambia la constante `MODEL`
 
-### Desactivar contexto de datos:
-- En `ChatTab.tsx`, línea ~126, cambia:
-  ```tsx
-  includeContext: false,
-  ```
+### Desactivar contexto de datos
+- El contexto del inventario se arma en `buildContext()` dentro de `ChatService.ts`
 
-### Agregar persistencia de historial:
-- Actualmente el chat se limpia al refrescar
-- Para persistencia, se requiere base de datos (future enhancement)
+### Persistencia de historial
+- Actualmente el chat se limpia al refrescar la página (se guarda solo en memoria durante la sesión)
 
 ## Notas
 
-- El chat funciona completamente en local (sin enviar datos a internet)
-- Cada pregunta incluye el contexto completo del inventario (~1,500 tokens)
-- Las respuestas tardan 5-15 segundos (dependiendo del hardware)
-- El historial se guarda en memoria durante la sesión
-
-## Parar el Sistema
-
-Presiona `Ctrl+C` en cada terminal para detener:
-1. Frontend
-2. Backend
-3. Ollama
+- La key de Anthropic nunca llega al navegador: todas las llamadas pasan por un proxy server-side
+- Cada pregunta incluye el contexto completo del inventario
+- El chat solo funciona en el despliegue de **Netlify** (https://hospital-buin-paine.netlify.app), donde corre la función serverless. El despliegue paralelo en GitHub Pages es estático y no soporta `/api/chat`
 
 ---
 
-**¿Necesitas ayuda?** Revisa los logs en cada terminal para más detalles.
+**¿Necesitas ayuda?** Revisa la consola del navegador (F12) y los logs de la función en el dashboard de Netlify.
