@@ -221,9 +221,9 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
         }}>
           <div style={{ width: 20, height: 20, color: COLORS.orange, flexShrink: 0, marginTop: 1 }}>{Icons.list}</div>
           <div style={{ fontSize: 13.5, color: COLORS.text, lineHeight: 1.5 }}>
-            <strong>{familiaRiesgo.name}</strong> es la familia con menor avance: solo <strong>{familiaRiesgo.pctLabel}</strong> en obra
-            de {familiaRiesgo.total.toLocaleString("es-CL")} unidades ({shareRiesgo}% del total del proyecto) — quedan{" "}
-            <strong>{familiaRiesgo.restante.toLocaleString("es-CL")}</strong> unidades de esta familia sin despachar.
+            <strong>{familiaRiesgo.name}</strong> es la familia con menor avance: {shareRiesgo}% del proyecto
+            ({familiaRiesgo.total.toLocaleString("es-CL")} unidades), de las cuales solo{" "}
+            <strong>{familiaRiesgo.entregado.toLocaleString("es-CL")}</strong> están en obra (<strong>{familiaRiesgo.pctLabel}</strong>).
           </div>
         </div>
       )}
