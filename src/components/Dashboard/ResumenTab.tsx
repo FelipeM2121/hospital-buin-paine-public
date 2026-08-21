@@ -119,7 +119,7 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
                 tick={{ fontSize: 12, fill: COLORS.text }}
                 width={isMobile ? 80 : 95}
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip total={S.totalQty} />} />
               <Bar dataKey="qty" radius={[0, 8, 8, 0]}>
                 {S.byFamilia.map((entry, i) => (
                   <Cell key={i} fill={PIE_FAMILIA_COLORS[entry.name] || CHART_COLORS[i]} />
@@ -153,7 +153,7 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
                 tick={{ fill: COLORS.textMuted, fontSize: 11 }}
                 axisLine={{ stroke: COLORS.border }}
               />
-              <Tooltip content={<CustomTooltip />} />
+              <Tooltip content={<CustomTooltip total={S.totalQty} />} />
               <Bar dataKey="qty" name="Cantidad" radius={[6, 6, 0, 0]}>
                 {S.byProveedor.map((_, i) => (
                   <Cell key={i} fill={CHART_COLORS[i]} />
@@ -221,7 +221,7 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
               tick={{ fill: COLORS.text, fontSize: 10 }}
               axisLine={{ stroke: COLORS.border }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip total={S.totalQty} />} />
             <Bar dataKey="qty" name="Cantidad" radius={[0, 6, 6, 0]}>
               {S.byServicio.slice(0, 20).map((_, i) => (
                 <Cell key={i} fill={CHART_COLORS[i % CHART_COLORS.length]} />
@@ -284,7 +284,7 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
               tick={{ fill: COLORS.text, fontSize: 10 }}
               axisLine={{ stroke: COLORS.border }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip total={S.totalQty} />} />
             <Bar dataKey="qty" name="Cantidad" radius={[0, 6, 6, 0]}>
               {S.byNombre.slice(0, 20).map((e, i) => {
                 const c = e.name.includes("Silla") || e.name.includes("Sillón") ? PIE_FAMILIA_COLORS.Silla
