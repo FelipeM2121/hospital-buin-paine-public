@@ -25,9 +25,9 @@ function formatDateShort(d: string): string {
   return `${parseInt(day, 10)} ${MESES[parseInt(m, 10) - 1]}`;
 }
 
-// "Despachado" (DESPACHO_DETALLE) siempre es ≥ "Entregado" (DESPACHO_PROGRESS) por tipo de
-// equipo — se despacha primero y la confirmación de entrega llega después. Para que la
-// tendencia acumulada cuadre exactamente con el KPI "Entregado", se acumula por tipo de
+// "Despachado" (DESPACHO_DETALLE) siempre es ≥ "En obra" (DESPACHO_PROGRESS) por tipo de
+// equipo — se despacha primero y la confirmación de llegada a obra llega después. Para que
+// la tendencia acumulada cuadre exactamente con el KPI "En obra", se acumula por tipo de
 // equipo y se limita cada uno a su total confirmado en progress (nunca a lo simplemente
 // despachado), en vez de sumar directo las unidades de cada despacho.
 function buildCumulativeChart(
@@ -139,7 +139,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           compact
         />
         <KPICard
-          label="Entregado"
+          label="En obra"
           value={entregado}
           sub="unidades"
           icon={Icons.box}
@@ -156,7 +156,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
         />
       </div>
 
-      <SectionTitle icon={Icons.chart}>Tendencia de Entregas</SectionTitle>
+      <SectionTitle icon={Icons.chart}>Tendencia de En Obra</SectionTitle>
       <div style={{
         background: COLORS.white,
         borderRadius: 18,
@@ -190,7 +190,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
             <Line
               type="monotone"
               dataKey="acumulado"
-              name="Entregado acumulado"
+              name="En obra acumulado"
               stroke={COLORS.primary}
               strokeWidth={3}
               dot={{ r: 5, fill: COLORS.primary }}
@@ -236,7 +236,7 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           { key: "rank", label: "#", align: "center", mono: true, width: "50px" },
           { key: "nombre", label: "Tipo de Equipo / Mobiliario", highlight: true },
           { key: "total", label: "Total", align: "right", mono: true, width: "90px" },
-          { key: "entregado", label: "Entregado", align: "right", mono: true, width: "100px", hideMobile: true },
+          { key: "entregado", label: "En obra", align: "right", mono: true, width: "100px", hideMobile: true },
           {
             key: "restante", label: "Faltante", align: "right", mono: true, width: "100px",
             render: (v) => (
