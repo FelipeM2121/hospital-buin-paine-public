@@ -4,7 +4,6 @@ import { COLORS, CHART_COLORS, PIE_FAMILIA_COLORS } from "../../constants/theme"
 import { Icons } from "../../constants/icons";
 import { KPICard } from "../Shared/KPICard";
 import { SectionTitle } from "../Shared/SectionTitle";
-import { StatusBadge } from "../Shared/StatusBadge";
 import { CustomTooltip } from "../Shared/CustomTooltip";
 import type { SummaryData } from "../../types";
 
@@ -54,38 +53,24 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
         />
       </div>
 
-      {/* Status badges */}
-      <SectionTitle action="Ver más">Estado del Inventario</SectionTitle>
+      {/* Análisis de Proveedores */}
+      <SectionTitle count={S.proveedores}>Análisis de Proveedores</SectionTitle>
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
         gap: 16,
         marginBottom: 32,
       }}>
-        <StatusBadge
-          label="Familias"
-          value={S.familias}
-          color={COLORS.green}
-          icon={Icons.folder}
-        />
-        <StatusBadge
-          label="Proveedores"
-          value={S.proveedores}
-          color={COLORS.orange}
-          icon={Icons.building}
-        />
-        <StatusBadge
-          label="Servicios"
-          value={S.uniqueServicios}
-          color={COLORS.primary}
-          icon={Icons.hospital}
-        />
-        <StatusBadge
-          label="Zonas"
-          value={S.uniqueZonas}
-          color={COLORS.purple}
-          icon={Icons.layers}
-        />
+        {S.byProveedor.map((p, i) => (
+          <KPICard
+            key={i}
+            label={p.name}
+            value={p.qty}
+            sub={`${((p.qty / S.totalQty) * 100).toFixed(1)}%`}
+            icon={[Icons.building, Icons.building, Icons.building][i] || Icons.building}
+            color={CHART_COLORS[i]}
+          />
+        ))}
       </div>
 
       {/* Charts: 2 columnas desktop, 1 columna mobile */}
@@ -265,27 +250,6 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
             </Bar>
           </BarChart>
         </ResponsiveContainer>
-      </div>
-
-      {/* Análisis Completo de Proveedores */}
-      <SectionTitle count={S.proveedores}>Análisis de Proveedores</SectionTitle>
-
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-        gap: 16,
-        marginBottom: 32,
-      }}>
-        {S.byProveedor.map((p, i) => (
-          <KPICard
-            key={i}
-            label={p.name}
-            value={p.qty}
-            sub={`${((p.qty / S.totalQty) * 100).toFixed(1)}%`}
-            icon={[Icons.building, Icons.building, Icons.building][i] || Icons.building}
-            color={CHART_COLORS[i]}
-          />
-        ))}
       </div>
     </>
   );
