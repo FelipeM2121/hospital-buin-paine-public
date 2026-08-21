@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { BarChart, Bar, LineChart, Line, ReferenceLine, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, LineChart, Line, ReferenceLine, LabelList, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { COLORS, CHART_COLORS } from "../../constants/theme";
 import { Icons } from "../../constants/icons";
 import { KPICard } from "../Shared/KPICard";
@@ -7,12 +7,61 @@ import { SectionTitle } from "../Shared/SectionTitle";
 import { DataTable } from "../Shared/DataTable";
 import { ProgressBar } from "../Shared/ProgressBar";
 import { CustomTooltip } from "../Shared/CustomTooltip";
+import { familiaPorCodigoEETT } from "../../data/familias";
 import type { DespachoProgressItem, DespachoBatch, DespachoBatchDetalle } from "../../types";
 
 interface DespachoTabProps {
   progress: DespachoProgressItem[];
   batches: DespachoBatch[];
   detalle: DespachoBatchDetalle[];
+}
+
+interface FamiliaStat {
+  name: string;
+  total: number;
+  entregado: number;
+  restante: number;
+  pct: number;
+  pctLabel: string;
+}
+
+function buildFamiliaStats(progress: DespachoProgressItem[]): FamiliaStat[] {
+  const map = new Map<string, { total: number; entregado: number; restante: number }>();
+  progress.forEach((p) => {
+    const fam = familiaPorCodigoEETT(p.tipoEquipo);
+    const cur = map.get(fam) ?? { total: 0, entregado: 0, restante: 0 };
+    cur.total += p.total;
+    cur.entregado += p.entregado;
+    cur.restante += p.restante;
+    map.set(fam, cur);
+  });
+  return [...map.entries()]
+    .map(([name, v]) => ({
+      name,
+      ...v,
+      pct: v.total > 0 ? v.entregado / v.total : 0,
+      pctLabel: (v.total > 0 ? (v.entregado / v.total) * 100 : 0).toFixed(0) + "%",
+    }))
+    .sort((a, b) => b.total - a.total);
+}
+
+function FamiliaTooltip({ active, payload }: { active?: boolean; payload?: { payload: FamiliaStat }[] }) {
+  if (!active || !payload || !payload.length) return null;
+  const d = payload[0].payload;
+  return (
+    <div style={{
+      background: COLORS.sidebar,
+      borderRadius: 14,
+      padding: "10px 16px",
+      boxShadow: "0 8px 24px rgba(0,0,0,0.25)",
+      minWidth: 160,
+    }}>
+      <div style={{ fontSize: 11, color: "#8b8fa8", marginBottom: 6, fontWeight: 500 }}>{d.name}</div>
+      <div style={{ fontSize: 12, color: COLORS.white, marginBottom: 2 }}>Total: <strong>{d.total.toLocaleString("es-CL")}</strong></div>
+      <div style={{ fontSize: 12, color: COLORS.greenLight, marginBottom: 2 }}>En obra: <strong>{d.entregado.toLocaleString("es-CL")}</strong> ({d.pctLabel})</div>
+      <div style={{ fontSize: 12, color: "#8b8fa8" }}>Restante: <strong>{d.restante.toLocaleString("es-CL")}</strong></div>
+    </div>
+  );
 }
 
 const MESES = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
@@ -89,6 +138,10 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
   const detalleSeleccionado = detalle.find(d => d.numero === selectedBatch);
   const batchSeleccionado = batches.find(b => b.numero === selectedBatch);
 
+  const familiaStats = buildFamiliaStats(progress);
+  const familiaRiesgo = [...familiaStats].sort((a, b) => a.pct - b.pct)[0];
+  const shareRiesgo = familiaRiesgo && total > 0 ? ((familiaRiesgo.total / total) * 100).toFixed(0) : "0";
+
   return (
     <>
       <SectionTitle icon={Icons.box} count={progress.length}>Progreso de Despacho</SectionTitle>
@@ -154,6 +207,51 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           color={COLORS.purple}
           compact
         />
+      </div>
+
+      <SectionTitle icon={Icons.tag}>Avance por Familia</SectionTitle>
+      {familiaRiesgo && familiaRiesgo.pct < 0.5 && (
+        <div style={{
+          display: "flex", alignItems: "flex-start", gap: 12,
+          background: `${COLORS.orange}12`,
+          border: `1px solid ${COLORS.orangeLight}`,
+          borderRadius: 14,
+          padding: "14px 18px",
+          marginBottom: 16,
+        }}>
+          <div style={{ width: 20, height: 20, color: COLORS.orange, flexShrink: 0, marginTop: 1 }}>{Icons.list}</div>
+          <div style={{ fontSize: 13.5, color: COLORS.text, lineHeight: 1.5 }}>
+            <strong>{familiaRiesgo.name}</strong> es la familia con menor avance: solo <strong>{familiaRiesgo.pctLabel}</strong> en obra
+            de {familiaRiesgo.total.toLocaleString("es-CL")} unidades ({shareRiesgo}% del total del proyecto) — quedan{" "}
+            <strong>{familiaRiesgo.restante.toLocaleString("es-CL")}</strong> unidades de esta familia sin despachar.
+          </div>
+        </div>
+      )}
+      <div style={{
+        background: COLORS.white,
+        borderRadius: 18,
+        padding: 24,
+        border: `1px solid ${COLORS.borderLight}`,
+        boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
+        marginBottom: 32,
+      }}>
+        <ResponsiveContainer width="100%" height={180}>
+          <BarChart data={familiaStats} layout="vertical" margin={{ top: 5, right: 40, left: 0, bottom: 5 }} barCategoryGap="30%">
+            <XAxis type="number" tick={{ fill: COLORS.textMuted, fontSize: 11 }} axisLine={{ stroke: COLORS.border }} />
+            <YAxis
+              type="category"
+              dataKey="name"
+              width={isMobile ? 80 : 100}
+              tick={{ fill: COLORS.text, fontSize: 12, fontWeight: 600 }}
+              axisLine={{ stroke: COLORS.border }}
+            />
+            <Tooltip content={<FamiliaTooltip />} cursor={{ fill: COLORS.bg }} />
+            <Bar dataKey="entregado" name="En obra" stackId="familia" fill={COLORS.green} radius={[6, 0, 0, 6]} />
+            <Bar dataKey="restante" name="Restante" stackId="familia" fill={COLORS.borderLight} radius={[0, 6, 6, 0]}>
+              <LabelList dataKey="pctLabel" position="right" style={{ fill: COLORS.textMuted, fontSize: 12, fontWeight: 700 }} />
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
 
       <SectionTitle icon={Icons.chart}>Tendencia de En Obra</SectionTitle>
