@@ -12,11 +12,14 @@ interface CustomTooltipProps {
       value?: number;
     };
   }>;
+  total?: number;
 }
 
-export function CustomTooltip({ active, payload }: CustomTooltipProps) {
+export function CustomTooltip({ active, payload, total }: CustomTooltipProps) {
   if (!active || !payload || !payload.length) return null;
   const data = payload[0];
+  const value = data.value || data.payload.qty || data.payload.value || 0;
+  const pct = total ? ((value / total) * 100).toFixed(1) : null;
   return (
     <div style={{
       background: COLORS.sidebar,
@@ -34,7 +37,8 @@ export function CustomTooltip({ active, payload }: CustomTooltipProps) {
         color: data.color || COLORS.primary,
         letterSpacing: "-0.5px",
       }}>
-        {(data.value || data.payload.qty || data.payload.value || 0).toLocaleString("es-CL")}
+        {value.toLocaleString("es-CL")}
+        {pct && <span style={{ fontSize: 13, fontWeight: 600, color: "#8b8fa8", marginLeft: 6 }}>({pct}%)</span>}
       </div>
     </div>
   );

@@ -187,7 +187,7 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
               tick={{ fill: COLORS.textMuted, fontSize: 11 }}
               axisLine={{ stroke: COLORS.border }}
             />
-            <Tooltip content={<CustomTooltip />} />
+            <Tooltip content={<CustomTooltip total={S.totalQty} />} />
             <Bar dataKey="qty" name="Cantidad" radius={[6, 6, 0, 0]}>
               {S.byPiso.map((_, i) => (
                 <Cell key={i} fill={CHART_COLORS[i]} />
