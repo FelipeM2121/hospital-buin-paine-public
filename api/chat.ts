@@ -1,8 +1,8 @@
 // Proxy server-side hacia la API de Anthropic, para Vercel.
 // La API key vive solo en process.env (sin prefijo VITE_), nunca llega al bundle del navegador.
-// Equivalente a netlify/functions/chat.mts — mismo comportamiento, para cuando el sitio
-// corre en Vercel en vez de (o además de) Netlify.
-// Este sitio es de acceso público sin login, así que en vez de exigir auth
+// Equivalente a netlify/functions/chat.mts, mismo comportamiento, para cuando el sitio
+// corre en Vercel en vez de (o ademas de) Netlify.
+// Este sitio es de acceso publico sin login, asi que en vez de exigir auth
 // se limita la tasa de requests por IP para frenar abuso/consumo de cuota.
 const RATE_LIMIT_WINDOW_MS = 60_000;
 const RATE_LIMIT_MAX = 20;

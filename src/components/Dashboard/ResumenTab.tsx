@@ -34,13 +34,6 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
         marginBottom: 32,
       }}>
         <KPICard
-          label="Total Items"
-          value={S.totalItems}
-          sub="ítems"
-          icon={Icons.list}
-          color={COLORS.primary}
-        />
-        <KPICard
           label="Total Unidades"
           value={S.totalQty}
           sub="unidades"
