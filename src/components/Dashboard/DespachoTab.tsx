@@ -139,7 +139,9 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
   const batchSeleccionado = batches.find(b => b.numero === selectedBatch);
 
   const familiaStats = buildFamiliaStats(progress);
-  const familiaRiesgo = [...familiaStats].sort((a, b) => a.pct - b.pct)[0];
+  const familiaStatsPorPct = [...familiaStats].sort((a, b) => a.pct - b.pct);
+  const familiaRiesgo = familiaStatsPorPct[0];
+  const familiaMejor = familiaStatsPorPct[familiaStatsPorPct.length - 1];
   const shareRiesgo = familiaRiesgo && total > 0 ? ((familiaRiesgo.total / total) * 100).toFixed(0) : "0";
 
   return (
@@ -220,10 +222,15 @@ export function DespachoTab({ progress, batches, detalle }: DespachoTabProps) {
           marginBottom: 16,
         }}>
           <div style={{ width: 20, height: 20, color: COLORS.orange, flexShrink: 0, marginTop: 1 }}>{Icons.list}</div>
-          <div style={{ fontSize: 13.5, color: COLORS.text, lineHeight: 1.5 }}>
-            <strong>{familiaRiesgo.name}</strong> es la familia con menor avance: {shareRiesgo}% del proyecto
-            ({familiaRiesgo.total.toLocaleString("es-CL")} unidades), de las cuales solo{" "}
-            <strong>{familiaRiesgo.entregado.toLocaleString("es-CL")}</strong> están en obra (<strong>{familiaRiesgo.pctLabel}</strong>).
+          <div style={{ fontSize: 13.5, color: COLORS.text, lineHeight: 1.6 }}>
+            <strong>{familiaRiesgo.name}</strong> es la familia con menor avance del proyecto: representa el{" "}
+            <strong>{shareRiesgo}%</strong> del volumen total ({familiaRiesgo.total.toLocaleString("es-CL")} de{" "}
+            {total.toLocaleString("es-CL")} unidades), y de esas solo{" "}
+            <strong>{familiaRiesgo.entregado.toLocaleString("es-CL")}</strong> están en obra (<strong>{familiaRiesgo.pctLabel}</strong>) —
+            quedan <strong>{familiaRiesgo.restante.toLocaleString("es-CL")}</strong> unidades de {familiaRiesgo.name.toLowerCase()} sin
+            despachar. En los {batches.length} despachos realizados hasta ahora se priorizó otro mobiliario:{" "}
+            {familiaMejor.name} ya lleva un <strong>{familiaMejor.pctLabel}</strong> de avance, por lo que{" "}
+            {familiaRiesgo.name.toLowerCase()} concentra hoy el mayor riesgo para cumplir el cronograma de instalación.
           </div>
         </div>
       )}
