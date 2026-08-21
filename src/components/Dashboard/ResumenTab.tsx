@@ -5,8 +5,6 @@ import { Icons } from "../../constants/icons";
 import { KPICard } from "../Shared/KPICard";
 import { SectionTitle } from "../Shared/SectionTitle";
 import { StatusBadge } from "../Shared/StatusBadge";
-import { DataTable } from "../Shared/DataTable";
-import { ProgressBar } from "../Shared/ProgressBar";
 import { CustomTooltip } from "../Shared/CustomTooltip";
 import type { SummaryData } from "../../types";
 
@@ -231,35 +229,6 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
         </ResponsiveContainer>
       </div>
 
-      <div style={{
-        background: COLORS.white,
-        borderRadius: 18,
-        padding: 24,
-        border: `1px solid ${COLORS.borderLight}`,
-        boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
-        marginBottom: 32,
-      }}>
-        <DataTable
-          data={S.byServicio.map((s, i) => ({
-            ...s,
-            rank: i + 1,
-            pctQty: ((s.qty / S.totalQty) * 100).toFixed(1) + "%",
-          }))}
-          columns={[
-            { key: "rank", label: "#", align: "center", mono: true, width: "60px" },
-            { key: "name", label: "Servicio", highlight: true },
-            { key: "qty", label: "Cantidad", align: "right", mono: true, width: "120px" },
-            { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "120px" },
-            {
-              key: "qty",
-              label: "Distribución", hideMobile: true,
-              render: (v) => <ProgressBar value={v} max={Math.max(...S.byServicio.map(s => s.qty))} color={COLORS.primary} />
-            },
-          ]}
-          maxRows={15}
-        />
-      </div>
-
       {/* Top Productos */}
       <SectionTitle count={S.uniqueNombres}>Top 20 Productos</SectionTitle>
       <div style={{
@@ -298,35 +267,6 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
         </ResponsiveContainer>
       </div>
 
-      <div style={{
-        background: COLORS.white,
-        borderRadius: 18,
-        padding: 24,
-        border: `1px solid ${COLORS.borderLight}`,
-        boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
-        marginBottom: 32,
-      }}>
-        <DataTable
-          data={S.byNombre.map((n, i) => ({
-            ...n,
-            rank: i + 1,
-            pctQty: ((n.qty / S.totalQty) * 100).toFixed(1) + "%",
-          }))}
-          columns={[
-            { key: "rank", label: "#", align: "center", mono: true, width: "60px" },
-            { key: "name", label: "Producto", highlight: true },
-            { key: "qty", label: "Cantidad", align: "right", mono: true, width: "120px" },
-            { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "120px" },
-            {
-              key: "qty",
-              label: "Distribución", hideMobile: true,
-              render: (v) => <ProgressBar value={v} max={Math.max(...S.byNombre.map(n => n.qty))} color={COLORS.orange} />
-            },
-          ]}
-          maxRows={15}
-        />
-      </div>
-
       {/* Análisis Completo de Proveedores */}
       <SectionTitle count={S.proveedores}>Análisis de Proveedores</SectionTitle>
 
@@ -346,45 +286,6 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
             color={CHART_COLORS[i]}
           />
         ))}
-      </div>
-
-      <div style={{
-        background: COLORS.white,
-        borderRadius: 18,
-        padding: 24,
-        border: `1px solid ${COLORS.borderLight}`,
-        boxShadow: "0 2px 16px rgba(99,102,941,0.05)",
-        marginBottom: 32,
-      }}>
-        <h3 style={{
-          fontSize: 16,
-          fontWeight: 700,
-          color: COLORS.text,
-          marginBottom: 20,
-          marginTop: 0,
-        }}>
-          Detalle de Proveedores
-        </h3>
-        <DataTable
-          data={S.byProveedor.map((p, i) => ({
-            ...p,
-            rank: i + 1,
-            pctQty: ((p.qty / S.totalQty) * 100).toFixed(1) + "%",
-          }))}
-          columns={[
-            { key: "rank", label: "#", align: "center", mono: true, width: "60px" },
-            { key: "name", label: "Proveedor", highlight: true },
-            { key: "qty", label: "Cantidad", align: "right", mono: true, width: "100px", render: (v) => v.toLocaleString("es-CL") },
-            { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "110px" },
-            {
-              key: "qty",
-              label: "Distribución",
-              hideMobile: true,
-              render: (v) => <ProgressBar value={v} max={4256} color={COLORS.green} />
-            },
-          ]}
-          maxRows={10}
-        />
       </div>
     </>
   );
