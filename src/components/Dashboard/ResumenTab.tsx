@@ -197,32 +197,6 @@ export function ResumenTab({ summary: S }: ResumenTabProps) {
         </ResponsiveContainer>
       </div>
 
-      <div style={{
-        background: COLORS.white,
-        borderRadius: 18,
-        padding: 24,
-        border: `1px solid ${COLORS.borderLight}`,
-        boxShadow: "0 2px 16px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)",
-        marginBottom: 32,
-      }}>
-        <DataTable
-          data={S.byPiso.map(p => ({
-            ...p,
-            pctQty: ((p.qty / S.totalQty) * 100).toFixed(1) + "%",
-          }))}
-          columns={[
-            { key: "name", label: "Piso", highlight: true, width: "150px" },
-            { key: "qty", label: "Cantidad", align: "right", mono: true, width: "120px" },
-            { key: "pctQty", label: "% del Total", align: "right", mono: true, width: "120px" },
-            {
-              key: "qty",
-              label: "Distribución", hideMobile: true,
-              render: (v) => <ProgressBar value={v} max={Math.max(...S.byPiso.map(p => p.qty))} color={COLORS.orange} />
-            },
-          ]}
-        />
-      </div>
-
       {/* Cantidad por Servicio */}
       <SectionTitle count={S.uniqueServicios}>Cantidad por Servicio</SectionTitle>
       <div style={{
