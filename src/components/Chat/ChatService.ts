@@ -173,6 +173,7 @@ function normalizeRecintoCode(s: string): string {
     .trim()
     .replace(/\s+/g, "")
     .replace(/[–—−]/g, "-")
+    .replace(/[-_]/g, "_") // guion y guion bajo son equivalentes (sufijos tipo _A se pueden leer como "-A")
     .replace(/O(?=\d)|(?<=\d)O/g, "0"); // letra O confundida con cero junto a dígitos
 }
 
@@ -191,6 +192,10 @@ function levenshtein(a: string, b: string): number {
   return dp[m][n];
 }
 
+function matchThreshold(normalizedLength: number): number {
+  return normalizedLength <= 6 ? 1 : 2;
+}
+
 function matchRecintoCode(rawCode: string, knownCodes: string[]): { code: string; exact: boolean } | null {
   if (!rawCode || rawCode === "NO_DETECTADO") return null;
   const normalized = normalizeRecintoCode(rawCode);
@@ -204,9 +209,22 @@ function matchRecintoCode(rawCode: string, knownCodes: string[]): { code: string
     const dist = levenshtein(normalized, normalizeRecintoCode(known));
     if (!best || dist < best.dist) best = { code: known, dist };
   }
-  const maxAllowed = normalized.length <= 6 ? 1 : 2;
-  if (best && best.dist <= maxAllowed) return { code: best.code, exact: false };
+  if (best && best.dist <= matchThreshold(normalized.length)) return { code: best.code, exact: false };
   return null;
+}
+
+// Cuando la lectura de la foto no matchea con suficiente confianza, ofrece las
+// 3 opciones más parecidas del inventario para que el usuario elija en vez de
+// simplemente decirle "no encontrado" sin alternativas.
+function suggestSimilarRecintoCodes(rawCode: string, knownCodes: string[], limit = 3): string[] {
+  const normalized = normalizeRecintoCode(rawCode);
+  const suggestionMax = matchThreshold(normalized.length) + 2;
+  return knownCodes
+    .map((code) => ({ code, dist: levenshtein(normalized, normalizeRecintoCode(code)) }))
+    .filter((c) => c.dist <= suggestionMax)
+    .sort((a, b) => a.dist - b.dist)
+    .slice(0, limit)
+    .map((c) => c.code);
 }
 
 function normalizeForSearch(s: string): string {
@@ -558,9 +576,13 @@ ${summary.byServicio.slice().sort((a, b) => b.qty - a.qty).map(({ name: svc }) =
 }
 
 // ── Extrae el código de recinto visible en una foto (placa/letrero) ──
-async function extractRecintoCodeFromImage(image: ChatImageAttachment): Promise<string | null> {
+// Lanza un error si la llamada falla por motivos técnicos (red, API caída, etc.) —
+// eso es distinto de que la foto simplemente no tenga un código legible (NO_DETECTADO),
+// y el caller debe poder distinguir ambos casos para no decirle al usuario "recinto no
+// encontrado" cuando en realidad fue un fallo técnico transitorio.
+async function extractRecintoCodeFromImage(image: ChatImageAttachment): Promise<string> {
   const base64 = image.dataUrl.split(",")[1] || "";
-  if (!base64) return null;
+  if (!base64) throw new Error("Imagen sin datos");
 
   const res = await fetch(CHAT_PROXY_URL, {
     method: "POST",
@@ -569,8 +591,18 @@ async function extractRecintoCodeFromImage(image: ChatImageAttachment): Promise<
     },
     body: JSON.stringify({
       model: MODEL,
-      max_tokens: 30,
-      system: "Observas fotos de recintos/salas de un hospital en construcción. Cada recinto tiene una placa, letrero o etiqueta pegada en la puerta o pared con un código como \"C.5.3.5.1\", \"H.2.25\" o similar (letra(s) seguidas de números separados por puntos). Responde ÚNICAMENTE con ese código exacto tal como aparece escrito, sin explicaciones ni texto adicional. Si no logras ver ningún código de recinto en la imagen, responde exactamente: NO_DETECTADO",
+      max_tokens: 40,
+      system: `Observas fotos de recintos/salas de un hospital en construcción. Cada recinto tiene una placa, letrero o etiqueta pegada en la puerta o pared con un código de identificación.
+
+FORMATO DE LOS CÓDIGOS (ejemplos reales del inventario, para que reconozcas el patrón):
+"A.1.7.1", "B.3.2.4", "C.5.6.2.2", "C.5.6.2.2_A", "D.2.1", "H.2.25", "K.1.1_AG", "ESTAC.3.2", "OF.12", "COORD.4.1", "MOD.5", "PREP.2.1", "ACT.1.3"
+Patrón: una o varias letras (a veces una abreviatura como ACT, COORD, ESTAC, MOD, OF, PREP) seguidas de números separados por puntos, y a veces terminan en un sufijo tras un guion o guion bajo (ej. "_A", "_B", "_AG", "_U") para marcar una subdivisión del recinto.
+
+INSTRUCCIONES:
+- Si hay varias placas o números visibles en la foto (ej. un pasillo con varias puertas), prioriza el código en una placa de identificación de recinto junto a una puerta — ignora otros números como aforo, extintores o señalética eléctrica.
+- Da tu mejor lectura aunque no estés 100% seguro de algún carácter: el sistema hace una búsqueda tolerante a errores de lectura, así que es mejor arriesgar una lectura razonable que rendirte. Si dudas entre dos caracteres parecidos (O/0, I/1, S/5, B/8), elige el que tenga más sentido en el patrón de arriba.
+- Responde ÚNICAMENTE con el código tal como lo lees, sin explicaciones ni texto adicional.
+- Responde exactamente NO_DETECTADO solo si en la imagen no hay ninguna placa ni texto que parezca un código de recinto (ej. foto de solo mobiliario, sin ninguna señalética visible).`,
       messages: [{
         role: "user",
         content: [
@@ -582,10 +614,11 @@ async function extractRecintoCodeFromImage(image: ChatImageAttachment): Promise<
     signal: AbortSignal.timeout(30000),
   });
 
-  if (!res.ok) return null;
+  if (!res.ok) throw new Error(`Fallo al leer la foto (HTTP ${res.status})`);
   const body = await res.json().catch(() => null) as { content?: { type: string; text?: string }[] } | null;
   const text = body?.content?.find((b) => b.type === "text")?.text?.trim();
-  return text || null;
+  if (!text) throw new Error("Respuesta vacía al leer la foto");
+  return text;
 }
 
 // ── Claude API call con streaming SSE real ──
@@ -665,7 +698,7 @@ REGLAS ABSOLUTAS:
 4. Para PDFs de EETT: usa EXACTAMENTE el link del formato [Nombre](eett/EETT%20...) — nunca lo simplifiques
 5. Cita cifras exactas siempre: "1.265 unidades", no "aproximadamente 1.300"
 6. Cuando alguien pida "detalle", "resumen" o "total": entrega desglose completo sin omitir ninguna categoría
-7. Si el usuario envía una foto de un recinto: el código de recinto ya fue detectado y buscado en el inventario ANTES de esta conversación. Si aparece la sección "RECINTO DETECTADO EN FOTO", úsala como fuente de verdad para responder qué mobiliario corresponde a ese recinto (piso, servicio, cantidad y detalle de productos). Si esa sección indica que no hubo coincidencia, dilo con claridad y pide al usuario que confirme el código manualmente — nunca inventes datos de un recinto que no está en el inventario
+7. Si el usuario envía una foto de un recinto: el código de recinto ya fue detectado y buscado en el inventario ANTES de esta conversación. Si aparece la sección "RECINTO DETECTADO EN FOTO", úsala como fuente de verdad para responder qué mobiliario corresponde a ese recinto (piso, servicio, cantidad y detalle de productos). Si esa sección indica que hubo un problema técnico al leer la foto, dilo así explícitamente y pide reintentar con otra foto — no digas que el recinto "no existe". Si esa sección indica que no hubo coincidencia pero trae códigos parecidos como sugerencia, ofrécelos como posibles alternativas antes de pedir el código manual. Si no hay coincidencia ni sugerencias, dilo con claridad y pide al usuario que confirme el código manualmente — nunca inventes datos de un recinto que no está en el inventario
 8. Al responder sobre un recinto específico (secciones "RECINTOS ESPECÍFICOS CONSULTADOS" o "RECINTO DETECTADO EN FOTO"): incluye SIEMPRE una fila por CADA producto listado en "Contenido"/"Detalle", sin omitir, resumir ni fusionar ninguno — aunque sean solo 2 o 3 productos, muéstralos todos. Antes de enviar tu respuesta, suma mentalmente las cantidades de las filas que escribiste y confirma que coinciden exactamente con el total indicado; si no coinciden, revisa qué fila falta y agrégala antes de responder
 9. Si el usuario pregunta "cuál falta" o algo similar sobre un recinto ya mencionado en la conversación, vuelve a mirar el detalle completo del recinto en el contexto (no lo inventes ni pidas más información si los datos ya están disponibles)
 10. Si te preguntan por una ficha EETT cuyo código no tiene descripción/material/dimensiones/color en este prompt: NO inventes esos datos. Entrega solo el link al PDF correspondiente e indica que ahí está la especificación técnica completa
@@ -969,7 +1002,13 @@ class ChatServiceClass {
       let photoSection = "";
       let matched: { code: string; exact: boolean } | null = null;
       if (image) {
-        const rawCode = await extractRecintoCodeFromImage(image).catch(() => null);
+        let rawCode: string | null = null;
+        let photoReadFailed = false;
+        try {
+          rawCode = await extractRecintoCodeFromImage(image);
+        } catch {
+          photoReadFailed = true;
+        }
         if (rawCode && rawCode !== "NO_DETECTADO" && this.idx) {
           matched = matchRecintoCode(rawCode, Object.keys(this.idx.recintoDetail));
         }
@@ -986,10 +1025,20 @@ Total mobiliario en este recinto: ${fmt(info.qty)} unidades
 Detalle (${entries.length} tipos de producto — LISTA COMPLETA, no omitir ninguno):
 ${prodStr}
 Verificación obligatoria: la tabla que entregues debe tener EXACTAMENTE ${entries.length} filas de producto y la suma de sus cantidades debe dar ${fmt(info.qty)}`;
-        } else {
+        } else if (photoReadFailed) {
           photoSection = `══ RECINTO DETECTADO EN FOTO ══
-Código leído en la placa: "${rawCode || "no se pudo leer ningún código"}"
-No se encontró ese código en el inventario de 815 recintos. Informa esto al usuario y pídele que verifique o escriba el código manualmente.`;
+Hubo un problema técnico al analizar la foto (no se pudo leer la imagen). Esto NO significa que el recinto no exista en el inventario — informa al usuario que hubo un error técnico y pídele que intente subir la foto de nuevo.`;
+        } else {
+          const suggestions = rawCode && rawCode !== "NO_DETECTADO" && this.idx
+            ? suggestSimilarRecintoCodes(rawCode, Object.keys(this.idx.recintoDetail))
+            : [];
+          const suggestionsLine = suggestions.length
+            ? `\nCódigos parecidos que sí existen en el inventario (podría ser un error de lectura de alguno de estos, pregunta al usuario cuál es): ${suggestions.join(", ")}`
+            : "";
+          photoSection = `══ RECINTO DETECTADO EN FOTO ══
+Código leído en la placa: "${rawCode && rawCode !== "NO_DETECTADO" ? rawCode : "no se distinguió ningún código en la imagen"}"
+${rawCode && rawCode !== "NO_DETECTADO" ? "Ese código no se encontró en el inventario de 815 recintos." : "No se detectó ninguna placa o código de recinto legible en la foto."}${suggestionsLine}
+Informa esto al usuario con claridad${suggestions.length ? ", ofrécele las alternativas parecidas de arriba" : ""} y pídele que verifique o escriba el código manualmente si ninguna corresponde — nunca inventes datos de un recinto que no está en el inventario.`;
         }
       }
 
